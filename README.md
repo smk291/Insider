@@ -7,7 +7,7 @@
 5. Wireframe
 6. Chrome extension
 7. AuthO for authentication and authorization
-
+8. Click text to make it editable.
 
 
 ERD:

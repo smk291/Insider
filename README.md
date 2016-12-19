@@ -1,3 +1,20 @@
+# To do:
+======
+1. Redux
+2. Migrations
+3. Seeds
+4. ERD
+5. Wireframe
+6. Chrome extension
+
+
+
+
+
+
+
+
+
 This is my capstone, project name Insider (actually not such a bad name for the app, is it?)
 ---
 

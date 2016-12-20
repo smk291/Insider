@@ -79,36 +79,4 @@ router.post('/users', /*ev(validations.post),*/ (req, res, next) => {
     });
 });
 
-// knex.transaction(function(trx) {
-//
-//   var books = [
-//     {title: 'Canterbury Tales'},
-//     {title: 'Moby Dick'},
-//     {title: 'Hamlet'}
-//   ];
-//
-//   knex.insert({name: 'Old Books'}, 'id')
-//     .into('catalogues')
-//     .transacting(trx)
-//     .then(function(ids) {
-//       return Promise.map(books, function(book) {
-//         book.catalogue_id = ids[0];
-//
-//         // Some validation could take place here.
-//
-//         return knex.insert(info).into('books').transacting(trx);
-//       });
-//     })
-//     .then(trx.commit)
-//     .catch(trx.rollback);
-// })
-// .then(function(inserts) {
-//   console.log(inserts.length + ' new books saved.');
-// })
-// .catch(function(error) {
-//   // If we get here, that means that neither the 'Old Books' catalogues insert,
-//   // nor any of the books inserts will have taken place.
-//   console.error(error);
-// });
-
 module.exports = router;

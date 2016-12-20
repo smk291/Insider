@@ -7,17 +7,19 @@ exports.up = (knex) => {
     //table.string('zone').notNullable().defaultTo('');
     table.integer('cost_min');
     table.integer('cost_max');
-    table.integer('bedrooms');
-    table.integer('bathroooms');
+    table.integer('bedrooms_min');
+    table.integer('bedrooms_max');
+    table.integer('bathroooms_min');
+    table.integer('bathroooms_max');
     table.enu('housing_type', ['condo', 'apt', 'house', 'other'])
     table.boolean('rent');
     table.boolean('own');
-    table.boolean('roommates');
     table.integer('roommates_min');
     table.integer('roommates_max');
     table.boolean('allow_pets');
     table.boolean('allow_smoking');
     table.boolean('laundry');
+    table.integer('laundry_cost');
     table.boolean('parking');
     table.integer('parking_cost');
     table.boolean('all_utilities_inc');

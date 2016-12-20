@@ -11,7 +11,7 @@ exports.up = (knex) => {
     table.enu('cost_per', ['month', 'week', 'day', 'days']);
     table.integer('bedrooms');
     table.integer('bathroooms');
-    table.enu('housing_type', ['condo', 'apt', 'house']);
+    table.enu('housing_type', ['condo', 'apt', 'house', 'other']);
     table.boolean('rent');
     table.boolean('own');
     table.boolean('roommates');
@@ -28,6 +28,8 @@ exports.up = (knex) => {
     table.boolean('water_inc');
     table.boolean('electricity_inc');
     table.boolean('garbage_inc');
+    table.text('descr', 'utf-8');
+    table.text('notes', 'utf-8');
     table.timestamps(true, true);
   });
 };

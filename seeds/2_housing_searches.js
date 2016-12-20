@@ -1,13 +1,16 @@
+/* eslint-disable max-len, camelcase */
 
-exports.seed = function(knex, Promise) {
-  // Deletes ALL existing entries
-  return knex('table_name').del()
-    .then(function () {
-      return Promise.all([
+'use strict';
+
+exports.seed = function(knex) {
+  return knex('housing_searches').del()
+    .then(() => {
+      return knex('housing_searches').insert([{
         // Inserts seed entries
-        knex('table_name').insert({id: 1, colName: 'rowValue1'}),
-        knex('table_name').insert({id: 2, colName: 'rowValue2'}),
-        knex('table_name').insert({id: 3, colName: 'rowValue3'})
-      ]);
-    });
-};
+      })
+      .then(() => {
+        return knex.raw(
+          "SELECT setval('housing_searches_id_seq', (SELECT MAX(id) FROM housing_searches));"
+        );
+      });
+  };

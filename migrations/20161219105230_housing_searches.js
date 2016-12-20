@@ -9,7 +9,7 @@ exports.up = (knex) => {
     table.integer('cost_max');
     table.integer('bedrooms');
     table.integer('bathroooms');
-    table.enu('housing_type', ['condo', 'apt', 'house'])
+    table.enu('housing_type', ['condo', 'apt', 'house', 'other'])
     table.boolean('rent');
     table.boolean('own');
     table.boolean('roommates');
@@ -26,6 +26,8 @@ exports.up = (knex) => {
     table.boolean('water_inc');
     table.boolean('electricity_inc');
     table.boolean('garbage_inc');
+    table.text('descr', 'utf-8');
+    table.text('notes', 'utf-8');
     table.timestamps(true, true);
   });
 };
@@ -33,20 +35,3 @@ exports.up = (knex) => {
 exports.down = (knex) => {
   return knex.schema.dropTable('housing_searches');
 };
-
-
-
-//housing searches:
-  // id
-  // location
-  // zone
-  // cost_min
-  // cost_max
-  // bedrooms
-  // bathrooms
-  // housing_type
-  // rent_own
-  // roommates
-  // pets
-  // smoking
-  // laundry

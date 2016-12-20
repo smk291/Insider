@@ -6,6 +6,10 @@ exports.up = (knex) => {
     table.string('location').notNullable().defaultTo('');
     table.string('neighborhood').notNullable().defaultTo('');
     table.string('street_address').defaultTo('');
+    table.string('state').defaultTo('');
+    table.string('zip').defaultTo('');
+    table.string('lat').defaultTo('');
+    table.string('lon').defaultTo('');
     table.string('cross_streets').defaultTo('');
     table.integer('cost');
     table.enu('cost_per', ['month', 'week', 'day', 'days']);
@@ -15,8 +19,6 @@ exports.up = (knex) => {
     table.boolean('rent');
     table.boolean('own');
     table.boolean('roommates');
-    table.integer('roommates_min');
-    table.integer('roommates_max');
     table.boolean('allow_pets');
     table.boolean('allow_smoking');
     table.boolean('laundry');

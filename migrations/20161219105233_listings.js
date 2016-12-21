@@ -19,6 +19,7 @@ exports.up = (knex) => {
     table.boolean('rent');
     table.boolean('own');
     table.boolean('roommates');
+    table.integer('roommates_num');
     table.boolean('allow_pets');
     table.boolean('allow_smoking');
     table.boolean('laundry');

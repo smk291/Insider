@@ -16,6 +16,7 @@ exports.up = (knex) => {
     table.integer('bedrooms');
     table.integer('bathroooms');
     table.enu('housing_type', ['condo', 'apt', 'house', 'other']);
+    table.boolean('apt_in_house');
     table.boolean('rent');
     table.boolean('own');
     table.boolean('roommates');
@@ -31,6 +32,7 @@ exports.up = (knex) => {
     table.boolean('water_inc');
     table.boolean('electricity_inc');
     table.boolean('garbage_inc');
+    table.jsonb('photos');
     table.text('descr', 'utf-8');
     table.text('notes', 'utf-8');
     table.timestamps(true, true);

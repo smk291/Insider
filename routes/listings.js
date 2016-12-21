@@ -59,7 +59,7 @@ router.get('/listings/:id', authorize, (req, res, next) => {
       throw boom.create(400, `No listings exist for user`);
     }
 
-    res.send(meal);
+    res.send(listing);
   }).catch((err) => {
     next(err);
   });
@@ -80,7 +80,7 @@ router.get('/listings', authorize, (req, res, next) => {
   });
 });
 
-// Patch a meal
+// Patch a listing
 router.patch('/listings/:id', authorize,
 /*ev(validations.post),*/
 (req, res, next) => {

@@ -1,4 +1,6 @@
 Add:
+1) oauth -- google
+
 axios
 lodash(?)
 react-notify-toasts

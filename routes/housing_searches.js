@@ -30,32 +30,7 @@ const authorize = function(req, res, next) {
 //Post housing_search
 router.post('/housing_searches', authorize, /*ev(validations.post),*/ (req, res, next) => {
   const {
-    location,
-    cost_min,
-    cost_max,
-    bedrooms_min,
-    bedrooms_max,
-    bathroooms_min,
-    bathroooms_max,
-    housing_type,
-    rent,
-    own,
-    roommates_min,
-    roommates_max,
-    allow_pets,
-    allow_smoking,
-    laundry,
-    laundry_cost,
-    parking,
-    parking_cost,
-    all_utilities_inc,
-    heat_inc,
-    wifi_inc,
-    water_inc,
-    electricity_inc,
-    garbage_inc,
-    descr,
-    notes
+    location, costMin, costMax, bedroomsMin, bedroomsMax, bathroomsMin, bathroomsMax, housingType, rent, own, roommatesMin, roommatesMax, allowPets, allowSmoking, laundry, laundryCost, parking, parkingCost, allUtilitiesInc, heatInc, wifiInc, waterInc, electricityInc, garbageInc, descr, notes
   } = req.body;
 
 
@@ -63,32 +38,7 @@ router.post('/housing_searches', authorize, /*ev(validations.post),*/ (req, res,
 
   knex('housing_searches')
     .insert(decamelizeKeys({
-      location,
-      cost_min,
-      cost_max,
-      bedrooms_min,
-      bedrooms_max,
-      bathroooms_min,
-      bathroooms_max,
-      housing_type,
-      rent,
-      own,
-      roommates_min,
-      roommates_max,
-      allow_pets,
-      allow_smoking,
-      laundry,
-      laundry_cost,
-      parking,
-      parking_cost,
-      all_utilities_inc,
-      heat_inc,
-      wifi_inc,
-      water_inc,
-      electricity_inc,
-      garbage_inc,
-      descr,
-      notes
+      location, costMin, costMax, bedroomsMin, bedroomsMax, bathroomsMin, bathroomsMax, housingType, rent, own, roommatesMin, roommatesMax, allowPets, allowSmoking, laundry, laundryCost, parking, parkingCost, allUtilitiesInc, heatInc, wifiInc, waterInc, electricityInc, garbageInc, descr, notes
     }), '*')
     .returning('id')
     .then((id) => {
@@ -143,86 +93,34 @@ router.get('/housing_searches', authorize, (req, res, next) => {
 // Patch a housing_search
 router.patch('/housing_searches/:id', authorize, /*ev(validations.post),*/ (req, res, next) => {
   const {
-      location,
-      cost_min,
-      cost_max,
-      bedrooms_min,
-      bedrooms_max,
-      bathroooms_min,
-      bathroooms_max,
-      housing_type,
-      rent,
-      own,
-      roommates_min,
-      roommates_max,
-      allow_pets,
-      allow_smoking,
-      laundry,
-      laundry_cost,
-      parking,
-      parking_cost,
-      all_utilities_inc,
-      heat_inc,
-      wifi_inc,
-      water_inc,
-      electricity_inc,
-      garbage_inc,
-      descr,
-      notes
+    location, costMin, costMax, bedroomsMin, bedroomsMax, bathroomsMin, bathroomsMax, housingType, rent, own, roommatesMin, roommatesMax, allowPets, allowSmoking, laundry, laundryCost, parking, parkingCost, allUtilitiesInc, heatInc, wifiInc, waterInc, electricityInc, garbageInc, descr, notes
 } = req.body;
   const { id } = req.params;
   const { userId } = req.token;
   const postContents = {
-    location,
-    cost_min,
-    cost_max,
-    bedrooms_min,
-    bedrooms_max,
-    bathroooms_min,
-    bathroooms_max,
-    housing_type,
-    rent,
-    own,
-    roommates_min,
-    roommates_max,
-    allow_pets,
-    allow_smoking,
-    laundry,
-    laundry_cost,
-    parking,
-    parking_cost,
-    all_utilities_inc,
-    heat_inc,
-    wifi_inc,
-    water_inc,
-    electricity_inc,
-    garbage_inc,
-    descr,
-    notes
+    location, costMin, costMax, bedroomsMin, bedroomsMax, bathroomsMin, bathroomsMax, housingType, rent, own, roommatesMin, roommatesMax, allowPets, allowSmoking, laundry, laundryCost, parking, parkingCost, allUtilitiesInc, heatInc, wifiInc, waterInc, electricityInc, garbageInc, descr, notes
   };
 
   knex('housing_searches')
   .where('id', id)
   .first()
   .then((row) => {
-    console.log(row);
-
     if (!row) {
       throw boom.create(400, `No housing_search found at housing_searches.id ${id}`);
     }
 
     knex('users_housing_searches')
-      .where('user_id', userId)
-      .where('housing_searches_id', id)
-      .first()
-      .then((row) => {
-        if (!row) {
-          throw boom.create(400, `Housing_search at id ${id} does not belong to user.id ${userId}`);
-        }
-      })
-      .catch((err) => {
-        next(err);
-      });
+    .where('user_id', userId)
+    .where('housing_searches_id', id)
+    .first()
+    .then((row) => {
+      if (!row) {
+        throw boom.create(400, `Housing_search at id ${id} does not belong to user.id ${userId}`);
+      }
+    })
+    .catch((err) => {
+      next(err);
+    });
 
     const updateRow = {};
 
@@ -233,15 +131,15 @@ router.patch('/housing_searches/:id', authorize, /*ev(validations.post),*/ (req,
     }
 
     return knex('housing_searches')
-      .where('id', id)
-      .update(decamelizeKeys(updateRow), '*');
-    })
-    .then((row) =>  {
-      res.send(camelizeKeys(row));
-    })
-    .catch((err) => {
-      next(err);
-    });
+    .where('id', id)
+    .update(decamelizeKeys(updateRow), '*');
+  })
+  .then((row) =>  {
+    res.send(camelizeKeys(row));
+  })
+  .catch((err) => {
+    next(err);
+  });
 });
 
 router.delete('/housing_searches/:id', authorize, (req, res, next) => {

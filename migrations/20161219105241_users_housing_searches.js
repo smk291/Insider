@@ -3,7 +3,7 @@
 exports.up = (knex) => {
   return knex.schema.createTable('users_housing_searches', (table) => {
     table.increments();
-    table.integer('users_id')
+    table.integer('user_id')
       .notNullable()
       .references('id')
       .inTable('users')

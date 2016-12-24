@@ -31,71 +31,25 @@ router.post('/listings', authorize,
 /*ev(validations.post),*/
 (req, res, next) => {
   const {
-    location,
-    neighborhood,
-    streetAddress,
-    crossStreets,
-    cost,
-    costPer,
-    bedrooms,
-    bathroooms,
-    housingType,
-    rent,
-    own,
-    roommates,
-    allowPets,
-    allowSmoking,
-    laundry,
-    parking,
-    parkingCost,
-    allUtilitiesInc,
-    heatInc,
-    wifiInc,
-    waterInc,
-    electricityInc,
-    garbageInc,
-    descr,
-    notes
+    housingSearchesId, location, neighborhood, streetAddress, crossStreets, cost, costPer, bedrooms, bathroooms, housingType, rent, own, roommates, allowPets, allowSmoking, laundry, parking, parkingCost, allUtilitiesInc, heatInc, wifiInc, waterInc, electricityInc, garbageInc, descr, notes
   } = req.body;
 
   const {userId} = req.token;
 
   knex('listings').insert(decamelizeKeys({
-    location,
-    neighborhood,
-    streetAddress,
-    crossStreets,
-    cost,
-    costPer,
-    bedrooms,
-    bathroooms,
-    housingType,
-    rent,
-    own,
-    roommates,
-    allowPets,
-    allowSmoking,
-    laundry,
-    parking,
-    parkingCost,
-    allUtilitiesInc,
-    heatInc,
-    wifiInc,
-    waterInc,
-    electricityInc,
-    garbageInc,
-    descr,
-    notes
+    location, neighborhood, streetAddress, crossStreets, cost, costPer, bedrooms, bathroooms, housingType, rent, own, roommates, allowPets, allowSmoking, laundry, parking, parkingCost, allUtilitiesInc, heatInc, wifiInc, waterInc, electricityInc, garbageInc, descr, notes
   }), '*').returning('id').then((id) => {
-    knex('users_listings').insert(decamelizeKeys({userId, listingsId: id[0]}), '*').then((listingsRow) => {
-      res.send(decamelizeKeys(listingsRow));
+    knex('housing_searches_listings_users').insert(decamelizeKeys({userId, listingsId: id[0], housingSearchesId}), '*').then((housingSearchesListingsUsersRow) => {
+      res.send(decamelizeKeys(housingSearchesListingsUsersRow));
     });
   }).catch((err) => {
     next(err);
   });
+
+  knex
 });
 
-//Get individual meal
+//Get individual listing
 router.get('/listings/:id', authorize, (req, res, next) => {
   const {userId} = req.token;
   const {id} = req.params;
@@ -105,7 +59,7 @@ router.get('/listings/:id', authorize, (req, res, next) => {
       throw boom.create(400, `No listings exist for user`);
     }
 
-    res.send(meal);
+    res.send(listing);
   }).catch((err) => {
     next(err);
   });
@@ -126,75 +80,27 @@ router.get('/listings', authorize, (req, res, next) => {
   });
 });
 
-// Patch a meal
+// Patch a listing
 router.patch('/listings/:id', authorize,
 /*ev(validations.post),*/
 (req, res, next) => {
   const {
-    location,
-    neighborhood,
-    streetAddress,
-    crossStreets,
-    cost,
-    costPer,
-    bedrooms,
-    bathroooms,
-    housingType,
-    rent,
-    own,
-    roommates,
-    allowPets,
-    allowSmoking,
-    laundry,
-    parking,
-    parkingCost,
-    allUtilitiesInc,
-    heatInc,
-    wifiInc,
-    waterInc,
-    electricityInc,
-    garbageInc,
-    descr,
-    notes
+    housingSearchesId, location, neighborhood, streetAddress, crossStreets, cost, costPer, bedrooms, bathroooms, housingType, rent, own, roommates, allowPets, allowSmoking, laundry, parking, parkingCost, allUtilitiesInc, heatInc, wifiInc, waterInc, electricityInc, garbageInc, descr, notes
   } = req.body;
   const {id} = req.params;
   const {userId} = req.token;
   const patchContents = {
-    location,
-    neighborhood,
-    streetAddress,
-    crossStreets,
-    cost,
-    costPer,
-    bedrooms,
-    bathroooms,
-    housingType,
-    rent,
-    own,
-    roommates,
-    allowPets,
-    allowSmoking,
-    laundry,
-    parking,
-    parkingCost,
-    allUtilitiesInc,
-    heatInc,
-    wifiInc,
-    waterInc,
-    electricityInc,
-    garbageInc,
-    descr,
-    notes
+    location, neighborhood, streetAddress, crossStreets, cost, costPer, bedrooms, bathroooms, housingType, rent, own, roommates, allowPets, allowSmoking, laundry, parking, parkingCost, allUtilitiesInc, heatInc, wifiInc, waterInc, electricityInc, garbageInc, descr, notes
   };
 
   knex('listings').where('id', id).first().then((row) => {
     console.log(row);
 
     if (!row) {
-      throw boom.create(400, `No meal found at listings.id ${id}`);
+      throw boom.create(400, `No listing found at listings.id ${id}`);
     }
 
-    knex('users_listings').where('user_id', userId).where('listings_id', id).first().then((row) => {
+    knex('housing_searches_listings_users').where('user_id', userId).where('listings_id', id).first().then((row) => {
       if (!row) {
         throw boom.create(400, `Listing at id ${id} does not belong to user.id ${userId}`);
       }
@@ -221,38 +127,41 @@ router.patch('/listings/:id', authorize,
 });
 
 router.delete('/listings/:id', authorize, (req, res, next) => {
-  const mealId = req.params.id;
+  const listingsId = req.params.id;
   const {userId} = req.token;
   const deleted = {};
 
-  knex('listings').where('id', mealId).first().then((row) => {
+  knex('listings').where('id', listingsId).first().then((row) => {
     if (!row) {
-      throw boom.create(400, `No meal at meal.id ${mealId}`);
+      throw boom.create(400, `No listing at listing.id ${listingsId}`);
     }
 
-    deleted.fromMeals = camelizeKeys(row);
+    deleted.fromListings = camelizeKeys(row);
 
-    knex('users_listings').where('meal_id', mealId).then((row) => {
+    knex('housing_searches_listings_users').where('listings_id', listingsId).then((row) => {
       if (Number(row.user_id) !== userId && row.user_id) {
-        throw boom.create(400, `Meal_id ${mealId} does not belong to current user user.id ${userId}`);
+        throw boom.create(400, `listings_id ${listingsId} does not belong to current user user.id ${userId}`);
       }
     }).catch((err) => {
       next(err);
     });
   }).then(() => {
-    knex('users_listings').where('meal_id', mealId).where('user_id', userId).first().then((row) => {
-      if (!row) {
-        throw boom.create(400, `meal.id ${mealId} exists in listings, but there's no entry for it in users_listings. This shouldn't be possible.`);
-      }
+    knex('housing_searches_listings_users').where('listings_id', listingsId)
+      .where('user_id', userId)
+      .first()
+      .then((row) => {
+        if (!row) {
+          throw boom.create(400, `listings.id ${listingsId} exists in listings, but there's no entry for it in users_listings. This shouldn't be possible.`);
+        }
 
-      deleted.fromMealsUsers = camelizeKeys(row);
+        deleted.fromListingsUsers = camelizeKeys(row);
 
-      return knex('listings').where('id', mealId).del();
-    }).then(() => {
-      res.send(deleted);
-    }).catch((err) => {
-      next(err);
-    });
+        return knex('listings').where('id', listingsId).del();
+      }).then(() => {
+        res.send(deleted);
+      }).catch((err) => {
+        next(err);
+      });
   }).catch((err) => {
     next(err);
   });

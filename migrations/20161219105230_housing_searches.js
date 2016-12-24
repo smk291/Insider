@@ -4,7 +4,6 @@ exports.up = (knex) => {
   return knex.schema.createTable('housing_searches', (table) => {
     table.increments();
     table.string('location').notNullable().defaultTo('');
-    //table.string('zone').notNullable().defaultTo('');
     table.integer('cost_min');
     table.integer('cost_max');
     table.integer('bedrooms_min');

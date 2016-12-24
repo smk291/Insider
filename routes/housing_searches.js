@@ -92,10 +92,10 @@ router.post('/housing_searches', authorize, /*ev(validations.post),*/ (req, res,
     }), '*')
     .returning('id')
     .then((id) => {
-      knex('users_listings')
-        .insert(decamelizeKeys({userId, listingsId: id[0]}), '*')
-        .then((listingsRow) => {
-            res.send(decamelizeKeys(listingsRow));
+      knex('users_housing_searches')
+        .insert(decamelizeKeys({userId, housingSearchesId: id[0]}), '*')
+        .then((housingSearchesRow) => {
+            res.send(decamelizeKeys(housingSearchesRow));
         });
     })
     .catch((err) => {
@@ -111,12 +111,12 @@ router.get('/housing_searches/:id', authorize, (req, res, next) => {
   knex('housing_searches')
   .where('id', id)
   .first()
-  .then((listing) => {
-    if (listing === [] || !listing) {
+  .then((housingSearch) => {
+    if (housingSearch === [] || !housingSearch) {
       throw boom.create(400, `No housing_searches exist for user`);
     }
 
-    res.send(housing_search);
+    res.send(housingSearch);
   })
   .catch((err) => {
     next(err);
@@ -128,12 +128,12 @@ router.get('/housing_searches', authorize, (req, res, next) => {
   const { userId } = req.token;
 
   knex('housing_searches')
-    .then((housing_searches) => {
-      if (housing_searches === [] || !housing_searches) {
+    .then((housingSearches) => {
+      if (housingSearches === [] || !housingSearches) {
         throw boom.create(400, `No housing_searches found`);
       }
 
-      res.send(housing_searches);
+      res.send(housingSearches);
     })
     .catch((err) => {
       next(err);
@@ -211,13 +211,13 @@ router.patch('/housing_searches/:id', authorize, /*ev(validations.post),*/ (req,
       throw boom.create(400, `No housing_search found at housing_searches.id ${id}`);
     }
 
-    knex('users_listings')
+    knex('users_housing_searches')
       .where('user_id', userId)
-      .where('listings_id', id)
+      .where('housing_searches_id', id)
       .first()
       .then((row) => {
         if (!row) {
-          throw boom.create(400, `Listing at id ${id} does not belong to user.id ${userId}`);
+          throw boom.create(400, `Housing_search at id ${id} does not belong to user.id ${userId}`);
         }
       })
       .catch((err) => {
@@ -245,25 +245,25 @@ router.patch('/housing_searches/:id', authorize, /*ev(validations.post),*/ (req,
 });
 
 router.delete('/housing_searches/:id', authorize, (req, res, next) => {
-  const housing_searchId = req.params.id;
+  const housingSearchId = req.params.id;
   const { userId } = req.token;
   const deleted = {};
 
   knex('housing_searches')
-    .where('id', housing_searchId)
+    .where('id', housingSearchId)
     .first()
     .then((row) => {
       if (!row) {
-        throw boom.create(400, `No housing_search at housing_search.id ${housing_searchId}`);
+        throw boom.create(400, `No housing_search at housing_search.id ${housingSearchId}`);
       }
 
       deleted.fromMeals = camelizeKeys(row);
 
-      knex('users_listings')
-      .where('housing_search_id', housing_searchId)
+      knex('users_housing_searches')
+      .where('housing_search_id', housingSearchId)
       .then((row) => {
         if (Number(row.user_id) !== userId && row.user_id) {
-          throw boom.create(400, `Meal_id ${housing_searchId} does not belong to current user user.id ${userId}`);
+          throw boom.create(400, `Meal_id ${housingSearchId} does not belong to current user user.id ${userId}`);
         }
       })
       .catch((err) => {
@@ -271,18 +271,18 @@ router.delete('/housing_searches/:id', authorize, (req, res, next) => {
       });
     })
     .then(() => {
-      knex('users_listings')
-      .where('housing_search_id', housing_searchId)
+      knex('users_housing_searches')
+      .where('housing_search_id', housingSearchId)
       .where('user_id', userId)
       .first()
       .then((row) => {
         if (!row) {
-          throw boom.create(400, `housing_search.id ${housing_searchId} exists in housing_searches, but there's no entry for it in users_listings. This shouldn't be possible.`);
+          throw boom.create(400, `housing_search.id ${housingSearchId} exists in housing_searches, but there's no entry for it in users_housing_searches. This shouldn't be possible.`);
         }
 
         deleted.fromMealsUsers = camelizeKeys(row);
         return knex('housing_searches')
-          .where('id', housing_searchId)
+          .where('id', housingSearchId)
           .del();
       })
       .then(() => {

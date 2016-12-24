@@ -19,6 +19,7 @@ const users = require('./routes/users');
 const token = require('./routes/token');
 const listings = require('./routes/listings');
 const housing_searches = require('./routes/housing_searches');
+const users_housing_searches = require('./routes/users_housing_searches');
 
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -26,6 +27,7 @@ app.use(users);
 app.use(token);
 app.use(listings);
 app.use(housing_searches);
+app.use(users_housing_searches);
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();

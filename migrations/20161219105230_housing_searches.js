@@ -8,8 +8,8 @@ exports.up = (knex) => {
     table.integer('cost_max');
     table.integer('bedrooms_min');
     table.integer('bedrooms_max');
-    table.integer('bathroooms_min');
-    table.integer('bathroooms_max');
+    table.integer('bathrooms_min');
+    table.integer('bathrooms_max');
     table.enu('housing_type', ['condo', 'apt', 'house', 'other'])
     table.boolean('rent');
     table.boolean('own');

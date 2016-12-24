@@ -31,13 +31,13 @@ router.post('/listings', authorize,
 /*ev(validations.post),*/
 (req, res, next) => {
   const {
-    housingSearchesId, location, neighborhood, streetAddress, crossStreets, cost, costPer, bedrooms, bathroooms, housingType, rent, own, roommates, allowPets, allowSmoking, laundry, parking, parkingCost, allUtilitiesInc, heatInc, wifiInc, waterInc, electricityInc, garbageInc, descr, notes
+    housingSearchesId, location, neighborhood, aptInHouse, streetAddress, crossStreets, cost, costPer, bedrooms, bathrooms, housingType, rent, own, roommates, allowPets, allowSmoking, laundry, parking, parkingCost, allUtilitiesInc, heatInc, wifiInc, waterInc, electricityInc, garbageInc, descr, notes
   } = req.body;
 
   const {userId} = req.token;
 
   knex('listings').insert(decamelizeKeys({
-    location, neighborhood, streetAddress, crossStreets, cost, costPer, bedrooms, bathroooms, housingType, rent, own, roommates, allowPets, allowSmoking, laundry, parking, parkingCost, allUtilitiesInc, heatInc, wifiInc, waterInc, electricityInc, garbageInc, descr, notes
+    location, neighborhood, aptInHouse, streetAddress, crossStreets, cost, costPer, bedrooms, bathrooms, housingType, rent, own, roommates, allowPets, allowSmoking, laundry, parking, parkingCost, allUtilitiesInc, heatInc, wifiInc, waterInc, electricityInc, garbageInc, descr, notes
   }), '*').returning('id').then((id) => {
     knex('housing_searches_listings_users').insert(decamelizeKeys({userId, listingsId: id[0], housingSearchesId}), '*').then((housingSearchesListingsUsersRow) => {
       res.send(decamelizeKeys(housingSearchesListingsUsersRow));
@@ -85,17 +85,15 @@ router.patch('/listings/:id', authorize,
 /*ev(validations.post),*/
 (req, res, next) => {
   const {
-    housingSearchesId, location, neighborhood, streetAddress, crossStreets, cost, costPer, bedrooms, bathroooms, housingType, rent, own, roommates, allowPets, allowSmoking, laundry, parking, parkingCost, allUtilitiesInc, heatInc, wifiInc, waterInc, electricityInc, garbageInc, descr, notes
+    housingSearchesId, location, neighborhood, aptInHouse, streetAddress, crossStreets, cost, costPer, bedrooms, bathrooms, housingType, rent, own, roommates, allowPets, allowSmoking, laundry, parking, parkingCost, allUtilitiesInc, heatInc, wifiInc, waterInc, electricityInc, garbageInc, descr, notes
   } = req.body;
   const {id} = req.params;
   const {userId} = req.token;
   const patchContents = {
-    location, neighborhood, streetAddress, crossStreets, cost, costPer, bedrooms, bathroooms, housingType, rent, own, roommates, allowPets, allowSmoking, laundry, parking, parkingCost, allUtilitiesInc, heatInc, wifiInc, waterInc, electricityInc, garbageInc, descr, notes
+    location, neighborhood, aptInHouse, streetAddress, crossStreets, cost, costPer, bedrooms, bathrooms, housingType, rent, own, roommates, allowPets, allowSmoking, laundry, parking, parkingCost, allUtilitiesInc, heatInc, wifiInc, waterInc, electricityInc, garbageInc, descr, notes
   };
 
   knex('listings').where('id', id).first().then((row) => {
-    console.log(row);
-
     if (!row) {
       throw boom.create(400, `No listing found at listings.id ${id}`);
     }
@@ -109,8 +107,6 @@ router.patch('/listings/:id', authorize,
     });
 
     const updateRow = {};
-
-    console.log(req.body);
 
     for (let key in patchContents) {
       if (key) {

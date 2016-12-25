@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { BrowserRouter } from 'react-router';
+import React, {Component} from 'react';
+import {BrowserRouter} from 'react-router';
 import 'bootstrap/less/bootstrap.less'
 
 import Router from './Router';

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {BrowserRouter} from 'react-router';
+import {BrowserRouter, Route, browserHistory} from 'react-router';
 import 'bootstrap/less/bootstrap.less'
 
 import Router from './Router';
@@ -11,7 +11,7 @@ export default class App extends Component {
 
   render() {
     return (
-      <BrowserRouter>
+      <BrowserRouter history={browserHistory}>
         <div>
           <Router />
         </div>

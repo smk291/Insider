@@ -37,6 +37,8 @@ export default class HeaderNavigation extends React.Component {
         <Navbar.Collapse>
           <Nav>
             <NavItem eventKey={1} href="#">Search</NavItem>
+            <NavItem eventKey={1} href="#">Search</NavItem>
+            <NavItem eventKey={1} href="#">Search</NavItem>
             <NavDropdown eventKey={3} title="Dropdown" id="basic-nav-dropdown">
               <MenuItem eventKey={3.1}>Action</MenuItem>
               <MenuItem eventKey={3.2}>Another action</MenuItem>

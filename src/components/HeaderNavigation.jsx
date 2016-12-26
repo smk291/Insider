@@ -14,14 +14,19 @@ export default class HeaderNavigation extends React.Component {
     super(props);
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
+    this.logOut = this.logOut.bind(this);
   }
 
-  open () {
-    this.props.open();
+  open(e) {
+    this.props.open(e);
   }
 
-  close () {
-    this.props.close();
+  close(e) {
+    this.props.close(e);
+  }
+
+  logOut(e) {
+    this.props.logOut(e);
   }
 
   render() {
@@ -36,7 +41,7 @@ export default class HeaderNavigation extends React.Component {
         </Navbar.Header>
         <Navbar.Collapse>
           <Nav>
-            <NavItem eventKey={1} href="#">Search</NavItem>
+            <NavItem eventKey={1} href="#">Home</NavItem>
             <NavItem eventKey={1} href="#">Search</NavItem>
             <NavItem eventKey={1} href="#">Search</NavItem>
             <NavDropdown eventKey={3} title="Dropdown" id="basic-nav-dropdown">
@@ -59,7 +64,7 @@ export default class HeaderNavigation extends React.Component {
             </NavDropdown>}
 
 
-            {this.props.loggedIn ? <NavItem eventKey={2}  to="/" onClick={this.props.logOut.bind(this)} href="#">Logout</NavItem> : <NavItem eventKey={1} href="#" onClick={this.open}>Sign in / Sign up</NavItem>}
+            {this.props.loggedIn ? <NavItem eventKey={2}  to="/" onClick={this.logOut} href="#">Logout</NavItem> : <NavItem eventKey={1} href="#" onClick={this.open}>Sign in / Sign up</NavItem>}
           </Nav>
         </Navbar.Collapse>
       </Navbar>

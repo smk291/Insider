@@ -9,7 +9,7 @@ import Popover from 'react-bootstrap/lib/Popover';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
 import Modal from 'react-bootstrap/lib/Modal';
 // import LearnMore from './LearnMore';
-import Body from './Body';
+// import Body from './Body';
 import HeaderNavigation from './HeaderNavigation';
 import Footer from './Footer';
 import Login from './Login';
@@ -17,7 +17,7 @@ import Main from './Main';
 import 'bootstrap/less/bootstrap.less'
 import axios from 'axios';
 
-import Router from './Router';
+// import Router from './Router';
 
 export default class App extends Component {
   constructor(props) {

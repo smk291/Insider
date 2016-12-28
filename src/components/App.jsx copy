@@ -16,8 +16,6 @@ import Login from './Login';
 import Main from './Main';
 import 'bootstrap/less/bootstrap.less'
 import axios from 'axios';
-import Header from './Header';
-import notify from 'react-notify-toast';
 
 // import Router from './Router';
 
@@ -30,9 +28,7 @@ export default class App extends Component {
       password: '',
       firstName: '',
       lastName: '',
-      loggedIn: '',
-      signUpPassword: '',
-      signUpEmail: '',
+      loggedIn: ''
     }
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
@@ -85,13 +81,12 @@ export default class App extends Component {
       data: {
         lastName: this.state.lastName,
         firstName: this.state.firstName,
-        email: this.state.signUpEmail,
-        password: this.state.signUpPassword
+        email: this.state.email,
+        password: this.state.password
       }
     }).then((res) => {
       this.setState({firstName: '', lastName: ''});
       this.logIn(e);
-      notify.show('Logged In!', 'success', 3000);
       console.log(`success!`);
     }).catch((err) => {
       // notify.show(err.response.data.errors[0].messages[0], 'error', 3000);
@@ -114,7 +109,7 @@ export default class App extends Component {
       console.log('success!');
       this.setState({email: '', password: ''});
       this.changeState();
-      notify.show('Logged In!', 'success', 3000);
+      // notify.show('Logged In!', 'success', 3000);
     }).catch((err) => {
       console.log(err.response.data);
       // notify.show(err.response.data, 'error', 3000);
@@ -129,40 +124,78 @@ export default class App extends Component {
 
   render() {
     return (
-      <BrowserRouter>
-        <div>
-          <Header
-            loggedIn={this.state.loggedIn}
-            logOut={this.logOut}
-            logIn={this.logIn}
-            open={this.open}
-            close={this.close}
-            changeState={this.changeState}
-            handleChange={this.handleChange}
-            showModal={this.state.showModal}
-            email={this.state.email}
-            password={this.state.password}
-            firstName={this.state.firstName}
-            lastName={this.state.lastName}/>
-          <Main
-            loggedIn={this.state.loggedIn}
-            signUp={this.signUp}
-            logOut={this.logOut}
-            logIn={this.logIn}
-            open={this.open}
-            close={this.close}
-            changeState={this.changeState}
-            handleChange={this.handleChange}
-            showModal={this.state.showModal}
-            email={this.state.email}
-            password={this.state.password}
-            signUpEmail={this.state.signUpEmail}
-            signUpPassword={this.state.signUpPassword}
-            firstName={this.state.firstName}
-            lastName={this.state.lastName}/>
-          <Footer />
-        </div>
-      </BrowserRouter>
-    )
+      import Header from './Header';
+      import Main from './Main';
+      import React, {Component} from 'react';
+      import HeaderNavigation from './HeaderNavigation';
+      import axios from 'axios';
+      import { Link, Match, Router, BrowserRouter, Route, browserHistory, IndexRoute} from 'react-router';
+      import Footer from './Footer';
+      import Login from './Login';
+      import Main2 from './Main2';
+
+      export default class App extends Component ({
+        constructor(props){
+          super(props);
+        }
+
+        render() {
+          return (
+            <BrowserRouter>
+              <div>
+                <Header />
+                <Main />
+                <Footer />
+              </div>
+            </BrowserRouter>
+          )
+        }
+      });    )
   }
-};
+}
+
+
+
+
+
+
+
+
+
+
+
+// <BrowserRouter history={browserHistory}>
+//   <div>
+//     <HeaderNavigation
+//       loggedIn={this.state.loggedIn}
+//       logOut={this.logOut}
+//       logIn={this.logIn}
+//       open={this.open}
+//       close={this.close}
+//       changeState={this.changeState}
+//       handleChange={this.handleChange}
+//       showModal={this.state.showModal}
+//       email={this.state.email}
+//       password={this.state.password}
+//       firstName={this.state.firstName}
+//       lastName={this.state.lastName}
+//     />
+//     <Main
+//       loggedIn={this.state.loggedIn}
+//       logOut={this.logOut}
+//       logIn={this.logIn}
+//       open={this.open}
+//       close={this.close}
+//       changeState={this.changeState}
+//       handleChange={this.handleChange}
+//       showModal={this.state.showModal}
+//       email={this.state.email}
+//       password={this.state.password}
+//       firstName={this.state.firstName}
+//       lastName={this.state.lastName}
+//       />
+//     <Footer />
+//   </div>
+// </BrowserRouter>
+
+

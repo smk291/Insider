@@ -9,8 +9,7 @@ const webpack = require('webpack');
 const config = require('./webpack.config.dev');
 const compiler = webpack(config);
 const morgan = require('morgan');
-const cheerio = require('cheerio');
-const request = require('request');
+var cheerio = require('cheerio');
 
 app.disable('x-powered-by');
 
@@ -22,7 +21,6 @@ const token = require('./routes/token');
 const listings = require('./routes/listings');
 const housing_searches = require('./routes/housing_searches');
 const users_housing_searches = require('./routes/users_housing_searches');
-const scrape = require('./routes/scrape');
 
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -31,7 +29,6 @@ app.use(token);
 app.use(listings);
 app.use(housing_searches);
 app.use(users_housing_searches);
-app.use(scrape);
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();

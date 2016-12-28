@@ -28,9 +28,7 @@ export default class LogIn extends React.Component {
     return (
       <form onSubmit={this.logIn}>
         <div>
-          <ControlLabel htmlFor="email">
-            Your Email
-          </ControlLabel>
+          <ControlLabel htmlFor="email">Your Email</ControlLabel>
           <FormControl id="email" type="email" placeholder="email" name="email" onChange={this.handleChange} value={this.props.email}/>
         </div>
         <div>

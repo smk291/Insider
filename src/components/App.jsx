@@ -10,13 +10,13 @@ import Tooltip from 'react-bootstrap/lib/Tooltip';
 import Modal from 'react-bootstrap/lib/Modal';
 // import LearnMore from './LearnMore';
 // import Body from './Body';
-import HeaderNavigation from './HeaderNavigation';
-import Footer from './Footer';
-import Login from './Login';
-import Main from './Main';
+import HeaderNavigation from './header/HeaderNavigation';
+import Footer from './footer/Footer';
+import Login from './body/Login';
+import Main from './body/Main';
 import 'bootstrap/less/bootstrap.less'
 import axios from 'axios';
-import Header from './Header';
+import Header from './header/Header';
 import notify from 'react-notify-toast';
 
 // import Router from './Router';

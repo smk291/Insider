@@ -7,7 +7,7 @@ import MenuItem from 'react-bootstrap/lib/MenuItem';
 // import InlineLogin from './InlineLogin';
 import Grid from 'react-bootstrap/lib/Grid';
 import Row from 'react-bootstrap/lib/Row';
-import Login from './Login';
+import Login from '../body/Login';
 
 export default class HeaderNavigation extends React.Component {
   constructor(props){

@@ -7,15 +7,12 @@ import Col from 'react-bootstrap/lib/Col';
 import Popover from 'react-bootstrap/lib/Popover';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
 import Modal from 'react-bootstrap/lib/Modal';
-// import LearnMore from './LearnMore';
-// import Body from './Body';
-import HeaderNavigation from './HeaderNavigation';
-import Footer from './Footer';
+import HeaderNavigation from '../header/HeaderNavigation';
+import Footer from '../footer/Footer';
 import Login from './Login';
-// import LearnMore from './LearnMore';
 import SignUp from './SignUp';
 
-export default class Main extends React.Component {
+export default class Main2 extends React.Component {
   constructor(props) {
     super(props);
   }

@@ -10,7 +10,7 @@ import MenuItem from 'react-bootstrap/lib/MenuItem';
 // import InlineLogin from './InlineLogin';
 import Grid from 'react-bootstrap/lib/Grid';
 import Row from 'react-bootstrap/lib/Row';
-import Login from './Login';
+import Login from '../body/Login';
 
 export default class Header extends React.Component {
   constructor(props){
@@ -79,7 +79,8 @@ export default class Header extends React.Component {
             <li><Link to='/mars'>Mars 🔴</Link></li>
             <li><Link to='/signUp'>Sign Up</Link></li>
             <li><Link to='/login'>Log in</Link></li>
-            <li><Link to='/login'>Log in</Link></li>
+            <li><Link to='/map'>map</Link></li>
+            <li><Link to='/tables'>tables</Link></li>
             {this.props.loggedIn ? <p>Logged in!</p> : <p> Not logged in </p>}
           </ul>
         </nav>

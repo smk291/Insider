@@ -8,8 +8,8 @@ exports.up = (knex) => {
     table.string('post_date').notNullable().defaultTo('');
     table.string('title').notNullable().defaultTo('No title provided');
     table.jsonb('photos');
-    table.integer('bedrooms');
-    table.integer('sqft');
+    table.string('bedrooms');
+    table.string('sqft');
     table.text('descr', 'utf-8');
     table.text('notes', 'utf-8');
     table.integer('price');

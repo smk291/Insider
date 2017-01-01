@@ -10,7 +10,7 @@ const knex = require('../knex');
 const ev = require('express-validation');
 const bluebird = require('bluebird');
 // const validations = require('../validations/token');
-const {camelizeKeys} = require('humps');
+const {camelizeKeys, decamelizeKeys} = require('humps');
 const request = require('request');
 const cheerio = require('cheerio');
 const fs = require('fs');
@@ -45,13 +45,40 @@ router.get('/scrape_details/:urlnum', (req, res) => {
     .where('urlnum', urlnum)
     .first()
     .then((row) => {
-      // console.log(row);
+      console.log(`ROW!!!`);
+      console.log(row);
+
       if (!row) {
         throw boom.create(400, `Entry for url ${urlnum} does not exist`)
       }
+
       url = row.url;
+      let details = [];
       let br = 0;
       let area = 0;
+      let housingtype = '';
+      let laundry = ''
+      let parking = ''
+      let privatebath = null;
+      let privatebr = null;
+      let cats = null;
+      let dogs = null;
+      let furnished = null;
+      let nosmoking = null;
+      let wheelchair = null;
+      const housingTypes = ['apartment', 'condo', 'house', 'townhouse', 'duplex', 'land', 'in-law', 'cottage/cabin'];
+      const laundryTypes = ['laundry on site', 'w/d in unit', 'laundry in bldg']
+      const parkingTypes = ['off-street parking', 'detached garage', 'attached garage', 'valet parking', 'street parking', 'carport', 'no parking']
+      const bathTypes = ['private bath', 'no private bath']
+      const privateRoomTypes = ['private room', 'room not private']
+      const catTypes = ['cats are OK - purrr']
+      const dogTypes = ['dogs are OK - wooof']
+      const furnishedTypes = ['furnished']
+      const smokingTypes = ['no smoking']
+      const wheelchairTypes = ['wheelchair accessible']
+      let typeList = {housingTypes,laundryTypes,parkingTypes,bathTypes,privateRoomTypes,catTypes,dogTypes,furnishedTypes,smokingTypes,wheelchairTypes}
+      // // .property_date (available...)
+      let detailsObject = {};
 
       let cerealIndiv = new CerealScraper.Blueprint({
         requestTemplate: {
@@ -61,114 +88,145 @@ router.get('/scrape_details/:urlnum', (req, res) => {
         },
         itemsSelector: '.body',
         fieldSelectors: {
-          // body2: new TransformSelector('#postingbody', 0, function(el) {
-          //   return el[0].children[2].data
-          //   //.split('\n');
-          // }),
-          // // detailsmapped: new TransformSelector('.mapAndAttrs p:nth-of-type(2)', 0, (el) => {
-          // //   let arr = [];
-          // //
-          // //   el[0].children.map((el) => {
-          // //     if (el.children && el.children.length > 0) {
-          // //       arr.push(el.children[0].data);
-          // //     }
-          // //   });
-          // //
-          // //   return arr;
-          // // }),
-          // detailsmapped: new TransformSelector('.mapAndAttrs .attrgroup:last-of-type', 0, (el) => {
-          //   let arr = [];
-          //
-          //   el[0].children.map((el) => {
-          //     if (el.children && el.children.length > 0) {
-          //       arr.push(el.children[0].data);
-          //     }
-          //   });
-          //
-          //   return arr;
-          // }),
-          // // apartment, condo, house, townhouse, duplex, land, in-law, cottage/cabin
-          // // laundry on site, w/d in unit, laundry in bldg
-          // // off-street parking, detached garage, attached garage, valet parking, street parking, carport, no parking
-          // // private bath, no private bath
-          // // private room, room not private
-          // // cats are OK - purrr
-          // // dogs are OK - wooof
-          // // furnished
-          // // no smoking
-          // // wheelchair accessible
-          // // .property_date (available...)
-          bedrooms: new TransformSelector('.attrgroup span b', 0, (el) => {
-            // console.log(el[0].children);
-            // for (let i = 0; i < el[0].children.length; i++){
-            //   if (el[0].children[i].name === 'span'){
-            //     // console.log(el[0].children[i].children);
-            //     for (let j = 0; j < el[0].children[i].children.length; j++){
-            //       if (el[0].children[i].children[j].type === 'tag'){
-            //         for (let k = 0; k < el[0].children[i].children[j].children.length; k++){
-            //           if (el[0].children[i].children[j].children[k].data){
-            //             // console.log(el[0].children[i].children[j].children[k].data);
-            //             if (el[0].children[i].children[j].children[k].data.toLowerCase().indexOf('br')){
-            //               br = el[0].children[i].children[j].children[k].data;
-            //               // console.log(br);
-            //               return br;
-            //             }
-            //           }
-            //         }
-            //       }
-            //     }
-            //   }
-            // };
-            console.log(el[0].children[0].data);
+          desc: new TransformSelector('#postingbody', 0, function(el) {
+            return el[0].children[2].data
+            //.split('\n');
           }),
-          // sqft: new TransformSelector('.attrgroup sup', 0, (el) => {
-          //   return el[0].prev.prev.children[0].data;
-          // }),
-          // latLong: new TransformSelector('.mapbox', 0, function(el) {
-          //   let coord = {
-          //     latitude: el[0].children[1].attribs['data-latitude'],
-          //     longitude: el[0].children[1].attribs['data-longitude'],
-          //     accuracy: el[0].children[1].attribs['data-accuracy']
-          //   }
-          //   return coord;
-          // }),
-          // address: new TransformSelector('.mapbox', 0, function(el) {
-          //   return el[0].children[3].children[0].data;
-          // })
+          detailsmapped: new TransformSelector('.mapAndAttrs .attrgroup:last-of-type', 0, (el) => {
+            let arr = [];
+
+            el[0].children.map((el) => {
+              if (el.children && el.children.length > 0) {
+                arr.push(el.children[0].data);
+              }
+            });
+
+            for (let i = 0; i < arr.length; i++){
+              for (let key in typeList){
+                if (typeList[key].indexOf(arr[i]) !== -1){
+                  detailsObject[key] = arr[i];
+                  delete typeList[key];
+                }
+              }
+            }
+
+            return detailsObject;
+          }),
+          housingtype: new TransformSelector('.attrgroup span b', 0, (el) => {
+            if (detailsObject.housingTypes){
+              return detailsObject.housingTypes
+            }
+            return  null
+          }),
+          laundry: new TransformSelector('.attrgroup span b', 0, (el) => {
+            if (detailsObject.laundryTypes){
+              return detailsObject.laundryTypes
+            }
+            return  null
+          }),
+          parking: new TransformSelector('.attrgroup span b', 0, (el) => {
+            if (detailsObject.parkingTypes){
+              return detailsObject.parkingTypes
+            }
+            return  null
+          }),
+          privatebath: new TransformSelector('.attrgroup span b', 0, (el) => {
+            if (detailsObject.bathTypes){
+              return detailsObject.bathTypes
+            }
+            return  null
+          }),
+          privatebr: new TransformSelector('.attrgroup span b', 0, (el) => {
+            if (detailsObject.privateRoomTypes){
+              return detailsObject.privateRoomTypes
+            }
+            return  null
+          }),
+          cats: new TransformSelector('.attrgroup span b', 0, (el) => {
+            if (detailsObject.catTypes){
+              return detailsObject.catTypes
+            }
+            return  null
+          }),
+          dogs: new TransformSelector('.attrgroup span b', 0, (el) => {
+            if (detailsObject.dogTypes){
+              return detailsObject.dogTypes
+            }
+            return  null
+          }),
+          furnished: new TransformSelector('.attrgroup span b', 0, (el) => {
+            if (detailsObject.furnishedTypes){
+              return detailsObject.furnishedTypes
+            }
+            return  null
+          }),
+          nosmoking: new TransformSelector('.attrgroup span b', 0, (el) => {
+            if (detailsObject.smokingTypes){
+              return detailsObject.smokingTypes
+            }
+            return  null
+          }),
+          wheelchair: new TransformSelector('.attrgroup span b', 0, (el) => {
+            if (detailsObject.wheelChairTypes){
+              return detailsObject.wheelChairTypes;
+            }
+            return null
+          }),
+          bedrooms: new TransformSelector('.attrgroup span b', 0, (el) => {
+            return el[0].children[0].data;
+          }),
+          sqft: new TransformSelector('.attrgroup sup', 0, (el) => {
+            return el[0].prev.prev.children[0].data;
+          }),
+          latLong: new TransformSelector('.mapbox', 0, function(el) {
+            let coord = {
+              latitude: el[0].children[1].attribs['data-latitude'],
+              longitude: el[0].children[1].attribs['data-longitude'],
+              accuracy: el[0].children[1].attribs['data-accuracy']
+            }
+            return coord;
+          }),
+          address: new TransformSelector('.mapbox', 0, function(el) {
+            return el[0].children[3].children[0].data;
+          })
         },
 
         itemProcessor: function(pageItem) {
           return new Promise(function(resolve, reject) {
             storage.push(pageItem)
             resolve();
+            console.log(`TOINSERT!`);
+            let toInsert = {
+              descr: detailsObject.desc,
+              housing_type: detailsObject.housingtype,
+              laundry_types: detailsObject.laundry,
+              parking_types: detailsObject.parking,
+              bath_types: detailsObject.privatebath,
+              private_room_types: detailsObject.privatebr,
+              cat_types: detailsObject.cats,
+              dog_types: detailsObject.dogs,
+              furnished_types: detailsObject.furnished,
+              smoking_types: detailsObject.nosmoking,
+              wheelchair_types: detailsObject.wheelchair,
+              bedrooms: detailsObject.bedrooms,
+              sqft: detailsObject.sqft,
+              lat: detailsObject.latLong.latitude,
+              lon: detailsObject.latLong.longitude,
+              street_address:detailsObject.address
+            };
 
-          // knex('listings')
-          //   .where('url', id)
-          //   .first()
-          //   .then((row) => {
-              // let {url, post_date, title, photos, bedrooms, sqft, place, neighborhood, price} = pageItem;
-              // let toInsert = {url, post_date, title, photos, bedrooms, sqft, place, neighborhood, price};
+            console.log(toInsert);
 
-              // for (let key in toInsert){
-              //   if (!toInsert[key]){
-              //     delete toInsert[key]
-              //   }
-              // }
-              //
-              // knex('listings')
-              //   .update(toInsert, '*')
-              //   .then((row) => {
-              //     // res.send(row);
-              //   });
-            //
-            // }).then((res) => {
-            //   console.log(res);
-            // }).catch((err) => {
-            //   throw boom.create(400, `error: ${JSON.stringify(err)}`)
-            // });
-
-          return storage
-          })
+            return knex('listings')
+              .where('urlnum', urlnum)
+              .update(decamelizeKeys(toInsert), '*')
+              .then((row) => {
+                console.log(row);
+                return storage;
+              }).catch((err) => {
+                throw boom.create(400, `error: ${JSON.stringify(err)}`)
+              });
+            })
         },
       })
 
@@ -178,9 +236,7 @@ router.get('/scrape_details/:urlnum', (req, res) => {
       })
     }).catch((err) => {
       throw boom.create(400, `Err: err is ${err}`)
-    })
-
-
+    });
 })
 
 router.get('/scrape_list/:city', (req, res) => {
@@ -237,7 +293,7 @@ router.get('/scrape_list/:city', (req, res) => {
         resolve();
         list.push(pageItem);
         //date, title, photos, br_sqft, place, url, price
-        knex('listings')
+        return knex('listings')
           .where('url', pageItem.url)
           .first()
           .then((row) => {
@@ -253,11 +309,14 @@ router.get('/scrape_list/:city', (req, res) => {
                 delete toInsert[key]
               }
             }
+            console.log(toInsert);
 
-            knex('listings')
-              .insert(toInsert, '*')
+            return knex('listings')
+              .update(toInsert, '*')
               .then((row) => {
-                // res.send(row);
+                res.send(camelizeKeys(row));
+              }).catch((err) => {
+                console.log(`insert error: ${err}`);
               });
           })
         return list;
@@ -308,122 +367,3 @@ router.get('/scrape_list/:city', (req, res) => {
 })
 
 module.exports = router;
-
-// let brsq = [];
-//
-// if (el.indexOf('br') !== -1) {
-//   brsq.push(el.slice(0, el.indexOf('br')))
-// }
-//
-// if (el.indexOf('ft')) {
-//   let start = el.indexOf('ft');
-//   while (start - 1 > 0 && (el[start - 1].charCodeAt() > 47 && el[start - 1].charCodeAt() < 58)) {
-//     start--;
-//   }
-// }
-// brsq.push(el[start]);
-
-
-
-// body2: new TransformSelector('#postingbody', 0, function(el) {
-//   return el[0].children[2].data
-//   //.split('\n');
-// }),
-// detailsmapped: new TransformSelector('.mapAndAttrs p:nth-of-type(2)', 0, (el) => {
-//   let arr = [];
-//
-//   el[0].children.map((el) => {
-//     if (el.children && el.children.length > 0) {
-//       arr.push(el.children[0].data);
-//     }
-//   });
-//
-//   return arr;
-// }),
-// bedrooms: new TransformSelector('.mapAndAttrs', 0, (el) => {
-//   console.log(el);
-// })
-// // apartment, condo, house, townhouse, duplex, land, in-law, cottage/cabin
-// // laundry on site, w/d in unit, laundry in bldg
-// // off-street parking, detached garage, attached garage, valet parking, street parking, carport, no parking
-// // private bath, no private bath
-// // private room, room not private
-// // cats are OK - purrr
-// // dogs are OK - wooof
-// // furnished
-// // no smoking
-// // wheelchair accessible
-// // .property_date (available...)
-// bedrooms: new TransformSelector('.attrgroup', 0, (el) => {
-//   // console.log(el[0].children);
-//   for (let i = 0; i < el[0].children.length; i++){
-//     if (el[0].children[i].name === 'span'){
-//       // console.log(el[0].children[i].children);
-//       for (let j = 0; j < el[0].children[i].children.length; j++){
-//         if (el[0].children[i].children[j].type === 'tag'){
-//           for (let k = 0; k < el[0].children[i].children[j].children.length; k++){
-//             if (el[0].children[i].children[j].children[k].data){
-//               // console.log(el[0].children[i].children[j].children[k].data);
-//               if (el[0].children[i].children[j].children[k].data.toLowerCase().indexOf('br')){
-//                 br = el[0].children[i].children[j].children[k].data;
-//                 console.log(br);
-//                 return br;
-//               }
-//               if (el[0].children[i].children[j].children[k].data > 80){
-//                 area = el[0].children[i].children[j].children[k].data
-//               }
-//             }
-//           }
-//         }
-//       }
-//     }
-//   };
-// }),
-// sqft: new TextSelector('.attrgroup', 0, (el) => {
-//   return area;
-// }),
-// latLong: new TransformSelector('.mapbox', 0, function(el) {
-//   let coord = {
-//     latitude: el[0].children[1].attribs['data-latitude'],
-//     longitude: el[0].children[1].attribs['data-longitude'],
-//     accuracy: el[0].children[1].attribs['data-accuracy']
-//   }
-//   return coord;
-// }),
-// address: new TransformSelector('.mapbox', 0, function(el) {
-//   return el[0].children[3].children[0].data;
-// })
-// },
-//
-// itemProcessor: function(pageItem) {
-//   return new Promise(function(resolve, reject) {
-//     storage.push(pageItem)
-//     resolve();
-//
-// knex('listings')
-//   .where('url', id)
-//   .first()
-//   .then((row) => {
-//     let {url, post_date, title, photos, bedrooms, sqft, place, neighborhood, price} = pageItem;
-//     let toInsert = {url, post_date, title, photos, bedrooms, sqft, place, neighborhood, price};
-//
-//     for (let key in toInsert){
-//       if (!toInsert[key]){
-//         delete toInsert[key]
-//       }
-//     }
-//
-//     knex('listings')
-//       .update(toInsert, '*')
-//       .then((row) => {
-//         // res.send(row);
-//       });
-//
-//   }).then((res) => {
-//     console.log(res);
-//   }).catch((err) => {
-//     throw boom.create(400, `error: ${JSON.stringify(err)}`)
-//   });
-//
-// return storage
-// })

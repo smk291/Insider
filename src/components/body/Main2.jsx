@@ -16,7 +16,7 @@ import axios from 'axios';
 export default class Main2 extends React.Component {
   constructor(props) {
     super(props);
-    this.scrapeDetails = this.scrapeDetails.bind(this);
+    // this.scrapeDetails = this.scrapeDetails.bind(this);
     this.scrapeList = this.scrapeList.bind(this);
     this.scrapeRows = this.scrapeRows.bind(this);
     this.state = {
@@ -25,18 +25,18 @@ export default class Main2 extends React.Component {
     }
   }
 
-  scrapeDetails(e) {
-    e.preventDefault();
-
-    axios({
-      method: 'get',
-      url: '/scrape_details/5938001667'
-    }).then((res) => {
-      console.log(res);
-    }).catch((err) => {
-      // notify.show(err.response.data.errors[0].messages[0], 'error', 3000);
-    });
-  }
+  // scrapeDetails(e) {
+  //   e.preventDefault();
+  //
+  //   axios({
+  //     method: 'get',
+  //     url: '/scrape_details/5938001667'
+  //   }).then((res) => {
+  //     console.log(res);
+  //   }).catch((err) => {
+  //     // notify.show(err.response.data.errors[0].messages[0], 'error', 3000);
+  //   });
+  // }
 
   scrapeList(e) {
     e.preventDefault();
@@ -98,7 +98,7 @@ export default class Main2 extends React.Component {
   render() {
     return (
       <div>
-        <Button onClick={this.scrapeDetails}>get details</Button>
+        {/* <Button onClick={this.scrapeDetails}>get details</Button> */}
         <Button onClick={this.scrapeList}>get list</Button>
         <Button onClick={this.scrapeRows}>get row scrapes</Button>
         {/* <Button onClick={console.log(this.state.list)}>log list</Button> */}

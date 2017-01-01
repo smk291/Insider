@@ -10,6 +10,7 @@ import Main2 from './Main2'
 import GMapEx from './MapPage'
 import Tables from  './Tables'
 
+
 export default class Main extends Component {
   render() {
     return (

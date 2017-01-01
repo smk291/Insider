@@ -24,6 +24,16 @@ const housing_searches = require('./routes/housing_searches');
 const users_housing_searches = require('./routes/users_housing_searches');
 const scrape = require('./routes/scrape');
 
+const CerealScraper = {
+  Blueprint: require('cerealscraper/lib/Blueprint'),
+  Dispatcher: require('cerealscraper/lib/Dispatcher'),
+  Page: require('cerealscraper/lib/Page'),
+  PageItem: require('cerealscraper/lib/PageItem')
+};
+
+module.exports = CerealScraper;
+
+
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(users);

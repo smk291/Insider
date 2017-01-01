@@ -57,10 +57,10 @@ export default class Main2 extends React.Component {
     console.log(this.state.list.data);
 
     this.state.list.map((el) => {
-      if (el.url){
+      if (el.urlnum){
         axios({
           method: 'get',
-          url: `/scrape_details${el.urlnum}/`
+          url: `/scrape_details/${el.urlnum}`
         }).then((res) => {
           details.push(res.data);
           this.setState({details});

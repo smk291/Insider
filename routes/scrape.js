@@ -39,99 +39,148 @@ var CerealScraper = require('cerealscraper'),
 router.get('/scrape_details/:urlnum', (req, res) => {
   let storage = [];
   const {urlnum} = req.params;
-  const url = '';
+  let url = '';
 
-  knex('listing')
+  knex('listings')
     .where('urlnum', urlnum)
     .first()
     .then((row) => {
+      // console.log(row);
       if (!row) {
-        throw boom.create(400, `Entry for url ${urlnum} already exists`)
+        throw boom.create(400, `Entry for url ${urlnum} does not exist`)
       }
+      url = row.url;
+      let br = 0;
+      let area = 0;
 
-      url = row.data.url;
-      console.log(url);
+      let cerealIndiv = new CerealScraper.Blueprint({
+        requestTemplate: {
+          method: 'GET',
+          uri: `http://seattle.craigslist.org${url}`,
+          qs: {}
+        },
+        itemsSelector: '.body',
+        fieldSelectors: {
+          // body2: new TransformSelector('#postingbody', 0, function(el) {
+          //   return el[0].children[2].data
+          //   //.split('\n');
+          // }),
+          // // detailsmapped: new TransformSelector('.mapAndAttrs p:nth-of-type(2)', 0, (el) => {
+          // //   let arr = [];
+          // //
+          // //   el[0].children.map((el) => {
+          // //     if (el.children && el.children.length > 0) {
+          // //       arr.push(el.children[0].data);
+          // //     }
+          // //   });
+          // //
+          // //   return arr;
+          // // }),
+          // detailsmapped: new TransformSelector('.mapAndAttrs .attrgroup:last-of-type', 0, (el) => {
+          //   let arr = [];
+          //
+          //   el[0].children.map((el) => {
+          //     if (el.children && el.children.length > 0) {
+          //       arr.push(el.children[0].data);
+          //     }
+          //   });
+          //
+          //   return arr;
+          // }),
+          // // apartment, condo, house, townhouse, duplex, land, in-law, cottage/cabin
+          // // laundry on site, w/d in unit, laundry in bldg
+          // // off-street parking, detached garage, attached garage, valet parking, street parking, carport, no parking
+          // // private bath, no private bath
+          // // private room, room not private
+          // // cats are OK - purrr
+          // // dogs are OK - wooof
+          // // furnished
+          // // no smoking
+          // // wheelchair accessible
+          // // .property_date (available...)
+          bedrooms: new TransformSelector('.attrgroup span b', 0, (el) => {
+            // console.log(el[0].children);
+            // for (let i = 0; i < el[0].children.length; i++){
+            //   if (el[0].children[i].name === 'span'){
+            //     // console.log(el[0].children[i].children);
+            //     for (let j = 0; j < el[0].children[i].children.length; j++){
+            //       if (el[0].children[i].children[j].type === 'tag'){
+            //         for (let k = 0; k < el[0].children[i].children[j].children.length; k++){
+            //           if (el[0].children[i].children[j].children[k].data){
+            //             // console.log(el[0].children[i].children[j].children[k].data);
+            //             if (el[0].children[i].children[j].children[k].data.toLowerCase().indexOf('br')){
+            //               br = el[0].children[i].children[j].children[k].data;
+            //               // console.log(br);
+            //               return br;
+            //             }
+            //           }
+            //         }
+            //       }
+            //     }
+            //   }
+            // };
+            console.log(el[0].children[0].data);
+          }),
+          // sqft: new TransformSelector('.attrgroup sup', 0, (el) => {
+          //   return el[0].prev.prev.children[0].data;
+          // }),
+          // latLong: new TransformSelector('.mapbox', 0, function(el) {
+          //   let coord = {
+          //     latitude: el[0].children[1].attribs['data-latitude'],
+          //     longitude: el[0].children[1].attribs['data-longitude'],
+          //     accuracy: el[0].children[1].attribs['data-accuracy']
+          //   }
+          //   return coord;
+          // }),
+          // address: new TransformSelector('.mapbox', 0, function(el) {
+          //   return el[0].children[3].children[0].data;
+          // })
+        },
+
+        itemProcessor: function(pageItem) {
+          return new Promise(function(resolve, reject) {
+            storage.push(pageItem)
+            resolve();
+
+          // knex('listings')
+          //   .where('url', id)
+          //   .first()
+          //   .then((row) => {
+              // let {url, post_date, title, photos, bedrooms, sqft, place, neighborhood, price} = pageItem;
+              // let toInsert = {url, post_date, title, photos, bedrooms, sqft, place, neighborhood, price};
+
+              // for (let key in toInsert){
+              //   if (!toInsert[key]){
+              //     delete toInsert[key]
+              //   }
+              // }
+              //
+              // knex('listings')
+              //   .update(toInsert, '*')
+              //   .then((row) => {
+              //     // res.send(row);
+              //   });
+            //
+            // }).then((res) => {
+            //   console.log(res);
+            // }).catch((err) => {
+            //   throw boom.create(400, `error: ${JSON.stringify(err)}`)
+            // });
+
+          return storage
+          })
+        },
+      })
+
+      new CerealScraper.Dispatcher(cerealIndiv).start().then(function() {
+        // console.log(storage);
+        res.send(storage);
+      })
     }).catch((err) => {
       throw boom.create(400, `Err: err is ${err}`)
-
     })
 
-  // let cerealIndiv = new CerealScraper.Blueprint({
-  //   requestTemplate: {
-  //     method: 'GET',
-  //     uri: `http://seattle.craigslist.org/see/sub/${url}.html`,
-  //     qs: {}
-  //   },
-  //   itemsSelector: '.body',
-  //   fieldSelectors: {
-  //     body2: new TransformSelector('#postingbody', 0, function(el) {
-  //       return el[0].children[2].data
-  //       //.split('\n');
-  //     }),
-  //     detailsmapped: new TransformSelector('.mapAndAttrs p:nth-of-type(2)', 0, (el) => {
-  //       let arr = [];
-  //
-  //       el[0].children.map((el) => {
-  //         if (el.children && el.children.length > 0) {
-  //           arr.push(el.children[0].data);
-  //         }
-  //       });
-  //
-  //       return arr;
-  //     }),
-  //
-  //     latLong: new TransformSelector('.mapbox', 0, function(el) {
-  //       let coord = {
-  //         latitude: el[0].children[1].attribs['data-latitude'],
-  //         longitude: el[0].children[1].attribs['data-longitude'],
-  //         accuracy: el[0].children[1].attribs['data-accuracy']
-  //       }
-  //       return coord;
-  //     }),
-  //     address: new TransformSelector('.mapbox', 0, function(el) {
-  //       return el[0].children[3].children[0].data;
-  //     })
-  //   },
-  //
-  //   itemProcessor: function(pageItem) {
-  //     return new Promise(function(resolve, reject) {
-  //       storage.push(pageItem)
-  //       resolve();
-  //
-  //       // knex('listings')
-  //       //   .where('url', id)
-  //       //   .first()
-  //       //   .then((row) => {
-  //       //     let {url, post_date, title, photos, bedrooms, sqft, place, neighborhood, price} = pageItem;
-  //       //     let toInsert = {url, post_date, title, photos, bedrooms, sqft, place, neighborhood, price};
-  //       //
-  //       //     for (let key in toInsert){
-  //       //       if (!toInsert[key]){
-  //       //         delete toInsert[key]
-  //       //       }
-  //       //     }
-  //       //
-  //       //     knex('listings')
-  //       //       .update(toInsert, '*')
-  //       //       .then((row) => {
-  //       //         // res.send(row);
-  //       //       });
-  //       //
-  //       //   }).then((res) => {
-  //       //     console.log(res);
-  //       //   }).catch((err) => {
-  //       //     throw boom.create(400, `error: ${JSON.stringify(err)}`)
-  //       //   });
-  //
-  //       return storage
-  //     })
-  //   }
-  // });
-  //
-  // new CerealScraper.Dispatcher(cerealIndiv).start().then(function() {
-  //   // console.log(storage);
-  //   res.send(storage);
-  // })
+
 })
 
 router.get('/scrape_list/:city', (req, res) => {
@@ -273,3 +322,108 @@ module.exports = router;
 //   }
 // }
 // brsq.push(el[start]);
+
+
+
+// body2: new TransformSelector('#postingbody', 0, function(el) {
+//   return el[0].children[2].data
+//   //.split('\n');
+// }),
+// detailsmapped: new TransformSelector('.mapAndAttrs p:nth-of-type(2)', 0, (el) => {
+//   let arr = [];
+//
+//   el[0].children.map((el) => {
+//     if (el.children && el.children.length > 0) {
+//       arr.push(el.children[0].data);
+//     }
+//   });
+//
+//   return arr;
+// }),
+// bedrooms: new TransformSelector('.mapAndAttrs', 0, (el) => {
+//   console.log(el);
+// })
+// // apartment, condo, house, townhouse, duplex, land, in-law, cottage/cabin
+// // laundry on site, w/d in unit, laundry in bldg
+// // off-street parking, detached garage, attached garage, valet parking, street parking, carport, no parking
+// // private bath, no private bath
+// // private room, room not private
+// // cats are OK - purrr
+// // dogs are OK - wooof
+// // furnished
+// // no smoking
+// // wheelchair accessible
+// // .property_date (available...)
+// bedrooms: new TransformSelector('.attrgroup', 0, (el) => {
+//   // console.log(el[0].children);
+//   for (let i = 0; i < el[0].children.length; i++){
+//     if (el[0].children[i].name === 'span'){
+//       // console.log(el[0].children[i].children);
+//       for (let j = 0; j < el[0].children[i].children.length; j++){
+//         if (el[0].children[i].children[j].type === 'tag'){
+//           for (let k = 0; k < el[0].children[i].children[j].children.length; k++){
+//             if (el[0].children[i].children[j].children[k].data){
+//               // console.log(el[0].children[i].children[j].children[k].data);
+//               if (el[0].children[i].children[j].children[k].data.toLowerCase().indexOf('br')){
+//                 br = el[0].children[i].children[j].children[k].data;
+//                 console.log(br);
+//                 return br;
+//               }
+//               if (el[0].children[i].children[j].children[k].data > 80){
+//                 area = el[0].children[i].children[j].children[k].data
+//               }
+//             }
+//           }
+//         }
+//       }
+//     }
+//   };
+// }),
+// sqft: new TextSelector('.attrgroup', 0, (el) => {
+//   return area;
+// }),
+// latLong: new TransformSelector('.mapbox', 0, function(el) {
+//   let coord = {
+//     latitude: el[0].children[1].attribs['data-latitude'],
+//     longitude: el[0].children[1].attribs['data-longitude'],
+//     accuracy: el[0].children[1].attribs['data-accuracy']
+//   }
+//   return coord;
+// }),
+// address: new TransformSelector('.mapbox', 0, function(el) {
+//   return el[0].children[3].children[0].data;
+// })
+// },
+//
+// itemProcessor: function(pageItem) {
+//   return new Promise(function(resolve, reject) {
+//     storage.push(pageItem)
+//     resolve();
+//
+// knex('listings')
+//   .where('url', id)
+//   .first()
+//   .then((row) => {
+//     let {url, post_date, title, photos, bedrooms, sqft, place, neighborhood, price} = pageItem;
+//     let toInsert = {url, post_date, title, photos, bedrooms, sqft, place, neighborhood, price};
+//
+//     for (let key in toInsert){
+//       if (!toInsert[key]){
+//         delete toInsert[key]
+//       }
+//     }
+//
+//     knex('listings')
+//       .update(toInsert, '*')
+//       .then((row) => {
+//         // res.send(row);
+//       });
+//
+//   }).then((res) => {
+//     console.log(res);
+//   }).catch((err) => {
+//     throw boom.create(400, `error: ${JSON.stringify(err)}`)
+//   });
+//
+// return storage
+// })

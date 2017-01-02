@@ -319,29 +319,24 @@ router.get('/scrape_null/', (req, res) => {
     .first()
     .then((row) => {
       if (!row){
-        throw boom.create(404, `No bedrooms-null, void-null rows found`);
-        return undefined;
+        throw boom.create(400, `No bedrooms-null, void-null rows found`);
       }
       url = row.url;
-      
+
       request(`http://seattle.craigslist.org${url}`, function (error, response, body) {
         if (!error && response.statusCode == 404) {
           knex('listings')
             .whereNull('bedrooms')
             .whereNull('void')
             .first()
-            .update({void: true}, '*')
+            .update({void: true, checked: true}, '*')
             .then((row) => {
-              throw boom.create(404, `Page at ${urlnum} no longer exists. New row is ${row}`)
+              throw boom.create(400, `Page at ${urlnum} no longer exists. New row is ${row}`)
             }).catch((err) => {
               throw boom.create(400, `Error: ${JSON.stringify(err)}`);
             })
         }
       })
-
-      if (!row) {
-        throw boom.create(400, `Entry for url ${urlnum} does not exist`)
-      }
 
       urlnum = row.urlnum;
 
@@ -478,20 +473,18 @@ router.get('/scrape_null/', (req, res) => {
             }
           }),
           subOrApt: new TransformSelector('.attrgroup span b', 0, (el) => {
-            return 'sub'
+            return 'sub';
           })
         },
 
         itemProcessor: function(pageItem) {
           return new Promise(function(resolve, reject) {
-            console.log(pageItem.meta);
             if (pageItem.meta !== undefined && pageItem.meta.indexOf('The title on the listings page will be removed') !== -1){
               knex('listings')
                 .where('urlnum', urlnum)
                 .first()
                 .update({void: true}, '*')
                 .then((row) => {
-                  console.log(row);
                   res.send(`Page at ${urlnum} no longer exists.`);
                 }).catch((err) => {
                   throw boom.create(400, `Error: ${JSON.stringify(err)}`);
@@ -540,7 +533,7 @@ router.get('/scrape_null/', (req, res) => {
     })
 
     }).catch((err) => {
-      throw boom.create(400, `Err: err is ${err}`)
+      res.status(400).send(`Err: err is ${err}`)
     });
 })
 

@@ -40,45 +40,45 @@ router.get('/scrape_details/:urlnum', (req, res) => {
   let storage = [];
   const {urlnum} = req.params;
   let url = '';
+  let details = [];
+  let br = 0;
+  let area = 0;
+  let housingtype = '';
+  let laundry = ''
+  let parking = ''
+  let privatebath = null;
+  let privatebr = null;
+  let cats = null;
+  let dogs = null;
+  let furnished = null;
+  let nosmoking = null;
+  let wheelchair = null;
+  const housingTypes = ['apartment', 'condo', 'house', 'townhouse', 'duplex', 'land', 'in-law', 'cottage/cabin'];
+  const laundryTypes = ['laundry on site', 'w/d in unit', 'laundry in bldg']
+  const parkingTypes = ['off-street parking', 'detached garage', 'attached garage', 'valet parking', 'street parking', 'carport', 'no parking']
+  const bathTypes = ['private bath', 'no private bath']
+  const privateRoomTypes = ['private room', 'room not private']
+  const catTypes = ['cats are OK - purrr']
+  const dogTypes = ['dogs are OK - wooof']
+  const furnishedTypes = ['furnished']
+  const smokingTypes = ['no smoking']
+  const wheelchairTypes = ['wheelchair accessible']
+  let typeList = {housingTypes,laundryTypes,parkingTypes,bathTypes,privateRoomTypes,catTypes,dogTypes,furnishedTypes,smokingTypes,wheelchairTypes}
+  // // .property_date (available...)
+  let detailsObject = {};
 
   knex('listings')
     .where('urlnum', urlnum)
     .first()
     .then((row) => {
       console.log(`ROW!!!`);
-      console.log(row);
+      // console.log(row);
 
       if (!row) {
         throw boom.create(400, `Entry for url ${urlnum} does not exist`)
       }
 
       url = row.url;
-      let details = [];
-      let br = 0;
-      let area = 0;
-      let housingtype = '';
-      let laundry = ''
-      let parking = ''
-      let privatebath = null;
-      let privatebr = null;
-      let cats = null;
-      let dogs = null;
-      let furnished = null;
-      let nosmoking = null;
-      let wheelchair = null;
-      const housingTypes = ['apartment', 'condo', 'house', 'townhouse', 'duplex', 'land', 'in-law', 'cottage/cabin'];
-      const laundryTypes = ['laundry on site', 'w/d in unit', 'laundry in bldg']
-      const parkingTypes = ['off-street parking', 'detached garage', 'attached garage', 'valet parking', 'street parking', 'carport', 'no parking']
-      const bathTypes = ['private bath', 'no private bath']
-      const privateRoomTypes = ['private room', 'room not private']
-      const catTypes = ['cats are OK - purrr']
-      const dogTypes = ['dogs are OK - wooof']
-      const furnishedTypes = ['furnished']
-      const smokingTypes = ['no smoking']
-      const wheelchairTypes = ['wheelchair accessible']
-      let typeList = {housingTypes,laundryTypes,parkingTypes,bathTypes,privateRoomTypes,catTypes,dogTypes,furnishedTypes,smokingTypes,wheelchairTypes}
-      // // .property_date (available...)
-      let detailsObject = {};
 
       let cerealIndiv = new CerealScraper.Blueprint({
         requestTemplate: {
@@ -88,6 +88,9 @@ router.get('/scrape_details/:urlnum', (req, res) => {
         },
         itemsSelector: '.body',
         fieldSelectors: {
+          urlnum: new TransformSelector('span .result-price', 0, function(el) {
+            return urlnum;
+          }),
           desc: new TransformSelector('#postingbody', 0, function(el) {
             return el[0].children[2].data
             //.split('\n');
@@ -194,46 +197,54 @@ router.get('/scrape_details/:urlnum', (req, res) => {
         itemProcessor: function(pageItem) {
           return new Promise(function(resolve, reject) {
             storage.push(pageItem)
+            // console.log(`STORAGE`);
+            // console.log(storage);
             resolve();
-            console.log(`TOINSERT!`);
+            // console.log(`TOINSERT!`);
             let toInsert = {
-              descr: detailsObject.desc,
-              housing_type: detailsObject.housingtype,
-              laundry_types: detailsObject.laundry,
-              parking_types: detailsObject.parking,
-              bath_types: detailsObject.privatebath,
-              private_room_types: detailsObject.privatebr,
-              cat_types: detailsObject.cats,
-              dog_types: detailsObject.dogs,
-              furnished_types: detailsObject.furnished,
-              smoking_types: detailsObject.nosmoking,
-              wheelchair_types: detailsObject.wheelchair,
-              bedrooms: detailsObject.bedrooms,
-              sqft: detailsObject.sqft,
-              lat: detailsObject.latLong.latitude,
-              lon: detailsObject.latLong.longitude,
-              street_address:detailsObject.address
+              urlnum: pageItem.urlnum,
+              descr: pageItem.desc,
+              housing_type: pageItem.housingtype,
+              laundry_types: pageItem.laundry,
+              parking_types: pageItem.parking,
+              bath_types: pageItem.privatebath,
+              private_room_types: pageItem.privatebr,
+              cat_types: pageItem.cats,
+              dog_types: pageItem.dogs,
+              furnished_types: pageItem.furnished,
+              smoking_types: pageItem.nosmoking,
+              wheelchair_types: pageItem.wheelchair,
+              bedrooms: pageItem.bedrooms,
+              sqft: pageItem.sqft,
+              lat: pageItem.latLong.latitude,
+              lon: pageItem.latLong.longitude,
+              street_address:pageItem.address
             };
 
-            console.log(toInsert);
+            // console.log(toInsert);
+            // console.log(`urlnum: ${urlnum}`);
 
-            return knex('listings')
-              .where('urlnum', urlnum)
-              .update(decamelizeKeys(toInsert), '*')
-              .then((row) => {
+            knex('listings')
+            .where('urlnum', toInsert.urlnum)
+            .first()
+            .update(decamelizeKeys(toInsert))
+            .returning('*')
+            .then((row) => {
+                console.log(`NEW ROW`);
                 console.log(row);
-                return storage;
-              }).catch((err) => {
-                throw boom.create(400, `error: ${JSON.stringify(err)}`)
-              });
-            })
+            }).catch((err) => {
+              throw boom.create(400, `error: ${JSON.stringify(err)}`)
+            });
+          })
         },
       })
 
       new CerealScraper.Dispatcher(cerealIndiv).start().then(function() {
+        console.log(`STORAGE!!!`);
         // console.log(storage);
         res.send(storage);
-      })
+    })
+
     }).catch((err) => {
       throw boom.create(400, `Err: err is ${err}`)
     });

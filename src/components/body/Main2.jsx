@@ -16,27 +16,32 @@ import axios from 'axios';
 export default class Main2 extends React.Component {
   constructor(props) {
     super(props);
-    // this.scrapeDetails = this.scrapeDetails.bind(this);
     this.scrapeList = this.scrapeList.bind(this);
     this.scrapeRows = this.scrapeRows.bind(this);
+    this.scrapeScrapeNull = this.scrapeNull.bind(this);
     this.state = {
       list: [],
       details: {}
     }
   }
 
-  // scrapeDetails(e) {
-  //   e.preventDefault();
-  //
-  //   axios({
-  //     method: 'get',
-  //     url: '/scrape_details/5938001667'
-  //   }).then((res) => {
-  //     console.log(res);
-  //   }).catch((err) => {
-  //     // notify.show(err.response.data.errors[0].messages[0], 'error', 3000);
-  //   });
-  // }
+  scrapeNull(e) {
+    let errBool = false;
+    //
+    while (!errBool){
+      e.preventDefault();
+
+      axios({
+        method: 'get',
+        url: '/scrape_null'
+      }).then((res) => {
+        console.log(res);
+      }).catch((err) => {
+        errBool = true;
+        notify.show(err.response.data.errors[0].messages[0], 'error', 3000);
+      });
+    }
+  }
 
   scrapeList(e) {
     e.preventDefault();
@@ -65,25 +70,6 @@ export default class Main2 extends React.Component {
           details.push(res.data);
           this.setState({details});
         }).catch((err) => {
-          // if (err.response.status === 503) {
-          //   let count = 0;
-          //
-          //   while (count < 10 && err.response.status === 503) {
-          //     count++;
-          //
-          //     axios({
-          //       method: 'get',
-          //       url: `/scrape_details/${el.url}`
-          //     }).then((res1) => {
-          //       err = res1;
-          //       details.push(res.data);
-          //     }).catch((err1) => {
-          //       err1 = err
-          //       console.log(`count: ${count}`);
-          //       console.log(err);
-          //     })
-          //   }
-          // }
           details.push(err);
           this.setState({details});
         });
@@ -98,7 +84,7 @@ export default class Main2 extends React.Component {
   render() {
     return (
       <div>
-        {/* <Button onClick={this.scrapeDetails}>get details</Button> */}
+        <Button onClick={this.scrapeNull}>get null</Button>
         <Button onClick={this.scrapeList}>get list</Button>
         <Button onClick={this.scrapeRows}>get row scrapes</Button>
         {/* <Button onClick={console.log(this.state.list)}>log list</Button> */}

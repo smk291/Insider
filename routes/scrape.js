@@ -53,29 +53,29 @@ router.get('/scrape_details/:urlnum', (req, res) => {
       nosmoking   = null,
       wheelchair  = null;
 
-  const {urlnum}   = req.params,
-  housingTypes     = ['apartment', 'condo', 'house', 'townhouse', 'duplex', 'land', 'in-law', 'cottage/cabin'],
-  laundryTypes     = ['laundry on site', 'w/d in unit', 'laundry in bldg'],
-  parkingTypes     = ['off-street parking', 'detached garage', 'attached garage', 'valet parking', 'street parking', 'carport', 'no parking'],
-  bathTypes        = ['private bath', 'no private bath'],
-  privateRoomTypes = ['private room', 'room not private'],
-  catTypes         = ['cats are OK - purrr'],
-  dogTypes         = ['dogs are OK - wooof'],
-  furnishedTypes   = ['furnished'],
-  smokingTypes     = ['no smoking'],
-  wheelchairTypes  = ['wheelchair accessible'];
+  const {urlnum}         = req.params,
+        housingTypes     = ['apartment', 'condo', 'house', 'townhouse', 'duplex', 'land', 'in-law', 'cottage/cabin'],
+        laundryTypes     = ['laundry on site', 'w/d in unit', 'laundry in bldg'],
+        parkingTypes     = ['off-street parking', 'detached garage', 'attached garage', 'valet parking', 'street parking', 'carport', 'no parking'],
+        bathTypes        = ['private bath', 'no private bath'],
+        privateRoomTypes = ['private room', 'room not private'],
+        catTypes         = ['cats are OK - purrr'],
+        dogTypes         = ['dogs are OK - wooof'],
+        furnishedTypes   = ['furnished'],
+        smokingTypes     = ['no smoking'],
+        wheelchairTypes  = ['wheelchair accessible'];
 
   let typeList = {
-    housingTypes,
-    laundryTypes,
-    parkingTypes,
-    bathTypes,
-    privateRoomTypes,
-    catTypes,
-    dogTypes,
-    furnishedTypes,
-    smokingTypes,
-    wheelchairTypes
+      housingTypes,
+      laundryTypes,
+      parkingTypes,
+      bathTypes,
+      privateRoomTypes,
+      catTypes,
+      dogTypes,
+      furnishedTypes,
+      smokingTypes,
+      wheelchairTypes
   };
   // // .property_date (available...)
   let detailsObject = {};
@@ -216,6 +216,9 @@ router.get('/scrape_details/:urlnum', (req, res) => {
             if (el[0] && el[0].children && el[0].children[3] && el[0].children[3].children) {
               return el[0].children[3].children[0].data;
             }
+          }),
+          subOrApt: new TransformSelector('.attrgroup span b', 0, (el) => {
+            return 'sub'
           })
         },
 
@@ -240,7 +243,8 @@ router.get('/scrape_details/:urlnum', (req, res) => {
               sqft:               pageItem.sqft,
               lat:                pageItem.latLong.latitude,
               lon:                pageItem.latLong.longitude,
-              street_address:     pageItem.address
+              street_address:     pageItem.address,
+              sub_or_apt:         pageItem.subOrApt
             };
 
             knex('listings')
@@ -284,33 +288,33 @@ router.get('/scrape_null/', (req, res) => {
       wheelchair  = null;
 
   const housingTypes = ['apartment', 'condo', 'house', 'townhouse', 'duplex', 'land', 'in-law', 'cottage/cabin'],
-    laundryTypes     = ['laundry on site', 'w/d in unit', 'laundry in bldg'],
-    parkingTypes     = ['off-street parking', 'detached garage', 'attached garage', 'valet parking', 'street parking', 'carport', 'no parking'],
-    bathTypes        = ['private bath', 'no private bath'],
-    privateRoomTypes = ['private room', 'room not private'],
-    catTypes         = ['cats are OK - purrr'],
-    dogTypes         = ['dogs are OK - wooof'],
-    furnishedTypes   = ['furnished'],
-    smokingTypes     = ['no smoking'],
-    wheelchairTypes  = ['wheelchair accessible'];
+        laundryTypes     = ['laundry on site', 'w/d in unit', 'laundry in bldg'],
+        parkingTypes     = ['off-street parking', 'detached garage', 'attached garage', 'valet parking', 'street parking', 'carport', 'no parking'],
+        bathTypes        = ['private bath', 'no private bath'],
+        privateRoomTypes = ['private room', 'room not private'],
+        catTypes         = ['cats are OK - purrr'],
+        dogTypes         = ['dogs are OK - wooof'],
+        furnishedTypes   = ['furnished'],
+        smokingTypes     = ['no smoking'],
+        wheelchairTypes  = ['wheelchair accessible'];
 
-let typeList         = {
-    housingTypes,
-    laundryTypes,
-    parkingTypes,
-    bathTypes,
-    privateRoomTypes,
-    catTypes,
-    dogTypes,
-    furnishedTypes,
-    smokingTypes,
-    wheelchairTypes
-  },
-    detailsObject    = {},
-    urlnum           = '';
+  let detailsObject    = {},
+      urlnum           = '',
+      typeList         = {
+        housingTypes,
+        laundryTypes,
+        parkingTypes,
+        bathTypes,
+        privateRoomTypes,
+        catTypes,
+        dogTypes,
+        furnishedTypes,
+        smokingTypes,
+        wheelchairTypes
+      };
 
   knex('listings')
-    .whereNull('bedrooms')
+    .whereNull('checked')
     .whereNull('void')
     .first()
     .then((row) => {
@@ -319,7 +323,7 @@ let typeList         = {
         return undefined;
       }
       url = row.url;
-
+      
       request(`http://seattle.craigslist.org${url}`, function (error, response, body) {
         if (!error && response.statusCode == 404) {
           knex('listings')
@@ -472,6 +476,9 @@ let typeList         = {
             if (el[0] && el[0].children && el[0].children[3] && el[0].children[3].children) {
               return el[0].children[3].children[0].data;
             }
+          }),
+          subOrApt: new TransformSelector('.attrgroup span b', 0, (el) => {
+            return 'sub'
           })
         },
 
@@ -509,7 +516,9 @@ let typeList         = {
               sqft:               pageItem.sqft,
               lat:                pageItem.latLong.latitude,
               lon:                pageItem.latLong.longitude,
-              street_address:     pageItem.address
+              street_address:     pageItem.address,
+              sub_or_apt:         pageItem.subOrApt,
+              checked:            true
             };
 
             knex('listings')
@@ -552,23 +561,12 @@ router.get('/scrape_list/:city', (req, res) => {
       post_date: new TextSelector('.result-date'),
       title: new TextSelector('p a', 0),
       photos: new TransformSelector('a', 0, function(el) {
-        el = el[0].attribs['data-ids'].split(',');
-        el = el.map((str) => {
-          return str.substr(2)
-          // `https://images.craigslist.org/${}_300x300.jpg`
-        });
-        return {photos: el};
-      }),
-      bedrooms: new TransformSelector('.result-meta .housing', 0, (el) => {
-        if (el[0].children[0].data) {
-          let insert = el[0].children[0].data.replace(/^[\r\n]+|\.|[\r\n]+$/g, "");
-          // console.log(insert);// console.log(insert);
-        }
-      }),
-      sqft: new TransformSelector('.result-meta .housing', 0, (el) => {
-        if (el[0].children[0].data) {
-          let insert = el[0].children[0].data.replace(/^[\r\n]+|\.|[\r\n]+$/g, "");
-          // console.log(insert);
+        if (el[0] && el[0].attribs && el[0].attribs['data-ids']){
+          el = el[0].attribs['data-ids'].split(',');
+          el = el.map((str) => {
+            return str.substr(2)
+          });
+          return {photos: el};
         }
       }),
       neighborhood: new TextSelector('.result-hood', 0),
@@ -582,6 +580,9 @@ router.get('/scrape_list/:city', (req, res) => {
       }),
       price: new TransformSelector('span .result-price', 0, function(el) {
         return parseFloat(el.text().replace('$', ''));
+      }),
+      subOrApt: new TransformSelector('.attrgroup span b', 0, (el) => {
+        return 'sub'
       })
     },
     itemProcessor: function(pageItem) {
@@ -593,12 +594,12 @@ router.get('/scrape_list/:city', (req, res) => {
           .where('url', pageItem.url)
           .first()
           .then((row) => {
-            // if (row){
-            //   throw boom.create(400, `Entry for url ${pageItem.url} already exists`)
-            // }
+            if (row){
+              throw boom.create(400, `Entry for url ${pageItem.url} already exists`)
+            }
 
-            let {url, urlnum, post_date, title, photos, bedrooms, sqft, place, neighborhood, price} = pageItem;
-            let toInsert = {url, urlnum, post_date, title, photos, bedrooms, sqft, place, neighborhood, price};
+            let {subOrApt, url, urlnum, post_date, title, photos, bedrooms, sqft, place, neighborhood, price} = pageItem;
+            let toInsert = {url, urlnum, post_date, title, photos, bedrooms, sqft, place, neighborhood, price, sub_or_apt: subOrApt};
 
             for (let key in toInsert){
               if (!toInsert[key]){
@@ -607,7 +608,7 @@ router.get('/scrape_list/:city', (req, res) => {
             }
 
             knex('listings')
-              .insert(toInsert, '*')
+              .insert(decamelizeKeys(toInsert), '*')
               .then((row) => {
                 // res.send(row);
               });
@@ -617,9 +618,9 @@ router.get('/scrape_list/:city', (req, res) => {
     },
     getNextRequestOptions: function() {
       var dispatcher = this,
-        pagesToLoad = 2,
-        rowsPerPage = 100,
-        requestOptions = dispatcher.blueprint.requestTemplate;
+          pagesToLoad = 2,
+          rowsPerPage = 100,
+          requestOptions = dispatcher.blueprint.requestTemplate;
 
       dispatcher.pagesRequested = (dispatcher.pagesRequested === undefined)
         ? 0

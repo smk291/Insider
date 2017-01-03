@@ -15,9 +15,6 @@ export default class Main extends Component {
   render() {
     return (
       <main>
-        <Match pattern="/" exactly component={Earth} />
-        <Match pattern="/moon" component={Moon} />
-        <Match pattern="/mars" component={Mars} />
         <Match pattern="/login" render={() => <Login
           loggedIn={this.props.loggedIn}
           logOut={this.props.logOut}
@@ -31,20 +28,7 @@ export default class Main extends Component {
           password={this.props.password}
           firstName={this.props.firstName}
           lastName={this.props.lastName}
-        />} />
-        <Match pattern="/signUp" render={() => <SignUp
-          loggedIn={this.props.loggedIn}
-          signUp={this.props.signUp}
-          logIn={this.props.logIn}
-          open={this.props.open}
-          close={this.props.close}
-          changeState={this.props.changeState}
-          handleChange={this.props.handleChange}
-          showModal={this.props.showModal}
-          signUpEmail={this.props.signUpEmail}
-          signUpPassword={this.props.signUpPassword}
-          firstName={this.props.firstName}
-          lastName={this.props.lastName}
+          // showTooltips={this.props.showTooltips}
         />} />
         <Match pattern="/main" render={() => <Main2
           loggedIn={this.props.loggedIn}
@@ -59,6 +43,11 @@ export default class Main extends Component {
           signUpPassword={this.props.signUpPassword}
           firstName={this.props.firstName}
           lastName={this.props.lastName}
+          scrapeList = {this.props.scrapeList}
+          scrapeRows = {this.props.scrapeRows}
+          scrapeNull = {this.props.scrapeNull}
+          list = {this.props.list}
+          details = {this.props.details}
         />} />
         <Match pattern="/map" render={() => <GMapEx
           loggedIn={this.props.loggedIn}

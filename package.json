@@ -24,7 +24,7 @@
     "babel-core",
     "react-transform"
   ],
-  "author": "Tyler Miller <tylermillerome@gmail.com> (http://github.com/Voxelsdev)",
+  "author": "Samuel Kurland (https://github.com/smk291)",
   "license": "CC0-1.0",
   "devDependencies": {
     "babel-core": "^6.6.5",

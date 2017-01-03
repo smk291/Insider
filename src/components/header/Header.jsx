@@ -11,6 +11,7 @@ import MenuItem from 'react-bootstrap/lib/MenuItem';
 import Grid from 'react-bootstrap/lib/Grid';
 import Row from 'react-bootstrap/lib/Row';
 import Login from '../body/Login';
+import header from './header.css';
 
 export default class Header extends React.Component {
   constructor(props){
@@ -18,6 +19,7 @@ export default class Header extends React.Component {
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
     this.logOut = this.logOut.bind(this);
+    // this.showToolTips = this.showToolTips.bind(this);
   }
 
   open(e) {
@@ -32,60 +34,35 @@ export default class Header extends React.Component {
     this.props.logOut(e);
   }
 
+  // showTooltips(e){
+  //   this.props.showTooltips(e);
+  // }
+
   render() {
     return (
       <header>
-        <Navbar inverse>
-          <Navbar.Header>
-            <Navbar.Brand>
-              <a href="#">Insider</a>
-            </Navbar.Brand>
-            <Navbar.Toggle />
-          </Navbar.Header>
-          <Navbar.Collapse>
-            <Nav>
-              <NavItem eventKey={1} href="/main">Home</NavItem>
-              <NavItem eventKey={2} href="/login">Login</NavItem>
-              <NavItem eventKey={3} href="/signUp">Search</NavItem>
-              <NavItem eventKey={4} href="#">Search</NavItem>
-              <NavDropdown eventKey={5} title="Dropdown" id="basic-nav-dropdown">
-                <MenuItem eventKey={5.1}>Action</MenuItem>
-                <MenuItem eventKey={5.2}>Another action</MenuItem>
-                <MenuItem eventKey={5.3}>Something else here</MenuItem>
-                <MenuItem divider />
-                <MenuItem eventKey={6.3}>Separated link</MenuItem>
-              </NavDropdown>
-            </Nav>
-            <Nav pullRight>
-              {this.props.loggedIn ? <NavItem eventKey={2} href="#">View saved listings</NavItem> :
-
-              <NavDropdown eventKey={7} title="Dropdown" id="basic-nav-dropdown">
-                <MenuItem eventKey={7.1}>Action</MenuItem>
-                <MenuItem eventKey={7.2}>Another action</MenuItem>
-                <MenuItem eventKey={7.3}>Something else here</MenuItem>
-                <MenuItem divider />
-                <MenuItem eventKey={7.3}>Separated link</MenuItem>
-              </NavDropdown>}
-
-
-              {this.props.loggedIn ? <NavItem eventKey={8}  to="/" onClick={this.logOut} href="#">Logout</NavItem> : <NavItem eventKey={9} href="#" onClick={this.open}>Sign in / Sign up</NavItem>}
-            </Nav>
-          </Navbar.Collapse>
+        <Navbar className={header.navbar} style={{position: 'relative'}}>
+          <Nav pullLeft>
+            <Link className={header.navButton} activeClassName={header.active} to='/main'>Home</Link>
+            <Link className={header.navButton} activeClassName={header.active} to='/map'>map</Link>
+            <Link className={header.navButton} activeClassName={header.active} to='/tables'>tables</Link>
+          </Nav>
+          <Nav pullRight>
+            {this.props.loggedIn ? (<div>
+              <Link className={header.navButton} activeClassName={header.active} to='/showhelptips'>Show help tooltips</Link>
+              <Link className={header.navButton} activeClassName={header.active} to='/logIn'>Sign Up / Log in</Link>
+            </div>) : (<Link className={header.navButton} activeClassName={header.active} to='/main' onClick={this.logOut}>Log out</Link>)}
+          </Nav>
         </Navbar>
-        <nav>
-          <ul>
-            <li><Link to='/'>Earth 🌏</Link></li>
-            <li><Link to='/moon'>Moon 🌕</Link></li>
-            <li><Link to='/mars'>Mars 🔴</Link></li>
-            <li><Link to='/signUp'>Sign Up</Link></li>
-            <li><Link to='/login'>Log in</Link></li>
-            <li><Link to='/map'>map</Link></li>
-            <li><Link to='/tables'>tables</Link></li>
-            {this.props.loggedIn ? <p>Logged in!</p> : <p> Not logged in </p>}
-          </ul>
-        </nav>
+          <div>
+            <p>Logged in!</p> : <p> Not logged in </p>}
+          </div>
         <hr />
       </header>
     )
   }
 };
+
+{/* <li><Link to='/'>Earth 🌏</Link></li>
+<li><Link to='/moon'>Moon 🌕</Link></li>
+<li><Link to='/mars'>Mars 🔴</Link></li> */}

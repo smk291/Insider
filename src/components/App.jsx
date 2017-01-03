@@ -33,6 +33,8 @@ export default class App extends Component {
       loggedIn: '',
       signUpPassword: '',
       signUpEmail: '',
+      list: [],
+      details: {}
     }
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
@@ -41,6 +43,9 @@ export default class App extends Component {
     this.signUp = this.signUp.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.changeState = this.changeState.bind(this);
+    this.scrapeList = this.scrapeList.bind(this);
+    this.scrapeRows = this.scrapeRows.bind(this);
+    this.scrapeNull = this.scrapeNull.bind(this);
   }
 
   close(){
@@ -127,6 +132,62 @@ export default class App extends Component {
     this.setState(change);
   }
 
+  scrapeNull(e) {
+    // let errBool = false;
+    // //
+    // while (!errBool){
+      e.preventDefault();
+
+      axios({
+        method: 'get',
+        url: '/scrape_null'
+      }).then((res) => {
+        console.log(res);
+      }).catch((err) => {
+        // errBool = true;
+        console.log(err);
+      });
+    // }
+  }
+
+  scrapeList(e) {
+    e.preventDefault();
+
+    axios({
+      method: 'get',
+      url: '/scrape_list/seattle'
+    }).then((res) => {
+      console.log(res);
+      this.setState({list: res.data});
+    }).catch((err) => {
+      // notify.show(err.response.data.errors[0].messages[0], 'error', 3000);
+    });
+  }
+
+  scrapeRows(e) {
+    let details = [];
+    console.log(this.state.list.data);
+
+    this.state.list.map((el) => {
+      if (el.urlnum){
+        axios({
+          method: 'get',
+          url: `/scrape_details/${el.urlnum}`
+        }).then((res) => {
+          details.push(res.data);
+          this.setState({details});
+        }).catch((err) => {
+          details.push(err);
+          this.setState({details});
+        });
+      } else {
+        details.push(null);
+        this.setState({details});
+      }
+    })
+    console.log(details);
+  }
+
   render() {
     return (
       <BrowserRouter>
@@ -159,7 +220,13 @@ export default class App extends Component {
             signUpEmail={this.state.signUpEmail}
             signUpPassword={this.state.signUpPassword}
             firstName={this.state.firstName}
-            lastName={this.state.lastName}/>
+            lastName={this.state.lastName}
+            scrapeList = {this.scrapeList}
+            scrapeRows = {this.scrapeRows}
+            scrapeNull = {this.scrapeNull}
+            list = {this.state.list}
+            details = {this.state.details}
+          />
           <Footer />
         </div>
       </BrowserRouter>

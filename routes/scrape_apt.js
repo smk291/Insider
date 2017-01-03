@@ -66,16 +66,16 @@ router.get('/scrape_details_apt/:urlnum', (req, res) => {
         wheelchairTypes  = ['wheelchair accessible'];
 
   let typeList = {
-    housingTypes,
-    laundryTypes,
-    parkingTypes,
-    bathTypes,
-    privateRoomTypes,
-    catTypes,
-    dogTypes,
-    furnishedTypes,
-    smokingTypes,
-    wheelchairTypes
+      housingTypes,
+      laundryTypes,
+      parkingTypes,
+      bathTypes,
+      privateRoomTypes,
+      catTypes,
+      dogTypes,
+      furnishedTypes,
+      smokingTypes,
+      wheelchairTypes
   };
   // // .property_date (available...)
   let detailsObject = {};
@@ -216,6 +216,9 @@ router.get('/scrape_details_apt/:urlnum', (req, res) => {
             if (el[0] && el[0].children && el[0].children[3] && el[0].children[3].children) {
               return el[0].children[3].children[0].data;
             }
+          }),
+          subOrApt: new TransformSelector('.attrgroup span b', 0, (el) => {
+            return 'apt'
           })
         },
 
@@ -240,7 +243,8 @@ router.get('/scrape_details_apt/:urlnum', (req, res) => {
               sqft:               pageItem.sqft,
               lat:                pageItem.latLong.latitude,
               lon:                pageItem.latLong.longitude,
-              street_address:     pageItem.address
+              street_address:     pageItem.address,
+              sub_or_apt:         pageItem.subOrApt
             };
 
             knex('listings')
@@ -266,7 +270,7 @@ router.get('/scrape_details_apt/:urlnum', (req, res) => {
     });
 })
 
-router.get('/scrape_null/', (req, res) => {
+router.get('/scrape_null_apt/', (req, res) => {
   let storage     = [],
       url         = '',
       details     = [],
@@ -283,7 +287,7 @@ router.get('/scrape_null/', (req, res) => {
       nosmoking   = null,
       wheelchair  = null;
 
-  const housingTypes     = ['apartment', 'condo', 'house', 'townhouse', 'duplex', 'land', 'in-law', 'cottage/cabin'],
+  const housingTypes = ['apartment', 'condo', 'house', 'townhouse', 'duplex', 'land', 'in-law', 'cottage/cabin'],
         laundryTypes     = ['laundry on site', 'w/d in unit', 'laundry in bldg'],
         parkingTypes     = ['off-street parking', 'detached garage', 'attached garage', 'valet parking', 'street parking', 'carport', 'no parking'],
         bathTypes        = ['private bath', 'no private bath'],
@@ -294,29 +298,28 @@ router.get('/scrape_null/', (req, res) => {
         smokingTypes     = ['no smoking'],
         wheelchairTypes  = ['wheelchair accessible'];
 
-let typeList         = {
-    housingTypes,
-    laundryTypes,
-    parkingTypes,
-    bathTypes,
-    privateRoomTypes,
-    catTypes,
-    dogTypes,
-    furnishedTypes,
-    smokingTypes,
-    wheelchairTypes
-  },
-    detailsObject    = {},
-    urlnum           = '';
+  let detailsObject    = {},
+      urlnum           = '',
+      typeList         = {
+        housingTypes,
+        laundryTypes,
+        parkingTypes,
+        bathTypes,
+        privateRoomTypes,
+        catTypes,
+        dogTypes,
+        furnishedTypes,
+        smokingTypes,
+        wheelchairTypes
+      };
 
   knex('listings')
-    .whereNull('bedrooms')
+    .whereNull('checked')
     .whereNull('void')
     .first()
     .then((row) => {
       if (!row){
-        throw boom.create(404, `No bedrooms-null, void-null rows found`);
-        return undefined;
+        throw boom.create(400, `No bedrooms-null, void-null rows found`);
       }
       url = row.url;
 
@@ -326,18 +329,14 @@ let typeList         = {
             .whereNull('bedrooms')
             .whereNull('void')
             .first()
-            .update({void: true}, '*')
+            .update({void: true, checked: true}, '*')
             .then((row) => {
-              throw boom.create(404, `Page at ${urlnum} no longer exists. New row is ${row}`)
+              throw boom.create(400, `Page at ${urlnum} no longer exists. New row is ${row}`)
             }).catch((err) => {
               throw boom.create(400, `Error: ${JSON.stringify(err)}`);
             })
         }
       })
-
-      if (!row) {
-        throw boom.create(400, `Entry for url ${urlnum} does not exist`)
-      }
 
       urlnum = row.urlnum;
 
@@ -472,19 +471,20 @@ let typeList         = {
             if (el[0] && el[0].children && el[0].children[3] && el[0].children[3].children) {
               return el[0].children[3].children[0].data;
             }
+          }),
+          subOrApt: new TransformSelector('.attrgroup span b', 0, (el) => {
+            return 'apt';
           })
         },
 
         itemProcessor: function(pageItem) {
           return new Promise(function(resolve, reject) {
-            console.log(pageItem.meta);
             if (pageItem.meta !== undefined && pageItem.meta.indexOf('The title on the listings page will be removed') !== -1){
               knex('listings')
                 .where('urlnum', urlnum)
                 .first()
                 .update({void: true}, '*')
                 .then((row) => {
-                  console.log(row);
                   res.send(`Page at ${urlnum} no longer exists.`);
                 }).catch((err) => {
                   throw boom.create(400, `Error: ${JSON.stringify(err)}`);
@@ -509,7 +509,9 @@ let typeList         = {
               sqft:               pageItem.sqft,
               lat:                pageItem.latLong.latitude,
               lon:                pageItem.latLong.longitude,
-              street_address:     pageItem.address
+              street_address:     pageItem.address,
+              sub_or_apt:         pageItem.subOrApt,
+              checked:            true
             };
 
             knex('listings')
@@ -531,11 +533,11 @@ let typeList         = {
     })
 
     }).catch((err) => {
-      throw boom.create(400, `Err: err is ${err}`)
+      res.status(400).send(`Err: err is ${err}`)
     });
 })
 
-router.get('/scrape_list/:city', (req, res) => {
+router.get('/scrape_list_apt/:city', (req, res) => {
   let {city} = req.params;
   let details = [];
   let list = [];
@@ -543,7 +545,7 @@ router.get('/scrape_list/:city', (req, res) => {
   let cereallist = new CerealScraper.Blueprint({
     requestTemplate: {
       method: 'GET',
-      uri: 'http://seattle.craigslist.org/search/sub',
+      uri: 'http://seattle.craigslist.org/search/apa',
       qs: {}
     },
     itemsSelector: '.rows .result-row',
@@ -552,23 +554,12 @@ router.get('/scrape_list/:city', (req, res) => {
       post_date: new TextSelector('.result-date'),
       title: new TextSelector('p a', 0),
       photos: new TransformSelector('a', 0, function(el) {
-        el = el[0].attribs['data-ids'].split(',');
-        el = el.map((str) => {
-          return str.substr(2)
-          // `https://images.craigslist.org/${}_300x300.jpg`
-        });
-        return {photos: el};
-      }),
-      bedrooms: new TransformSelector('.result-meta .housing', 0, (el) => {
-        if (el[0].children[0].data) {
-          let insert = el[0].children[0].data.replace(/^[\r\n]+|\.|[\r\n]+$/g, "");
-          // console.log(insert);// console.log(insert);
-        }
-      }),
-      sqft: new TransformSelector('.result-meta .housing', 0, (el) => {
-        if (el[0].children[0].data) {
-          let insert = el[0].children[0].data.replace(/^[\r\n]+|\.|[\r\n]+$/g, "");
-          // console.log(insert);
+        if (el[0] && el[0].attribs && el[0].attribs['data-ids']){
+          el = el[0].attribs['data-ids'].split(',');
+          el = el.map((str) => {
+            return str.substr(2)
+          });
+          return {photos: el};
         }
       }),
       neighborhood: new TextSelector('.result-hood', 0),
@@ -582,6 +573,9 @@ router.get('/scrape_list/:city', (req, res) => {
       }),
       price: new TransformSelector('span .result-price', 0, function(el) {
         return parseFloat(el.text().replace('$', ''));
+      }),
+      subOrApt: new TransformSelector('.attrgroup span b', 0, (el) => {
+        return 'apt'
       })
     },
     itemProcessor: function(pageItem) {
@@ -593,12 +587,12 @@ router.get('/scrape_list/:city', (req, res) => {
           .where('url', pageItem.url)
           .first()
           .then((row) => {
-            // if (row){
-            //   throw boom.create(400, `Entry for url ${pageItem.url} already exists`)
-            // }
+            if (row){
+              throw boom.create(400, `Entry for url ${pageItem.url} already exists`)
+            }
 
-            let {url, urlnum, post_date, title, photos, bedrooms, sqft, place, neighborhood, price} = pageItem;
-            let toInsert = {url, urlnum, post_date, title, photos, bedrooms, sqft, place, neighborhood, price};
+            let {subOrApt, url, urlnum, post_date, title, photos, bedrooms, sqft, place, neighborhood, price} = pageItem;
+            let toInsert = {url, urlnum, post_date, title, photos, bedrooms, sqft, place, neighborhood, price, sub_or_apt: subOrApt};
 
             for (let key in toInsert){
               if (!toInsert[key]){
@@ -607,7 +601,7 @@ router.get('/scrape_list/:city', (req, res) => {
             }
 
             knex('listings')
-              .insert(toInsert, '*')
+              .insert(decamelizeKeys(toInsert), '*')
               .then((row) => {
                 // res.send(row);
               });
@@ -617,9 +611,9 @@ router.get('/scrape_list/:city', (req, res) => {
     },
     getNextRequestOptions: function() {
       var dispatcher = this,
-        pagesToLoad = 2,
-        rowsPerPage = 100,
-        requestOptions = dispatcher.blueprint.requestTemplate;
+          pagesToLoad = 2,
+          rowsPerPage = 100,
+          requestOptions = dispatcher.blueprint.requestTemplate;
 
       dispatcher.pagesRequested = (dispatcher.pagesRequested === undefined)
         ? 0

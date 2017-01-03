@@ -48,16 +48,12 @@ export default class Header extends React.Component {
             <Link className={header.navButton} activeClassName={header.active} to='/tables'>tables</Link>
           </Nav>
           <Nav pullRight>
-            {this.props.loggedIn ? (<div>
+            {!this.props.loggedIn ? (<div>
               <Link className={header.navButton} activeClassName={header.active} to='/showhelptips'>Show help tooltips</Link>
-              <Link className={header.navButton} activeClassName={header.active} to='/logIn'>Sign Up / Log in</Link>
+              <Link className={header.navButton} activeClassName={header.active} to='/login'>Sign Up / Log in</Link>
             </div>) : (<Link className={header.navButton} activeClassName={header.active} to='/main' onClick={this.logOut}>Log out</Link>)}
           </Nav>
         </Navbar>
-          <div>
-            <p>Logged in!</p> : <p> Not logged in </p>}
-          </div>
-        <hr />
       </header>
     )
   }

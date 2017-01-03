@@ -12,6 +12,10 @@ import Tables from  './Tables'
 
 
 export default class Main extends Component {
+  constructor(props){
+    super(props);
+  }
+
   render() {
     return (
       <main>
@@ -19,6 +23,7 @@ export default class Main extends Component {
           loggedIn={this.props.loggedIn}
           logOut={this.props.logOut}
           logIn={this.props.logIn}
+          signUp={this.props.signUp}
           open={this.props.open}
           close={this.props.close}
           changeState={this.props.changeState}

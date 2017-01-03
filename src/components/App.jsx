@@ -65,21 +65,66 @@ export default class App extends Component {
     }
   }
 
-  logOut() {
+  logOut (e) {
+    e.preventDefault();
+
     axios({
       method: 'delete',
       url: '/token',
       headers: {
         'Content-Type': 'application/json'
       }
-    }).then((res) => {
-      console.log(`Logged Out`);
+    })
+    .then((res) => {
+      console.log(res);
       // notify.show('Logged Out!', 'success', 3000);
-    }).catch(err => {
-      // notify.show('error', 3000);
+    })
+    .catch(err => {
+      console.log(err);
+      // notify.show(err.response.data, 'error', 3000);
     });
     this.changeState();
   }
+
+  // signUp(e) {
+  //   e.preventDefault();
+  //
+  //   axios({
+  //     method: 'post',
+  //     url: '/users',
+  //     data: {
+  //       firstName: this.state.firstName,
+  //       lastName: this.state.lastName,
+  //       email: this.state.signUpEmail,
+  //       password: this.state.signUpPassword
+  //     }
+  //   }).then((res) => {
+  //     this.setState({firstName: '', lastName: ''});
+  //     axios({
+  //       method: 'post',
+  //       url: '/token',
+  //       headers: {
+  //         'Content-Type': 'application/json'
+  //       },
+  //       data: {
+  //         email: this.state.signUpEmail,
+  //         password: this.state.signUpPassword
+  //       }
+  //     })
+  //     .then((res) => {
+  //       this.setState({signUpEmail: '', signUpPassword: ''});
+  //       this.props.changeState();
+  //       notify.show('Logged In!', 'success', 3000);
+  //     })
+  //     .catch((err) => {
+  //       notify.show(err.response.data, 'error', 3000);
+  //     });
+  //     notify.show('Logged In!', 'success', 3000);
+  //     console.log(`success!`);
+  //   }).catch((err) => {
+  //     // notify.show(err.response.data.errors[0].messages[0], 'error', 3000);
+  //   });
+  // }
 
   signUp(e) {
     e.preventDefault();
@@ -93,18 +138,67 @@ export default class App extends Component {
         email: this.state.signUpEmail,
         password: this.state.signUpPassword
       }
-    }).then((res) => {
-      this.setState({firstName: '', lastName: ''});
-      this.logIn(e);
-      notify.show('Logged In!', 'success', 3000);
+    })
+    .then((res) => {
+      console.log(res);
+      this.setState({
+        firstName: '',
+        lastName: '',
+      });
+
+      axios({
+        method: 'post',
+        url: '/token',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        data: {
+          email: this.state.signUpEmail,
+          password: this.state.signUpPassword
+        }
+      })
+      .then((res) => {
+        this.setState({signUpEmail: '', signUpPassword: ''});
+        this.changeState();
+        console.log('Logged In!', 'success', 3000);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+      console.log('Logged In!', 'success', 3000);
       console.log(`success!`);
-    }).catch((err) => {
-      // notify.show(err.response.data.errors[0].messages[0], 'error', 3000);
+    })
+    .catch((err) => {
+      console.log(err);
     });
   }
 
+  // logIn(e) {
+  //   e.preventDefault();
+  //   axios({
+  //     method: 'post',
+  //     url: '/token',
+  //     headers: {
+  //       'Content-Type': 'application/json'
+  //     },
+  //     data: {
+  //       email: this.state.email,
+  //       password: this.state.password
+  //     }
+  //   }).then((res) => {
+  //     console.log('success!');
+  //     this.setState({email: '', password: '', loggedIn: true});
+  //     this.changeState();
+  //     notify.show('Logged In!', 'success', 3000);
+  //   }).catch((err) => {
+  //     console.log(err.response.data);
+  //     // notify.show(err.response.data, 'error', 3000);
+  //   });
+  // }
+
   logIn(e) {
     e.preventDefault();
+
     axios({
       method: 'post',
       url: '/token',
@@ -115,13 +209,19 @@ export default class App extends Component {
         email: this.state.email,
         password: this.state.password
       }
-    }).then((res) => {
-      console.log('success!');
-      this.setState({email: '', password: ''});
+    })
+    .then((res) => {
+      this.setState({
+        email: '',
+        password: ''
+      });
       this.changeState();
-      notify.show('Logged In!', 'success', 3000);
-    }).catch((err) => {
-      console.log(err.response.data);
+      console.log(`logged in`);
+      console.log(res);
+      // notify.show('Logged In!', 'success', 3000);
+    })
+    .catch((err) => {
+      console.log(err);
       // notify.show(err.response.data, 'error', 3000);
     });
   }

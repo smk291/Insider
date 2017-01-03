@@ -17,6 +17,7 @@ export default class LogIn extends React.Component {
     super(props);
     this.handleChange = this.handleChange.bind(this);
     this.logIn = this.logIn.bind(this);
+    this.signUp = this.signUp.bind(this);
   }
 
   logIn(e) {
@@ -25,6 +26,10 @@ export default class LogIn extends React.Component {
 
   handleChange(e) {
     this.props.handleChange(e);
+  }
+
+  signUp(e) {
+    this.props.signUp(e);
   }
 
   render() {
@@ -45,7 +50,7 @@ export default class LogIn extends React.Component {
               </div>
               <div>
                 {/* <Link to="/">Back to Home</Link> */}
-                <Button className={login.formButton} bsStyle="primary" type="submit" placeholder="Submit" onClick={this.logIn}>Sign in</Button>
+                <Button className={login.formButton} bsStyle="primary" placeholder="Submit" onClick={this.logIn}>Sign in</Button>
               </div>
             </form>
           </Col>
@@ -58,11 +63,9 @@ export default class LogIn extends React.Component {
                 <FormControl id="firstName" type="firstName" placeholder="firstName" name="firstName" onChange={this.handleChange} value={this.props.value}/>
               </div>
               <div>
-              <div>
                 <p>Last name:</p>
                 <FormControl id="lastName" type="lastName" placeholder="lastName" name="lastName" onChange={this.handleChange} value={this.props.value}/>
               </div>
-              <div>
               <div>
                 <p>Email address:</p>
                 <FormControl id="email" type="email" placeholder="email" name="signUpEmail" onChange={this.handleChange} value={this.props.value}/>
@@ -73,7 +76,7 @@ export default class LogIn extends React.Component {
               </div>
               <div>
                 {/* <Link to="/">Back to Home</Link> */}
-                <Button className={login.formButton} bsStyle="primary" type="submit" placeholder="Submit" onClick={this.signUp}>Sign in</Button>
+                <Button className={login.formButton} bsStyle="primary" placeholder="Submit" onClick={this.signUp}>Sign in</Button>
               </div>
             </form>
           </Col>

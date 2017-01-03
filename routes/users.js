@@ -46,7 +46,6 @@ router.post('/users', /*ev(validations.post),*/ (req, res, next) => {
   const { firstName, lastName, email, password } = req.body;
 
   knex('users')
-    .select(knex.raw('1=1'))
     .where('email', email)
     .first()
     .then((match) => {
@@ -55,26 +54,24 @@ router.post('/users', /*ev(validations.post),*/ (req, res, next) => {
       }
 
       return bcrypt.hash(password, 12);
-    })
-    .then((hashedPassword) => {
+    }).then((hashedPassword) => {
       const insertUser = { firstName, lastName, email, hashedPassword };
 
-      return knex.transaction((trx) => {
-        knex('users')
-        .transacting(trx)
+      return knex('users')
         .insert(decamelizeKeys(insertUser), '*')
-        .then(trx.commit)
-        .catch(trx.rollback)
-      });
-    })
-    .then((rows) => {
-      const user = camelizeKeys(rows[0]);
+        .then((row) => {
+          return row;
+        })
+        .catch((err) => {
+          throw boom.create(400, err);
+        });
+    }).then((row) => {
+      const user = camelizeKeys(row);
 
       delete user.hashedPassword;
 
       res.send(user);
-    })
-    .catch((err) => {
+    }).catch((err) => {
       next(err);
     });
 });

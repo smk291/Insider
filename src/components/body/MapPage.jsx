@@ -1,50 +1,33 @@
-import React, { Component } from 'react'
-import SimpleMapExample from './SimpleMapExample'
-import Mapz from './Chenswork'
+import React, {Component} from 'react'
+import MapRender from './MapRender'
+import Grid from 'react-bootstrap/lib/Grid'
+import Row from 'react-bootstrap/lib/Row'
+import Col from 'react-bootstrap/lib/Col'
+import mappage from './mappage'
 
 export default class MapPage extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
   }
 
-  render () {
+  render() {
     return (
       <div>
-        <Mapz />
+        <MapRender className={mappage.mapRender}/>
+        <div>
+          <Grid fluid>
+            <Row>
+              <Col md={6}>
+              </Col>
+            </Row>
+
+            <Row>
+              <Col md={6}>
+              </Col>
+            </Row>
+          </Grid>
+        </div>
       </div>
     )
   }
 }
-
-//
-// window.ReactDOM.render(<SimpleExample />, document.getElementById('container'));
-
-
-// import React, { Component } from 'react';
-// import { render } from 'react-dom';
-// import { Map, Marker, Popup, TileLayer } from 'react-leaflet';
-//
-// const position = [51.505, -0.09];
-// const map = (
-//   <Map center={position} zoom={13}>
-//     <TileLayer
-//       url='http://{s}.tile.osm.org/{z}/{x}/{y}.png'
-//       attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-//     />
-//     <Marker position={position}>
-//       <Popup>
-//         <span>A pretty CSS3 popup.<br/>Easily customizable.</span>
-//       </Popup>
-//     </Marker>
-//   </Map>
-// );
-//
-// export default class MapPage extends Component {
-//   render() {
-//     return (
-//       <div>
-//         {map}
-//       </div>
-//     )
-//   }
-// };

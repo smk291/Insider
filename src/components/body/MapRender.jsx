@@ -19,12 +19,12 @@ const CityMap = withGoogleMap(props => (
             <div>{marker.infoContent}</div>
           </InfoWindow>
         )}
-      </Marker> */}
-    ))}
+      </Marker>
+    ))} */}
   </GoogleMap>
 ));
 
-export default class Mapz extends React.Component {
+export default class MapRender extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -33,7 +33,7 @@ export default class Mapz extends React.Component {
     return (
       <CityMap
         containerElement={
-          <div style={{ height: `50vh`, width: `50%` }} />
+          <div style={{ height: `100vh`, width: `100%` }} />
         }
         mapElement={
           <div style={{ height: `50vh` }} />

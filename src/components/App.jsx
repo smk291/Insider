@@ -18,6 +18,8 @@ import 'bootstrap/less/bootstrap.less'
 import axios from 'axios';
 import Header from './header/Header';
 import notify from 'react-notify-toast';
+import globalCSS from '../../globalCSS.css'
+import MapPage from './body/MapPage'
 
 // import Router from './Router';
 
@@ -33,8 +35,9 @@ export default class App extends Component {
       loggedIn: '',
       signUpPassword: '',
       signUpEmail: '',
-      list: [],
-      details: {}
+      details: {},
+      activeTips: false,
+      listings: []
     }
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
@@ -46,6 +49,9 @@ export default class App extends Component {
     this.scrapeList = this.scrapeList.bind(this);
     this.scrapeRows = this.scrapeRows.bind(this);
     this.scrapeNull = this.scrapeNull.bind(this);
+    this.showTips = this.showTips.bind(this);
+    this.setState = this.setState.bind(this);
+    this.getListings = this.getListings.bind(this);
   }
 
   close(){
@@ -85,46 +91,6 @@ export default class App extends Component {
     });
     this.changeState();
   }
-
-  // signUp(e) {
-  //   e.preventDefault();
-  //
-  //   axios({
-  //     method: 'post',
-  //     url: '/users',
-  //     data: {
-  //       firstName: this.state.firstName,
-  //       lastName: this.state.lastName,
-  //       email: this.state.signUpEmail,
-  //       password: this.state.signUpPassword
-  //     }
-  //   }).then((res) => {
-  //     this.setState({firstName: '', lastName: ''});
-  //     axios({
-  //       method: 'post',
-  //       url: '/token',
-  //       headers: {
-  //         'Content-Type': 'application/json'
-  //       },
-  //       data: {
-  //         email: this.state.signUpEmail,
-  //         password: this.state.signUpPassword
-  //       }
-  //     })
-  //     .then((res) => {
-  //       this.setState({signUpEmail: '', signUpPassword: ''});
-  //       this.props.changeState();
-  //       notify.show('Logged In!', 'success', 3000);
-  //     })
-  //     .catch((err) => {
-  //       notify.show(err.response.data, 'error', 3000);
-  //     });
-  //     notify.show('Logged In!', 'success', 3000);
-  //     console.log(`success!`);
-  //   }).catch((err) => {
-  //     // notify.show(err.response.data.errors[0].messages[0], 'error', 3000);
-  //   });
-  // }
 
   signUp(e) {
     e.preventDefault();
@@ -173,28 +139,16 @@ export default class App extends Component {
     });
   }
 
-  // logIn(e) {
-  //   e.preventDefault();
-  //   axios({
-  //     method: 'post',
-  //     url: '/token',
-  //     headers: {
-  //       'Content-Type': 'application/json'
-  //     },
-  //     data: {
-  //       email: this.state.email,
-  //       password: this.state.password
-  //     }
-  //   }).then((res) => {
-  //     console.log('success!');
-  //     this.setState({email: '', password: '', loggedIn: true});
-  //     this.changeState();
-  //     notify.show('Logged In!', 'success', 3000);
-  //   }).catch((err) => {
-  //     console.log(err.response.data);
-  //     // notify.show(err.response.data, 'error', 3000);
-  //   });
-  // }
+  showTips(e){
+    e.preventDefault();
+
+    const bool = this.state.activeTips;
+    if (bool) {
+      this.setState({ loggedIn: true });
+    } else {
+      this.setState({ loggedIn: false });
+    }
+  }
 
   logIn(e) {
     e.preventDefault();
@@ -288,46 +242,47 @@ export default class App extends Component {
     console.log(details);
   }
 
+  getListings(e){
+    e.preventDefault()
+
+    axios({
+      method: 'get',
+      url: `/listings`
+    }).then((res) => {
+      let listings = res.data;
+      console.log(res.data);
+      this.setState({listings});
+    }).catch((err) => {
+      console.log(err);
+    })
+  }
+
   render() {
     return (
       <BrowserRouter>
         <div>
-          <Header
-            loggedIn={this.state.loggedIn}
-            logOut={this.logOut}
-            logIn={this.logIn}
-            open={this.open}
-            close={this.close}
-            changeState={this.changeState}
-            handleChange={this.handleChange}
-            showModal={this.state.showModal}
-            email={this.state.email}
-            password={this.state.password}
-            firstName={this.state.firstName}
-            lastName={this.state.lastName}/>
-          <Main
-            loggedIn={this.state.loggedIn}
-            signUp={this.signUp}
-            logOut={this.logOut}
-            logIn={this.logIn}
-            open={this.open}
-            close={this.close}
-            changeState={this.changeState}
-            handleChange={this.handleChange}
-            showModal={this.state.showModal}
-            email={this.state.email}
-            password={this.state.password}
-            signUpEmail={this.state.signUpEmail}
-            signUpPassword={this.state.signUpPassword}
-            firstName={this.state.firstName}
-            lastName={this.state.lastName}
-            scrapeList = {this.scrapeList}
-            scrapeRows = {this.scrapeRows}
-            scrapeNull = {this.scrapeNull}
-            list = {this.state.list}
-            details = {this.state.details}
-          />
-          <Footer />
+          <Grid fluid>
+            <Row>
+              <Col sm={12} md={12}>
+                <Header
+                  {...this.props}
+                  {...this.state}
+                  {...this}
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col sm={12} md={12}>
+                <Main
+                  getListings={this.getListings}
+                  {...this.props}
+                  {...this.state}
+                  {...this}
+                />
+              </Col>
+            </Row>
+          </Grid>
+          <Footer style={{padding: '0px', margin: '0px'}}/>
         </div>
       </BrowserRouter>
     )

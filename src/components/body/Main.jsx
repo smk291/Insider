@@ -7,9 +7,10 @@ import React, { Component } from 'react'
 import SignUp from './SignUp'
 import Login from './Login'
 import Main2 from './Main2'
-import GMapEx from './MapPage'
+import MapPage from './MapPage'
 import Tables from  './Tables'
-
+import Search from './Search'
+import Listings from './Listings'
 
 export default class Main extends Component {
   constructor(props){
@@ -18,69 +19,25 @@ export default class Main extends Component {
 
   render() {
     return (
-      <main>
+      <main className="page-wrap">
         <Match pattern="/login" render={() => <Login
-          loggedIn={this.props.loggedIn}
-          logOut={this.props.logOut}
-          logIn={this.props.logIn}
-          signUp={this.props.signUp}
-          open={this.props.open}
-          close={this.props.close}
-          changeState={this.props.changeState}
-          handleChange={this.props.handleChange}
-          showModal={this.props.showModal}
-          email={this.props.email}
-          password={this.props.password}
-          firstName={this.props.firstName}
-          lastName={this.props.lastName}
-          // showTooltips={this.props.showTooltips}
+          {...this.props}
         />} />
         <Match pattern="/main" render={() => <Main2
-          loggedIn={this.props.loggedIn}
-          signUp={this.props.signUp}
-          logIn={this.props.logIn}
-          open={this.props.open}
-          close={this.props.close}
-          changeState={this.props.changeState}
-          handleChange={this.props.handleChange}
-          showModal={this.props.showModal}
-          signUpEmail={this.props.signUpEmail}
-          signUpPassword={this.props.signUpPassword}
-          firstName={this.props.firstName}
-          lastName={this.props.lastName}
-          scrapeList = {this.props.scrapeList}
-          scrapeRows = {this.props.scrapeRows}
-          scrapeNull = {this.props.scrapeNull}
-          list = {this.props.list}
-          details = {this.props.details}
+          {...this.props}
         />} />
-        <Match pattern="/map" render={() => <GMapEx
-          loggedIn={this.props.loggedIn}
-          signUp={this.props.signUp}
-          logIn={this.props.logIn}
-          open={this.props.open}
-          close={this.props.close}
-          changeState={this.props.changeState}
-          handleChange={this.props.handleChange}
-          showModal={this.props.showModal}
-          signUpEmail={this.props.signUpEmail}
-          signUpPassword={this.props.signUpPassword}
-          firstName={this.props.firstName}
-          lastName={this.props.lastName}
+        <Match pattern="/search" render={() => <Search
+          {...this.props}
+        />} />
+        <Match pattern="/list" render={() => <Listings
+          {...this.props}
+          getListings = {this.props.getListings}
+        />} />
+        <Match pattern="/map" render={() => <MapPage
+          {...this.props}
         />} />
         <Match pattern="/tables" render={() => <Tables
-          loggedIn={this.props.loggedIn}
-          signUp={this.props.signUp}
-          logIn={this.props.logIn}
-          open={this.props.open}
-          close={this.props.close}
-          changeState={this.props.changeState}
-          handleChange={this.props.handleChange}
-          showModal={this.props.showModal}
-          signUpEmail={this.props.signUpEmail}
-          signUpPassword={this.props.signUpPassword}
-          firstName={this.props.firstName}
-          lastName={this.props.lastName}
+          {...this.props}
         />} />
         <Miss component={NotFound} />
       </main>

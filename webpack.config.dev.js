@@ -55,6 +55,9 @@ module.exports = {
         test: /\.less/,
         loader: 'style!css!less'
       }, {
+        test: /\.svg$/,
+        loader: 'svg-inline'
+      },{
         test: /\.(woff2|woff|ttf|svg|eot)$/,
         loader: 'file'
       }

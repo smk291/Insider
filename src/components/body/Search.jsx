@@ -18,7 +18,7 @@ import MdSearch from 'react-icons/lib/md/search'
 import MdCompare from 'react-icons/lib/md/compare'
 import MdMap from 'react-icons/lib/md/map'
 
-export default class Tables extends React.Component {
+export default class Search extends React.Component {
   constructor(props) {
     super(props);
     this.scrapeList = this.scrapeList.bind(this);
@@ -40,10 +40,10 @@ export default class Tables extends React.Component {
 
   render() {
     return (
-      <div className="page-wrap">
+      <div>
         <Jumbotron style={{backgroundColor: '#DCE1DE'}}>
-          <Grid>
-            <h1 style={{fontWeight: '300'}}>Tables</h1>
+          <Grid fluid>
+            <h1 style={{fontWeight: '300'}}>Search! </h1>
             <p>craigslist is indispensible when you're looking for a sublet in a major US city. craigslist is also awful. The interface is dated and user-hostile. The search functions are limited. Sorting and ranking results according to your particular needs aren't possible. Maps provide almost no information.</p>
 
             <p> It doesn't need to be this way. Insider shows just how easy it would be to make craigslist better, more functional , more useful, more usable.</p>
@@ -52,12 +52,11 @@ export default class Tables extends React.Component {
               <Button onClick={this.scrapeList}>get list</Button>
               <Button onClick={this.scrapeRows}>get row scrapes</Button>
               {this.props.loggedIn ? <p>Logged in!</p> : <p> Not logged in </p>}
-              {/* <Button onClick={console.log(this.state.list)}>log list</Button> */}
             </div>
           </Grid>
 
         </Jumbotron>
-        <Grid className={main2.thirdsGrid}>
+        {/* <Grid className={main2.thirdsGrid}>
           <Row>
             <Col className={main2.thirds} md={4}>
               <h2><MdSearch />   Search better.</h2>
@@ -81,7 +80,7 @@ export default class Tables extends React.Component {
               </p>
             </Col>
           </Row>
-        </Grid>
+        </Grid> */}
       </div>
     );
   }

@@ -1,15 +1,16 @@
-import React from 'react';
-import Grid from 'react-bootstrap/lib/Grid';
+import React from 'react'
+import Grid from 'react-bootstrap/lib/Grid'
+import footer from './footer.css'
 
 export default class Footer extends React.Component {
   render() {
     return (
-      <Grid>
+      <div className={footer.footerDiv}>
         <hr />
         <footer>
-          <p>© Company 2014</p>
+          <p>© Company 2016</p>
         </footer>
-      </Grid>
+      </div>
     );
   }
 }

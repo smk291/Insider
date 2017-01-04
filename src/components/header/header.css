@@ -7,6 +7,13 @@ h1, h2, h3 {
   font-weight: 100;
 }
 
+header > a {
+    padding: 10px 5px !important;
+    margin-right: 0 !important;
+    color: black;
+    text-align:left !important;
+}
+
 a {
   color: hsl(200, 50%, 50%);
 }
@@ -15,12 +22,16 @@ a.active {
   color: hsl(20, 50%, 50%);
 }
 
+.inactive {
+
+}
+
 .breadcrumbs a {
   text-decoration: none;
 }
 
 .navbar {
-  padding: 10px 20px;
+  padding: 8px 20px;
   overflow: hidden;
   background-color: rgb(40, 54, 61);
   color: rgb(255, 255, 255);
@@ -28,15 +39,20 @@ a.active {
 
 .navButton {
   font-size: 18px;
-  padding: 10px 10px;
+  padding: 14px 10px;
   color: hsl(0,0,10);
-  height: 100%;
+  position: relative;
+}
+
+.navButton:hover {
+  background-color: rgb(60, 81, 90);
+  border-bottom: 10px solid #49A078;
 }
 
 .active {
   background-color: hsla(0,80%,100%,1);
   color: hsla(0, 0%, 34%, 1);
-  border-bottom: 3px solid #cc7a6f;
+  border-bottom: 10px solid #49A078;
 }
 
 a, a:hover, a:visited, a:focus {

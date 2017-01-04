@@ -8,7 +8,7 @@ exports.up = (knex) => {
     table.string('post_date').notNullable().defaultTo('');
     table.string('title').notNullable().defaultTo('No title provided');
     table.jsonb('photos');
-    table.boolean('void');
+    table.boolean('emptypage');
     table.string('bedrooms');
     table.string('sqft');
     table.text('descr', 'utf-8');
@@ -34,6 +34,7 @@ exports.up = (knex) => {
     table.enu('smoking_types', ['no smoking', null]).defaultTo(null);
     table.enu('wheelchair_types', ['wheelchair accessible', null]).defaultTo(null);
     table.enu('sub_or_apt', ['sub', 'apt']);
+    table.timestamp('last_checked').defaultTo(knex.fn.now());
     table.timestamps(true, true);
   });
 };

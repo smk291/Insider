@@ -1,0 +1,37 @@
+<Modal show={this.props.showModal} onHide={this.props.close}>
+  <Modal.Header closeButton>
+    <Modal.Title>Modal heading</Modal.Title>
+  </Modal.Header>
+  <Modal.Body>
+    <Grid>
+      <Row>
+        <Col md={4}>
+          <Login logIn={this.props.logIn}
+            logOut={this.props.logOut}
+            handleChange={this.props.handleChange}
+            email={this.props.email}
+            lastName={this.props.lastName}
+            firstName={this.props.firstName} />
+        </Col>
+      </Row>
+    </Grid>
+    <Grid>
+      <Row>
+        <Col md={4}>
+          <Row>
+            <SignUp
+              signUp={this.props.signUp}
+              handleChange={this.props.handleChange}
+              email={this.props.email}
+              firstName={this.props.firstName}
+              lastName={this.props.lastName}
+              password={this.props.password}/>
+          </Row>
+        </Col>
+      </Row>
+    </Grid>
+  </Modal.Body>
+  <Modal.Footer>
+    <Button onClick={this.props.close}>Close</Button>
+  </Modal.Footer>
+</Modal>

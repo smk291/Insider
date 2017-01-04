@@ -1,17 +1,22 @@
-import React from 'react';
-import Button from 'react-bootstrap/lib/Button';
-import Grid from 'react-bootstrap/lib/Grid';
-import Jumbotron from 'react-bootstrap/lib/Jumbotron';
-import Row from 'react-bootstrap/lib/Row';
-import Col from 'react-bootstrap/lib/Col';
-import Popover from 'react-bootstrap/lib/Popover';
-import Tooltip from 'react-bootstrap/lib/Tooltip';
-import Modal from 'react-bootstrap/lib/Modal';
-import HeaderNavigation from '../header/HeaderNavigation';
-import Footer from '../footer/Footer';
-import Login from './Login';
-import SignUp from './SignUp';
-import axios from 'axios';
+import React from 'react'
+import Button from 'react-bootstrap/lib/Button'
+import Grid from 'react-bootstrap/lib/Grid'
+import Jumbotron from 'react-bootstrap/lib/Jumbotron'
+import Row from 'react-bootstrap/lib/Row'
+import Col from 'react-bootstrap/lib/Col'
+import Popover from 'react-bootstrap/lib/Popover'
+import Tooltip from 'react-bootstrap/lib/Tooltip'
+import Modal from 'react-bootstrap/lib/Modal'
+import HeaderNavigation from '../header/HeaderNavigation'
+import Footer from '../footer/Footer'
+import Login from './Login'
+import SignUp from './SignUp'
+import axios from 'axios'
+import main2 from './main2.css'
+import InlineSVG from 'svg-inline-react'
+import MdSearch from 'react-icons/lib/md/search'
+import MdCompare from 'react-icons/lib/md/compare'
+import MdMap from 'react-icons/lib/md/map'
 
 export default class Main2 extends React.Component {
   constructor(props) {
@@ -36,80 +41,50 @@ export default class Main2 extends React.Component {
   render() {
     return (
       <div>
-        <Button onClick={this.scrapeNull}>get null</Button>
-        <Button onClick={this.scrapeList}>get list</Button>
-        <Button onClick={this.scrapeRows}>get row scrapes</Button>
-        {this.props.loggedIn ? <p>Logged in!</p> : <p> Not logged in </p>}
-        {/* <Button onClick={console.log(this.state.list)}>log list</Button> */}
-        <Jumbotron>
-          <Grid>
-            <h1>Hello, world!</h1>
-            <p>This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
+        <Jumbotron style={{backgroundColor: '#DCE1DE'}}>
+          <Grid fluid>
+            <h1 style={{color: '#216869', fontWeight: '300'}}>Welcome to <span className={main2.insider}>Insider</span></h1>
+            <p className={main2.points}>craigslist is indispensable.</p>
+            <p>Where else would you look if you were on a budget and needed a sublet or an apartment in a major US city?</p>
+            <p className={main2.points}>It's also awful.</p>
+            <p>I mean, it's awful in a lot of ways, but the website itself is particularly bad. It's ugly, dated and user-hostile. The search is limited and can sort by just two parameters (recency and price). The mapping is helpful only when there's one marker: unless you already know exactly what listings the map is displaying and where they are, you have no way of knowing what each marker represents until you click on it. </p>
+            <p className={main2.points}>It doesn't need to be this way.</p>
+            <p>Insider shows just how easy it would be to make craigslist more functional, useful and usable.</p>
+            <div>
+              <Button onClick={this.scrapeNull}>get null</Button>
+              <Button onClick={this.scrapeList}>get list</Button>
+              <Button onClick={this.scrapeRows}>get row scrapes</Button>
+              {this.props.loggedIn ? <p>Logged in!</p> : <p> Not logged in </p>}
+              {/* <Button onClick={console.log(this.state.list)}>log list</Button> */}
+            </div>
           </Grid>
 
         </Jumbotron>
-        <Grid>
+        <Grid className={main2.thirdsGrid}>
           <Row>
-            <Col md={4}>
-              <h2>Heading</h2>
-              <p>Adipisicing ratione incidunt eaque expedita rerum porro inventore. Nihil sit ipsam iure officiis sit eos at quibusdam natus dignissimos natus dolore! Vel doloremque ipsa alias nihil harum laborum necessitatibus rerum?</p>
+            <Col className={main2.thirds} md={4}>
+              <h2><MdSearch />   Search better.</h2>
+              <p className={main2.thirdsP}>Click below to set your priorities -- not just with booleans but by weighting and ranking parameters. Insider will take these into consideration and rank listings accordingly.</p>
               <p>
-                <Button>View details »</Button>
+                <Button>Create and save search parameters »</Button>
               </p>
             </Col>
-            <Col md={4}>
-              <h2>Heading</h2>
-              <p>Sit quia nemo quis enim provident porro eaque accusamus tenetur provident aliquid commodi? Velit nesciunt maiores obcaecati totam praesentium sint vitae exercitationem quaerat maxime iusto et! Consequatur aspernatur sit impedit.</p>
+            <Col className={main2.thirds} md={4}>
+              <h2><MdCompare />   Compare.</h2>
+              <p className={main2.thirdsP}>Comparing listings side-by-side is ridiculously easy to implement, but no housing-search website or web app that I've used offers it. </p>
               <p>
-                <Button>View details »</Button>
+                <Button>Compare saved listings »</Button>
               </p>
             </Col>
-            <Col md={4}>
-              <h2>Heading</h2>
-              <p>Dolor aliquid dolores perferendis repellendus cum! Quam maiores blanditiis cupiditate voluptatibus voluptas aliquid nisi placeat tempora. Rem debitis accusamus pariatur officia corrupti. Architecto fuga reiciendis quos rem hic? Suscipit dignissimos.</p>
+            <Col className={main2.thirds} md={4}>
+              <h2><MdMap />   Use maps.</h2>
+              <p className={main2.thirdsP}>Did you know that it's possible to style map markers? Did you know that it's possible to display information about a listing visually via its map marker? Amazing, right?</p>
               <p>
-                <Button>View details »</Button>
+                <Button>Make mapping useful»</Button>
               </p>
             </Col>
           </Row>
         </Grid>
-        <Modal show={this.props.showModal} onHide={this.props.close}>
-          <Modal.Header closeButton>
-            <Modal.Title>Modal heading</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Grid>
-              <Row>
-                <Col md={4}>
-                  <Login logIn={this.props.logIn}
-                    logOut={this.props.logOut}
-                    handleChange={this.props.handleChange}
-                    email={this.props.email}
-                    lastName={this.props.lastName}
-                    firstName={this.props.firstName} />
-                </Col>
-              </Row>
-            </Grid>
-            <Grid>
-              <Row>
-                <Col md={4}>
-                  <Row>
-                    <SignUp
-                      signUp={this.props.signUp}
-                      handleChange={this.props.handleChange}
-                      email={this.props.email}
-                      firstName={this.props.firstName}
-                      lastName={this.props.lastName}
-                      password={this.props.password}/>
-                  </Row>
-                </Col>
-              </Row>
-            </Grid>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button onClick={this.props.close}>Close</Button>
-          </Modal.Footer>
-        </Modal>
       </div>
     );
   }

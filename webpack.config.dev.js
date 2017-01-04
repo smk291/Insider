@@ -33,8 +33,11 @@ module.exports = {
     loaders: [
       {
         test: /\.js|\.jsx$/,
-        loaders: ['babel-loader'],
-        include: path.join(__dirname, 'src')
+        loader: 'babel-loader',
+        include: path.join(__dirname, 'src'),
+        query: {
+          presets: ['es2015']
+        }
       }, {
         test: /\.css/,
         loader: 'style-loader'

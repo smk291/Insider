@@ -1,6 +1,7 @@
-import { Link } from 'react-router'
-import { LinkContainer } from 'react-router-bootstrap'
-import { IndexLinkContainer } from 'react-router-bootstrap'
+import {Link} from 'react-router'
+// import {IndexLink} from 'react-router'
+// import { LinkContainer } from 'react-router-bootstrap'
+// import { IndexLinkContainer } from 'react-router-bootstrap'
 import React from 'react'
 import Navbar from 'react-bootstrap/lib/Navbar'
 import {Tooltip, OverlayTrigger} from 'react-bootstrap'
@@ -60,7 +61,7 @@ export default class Header extends React.Component {
       <header>
         <Navbar className={header.navbar} fluid>
           <Nav pullLeft>
-            <Link className={header.navButton} activeClassName={header.active} to='/main'><MdHome /></Link>
+            <Link activeOnlyWhenExact className={header.navButton} activeClassName={header.active} to='/'><MdHome /></Link>
             <Link className={header.navButton} activeClassName={header.active} to='/search'><MdSearch /> search</Link>
             <Link className={header.navButton} activeClassName={header.active} to='/list'><MdViewList /> view listings</Link>
             <Link className={header.navButton} activeClassName={header.active} to='/map'><MdMap /> view map</Link>

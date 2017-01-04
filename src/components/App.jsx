@@ -20,7 +20,6 @@ import Header from './header/Header';
 import notify from 'react-notify-toast';
 import globalCSS from '../../globalCSS.css'
 import MapPage from './body/MapPage'
-
 // import Router from './Router';
 
 export default class App extends Component {
@@ -250,8 +249,35 @@ export default class App extends Component {
       url: `/listings`
     }).then((res) => {
       let listings = res.data;
-      console.log(res.data);
-      this.setState({listings});
+      // console.log(res.data);
+      // console.log(listings);
+      listings = listings.filter((el) => {
+        return !el.void && el.checked;
+      })
+      console.log(listings);
+
+      let Jan = listings.filter((el) => {
+        return el.post_date.indexOf('Jan') !== -1;
+      })
+
+      Jan.sort((a,b) => {
+        return b.post_date.split(' ')[1] - a.post_date.split(' ')[1]
+      })
+      console.log(`Jan!`);
+      console.log(Jan);
+
+      let Dec = listings.filter((el) => {
+        return el.post_date.indexOf('Dec') !== -1;
+      })
+
+      Dec.sort((a,b) => {
+        return b.post_date.split(' ')[1] - a.post_date.split(' ')[1]
+      })
+
+      console.log(`Dec`);
+      console.log(Dec);
+
+      this.setState({listings: Jan.concat(Dec)});
     }).catch((err) => {
       console.log(err);
     })

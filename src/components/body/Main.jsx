@@ -1,7 +1,4 @@
-import Earth from '../planets/Earth'
-import Mars from '../planets/Mars'
 import { Match, Miss } from 'react-router'
-import Moon from '../planets/Moon'
 import NotFound from '../planets/NotFound'
 import React, { Component } from 'react'
 import SignUp from './SignUp'
@@ -23,7 +20,7 @@ export default class Main extends Component {
         <Match pattern="/login" render={() => <Login
           {...this.props}
         />} />
-        <Match pattern="/main" render={() => <Main2
+        <Match pattern="/" exactly render={() => <Main2
           {...this.props}
         />} />
         <Match pattern="/search" render={() => <Search

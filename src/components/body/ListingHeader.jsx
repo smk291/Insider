@@ -37,14 +37,11 @@ export default class ListingsHeader extends React.Component {
       <div>
           <Grid fluid>
             <Row>
-              <Col sm={1} md={1}>
+              <Col sm={2} md={2}>
                 <Grid>
                   <Row>
                     <Col sm={12} md={12}>
                       <span>{this.queryNull(postDate)}</span>
-                    </Col>
-                    <Col sm={12} md={12}>
-                      <span>{this.queryNull(bedrooms)}</span>
                     </Col>
                   </Row>
                 </Grid>
@@ -53,7 +50,10 @@ export default class ListingsHeader extends React.Component {
                 <Grid>
                   <Row>
                     <Col sm={12} md={12}><span  className={listingheader.title}>{this.queryNull(title)}</span></Col>
-                    <Col sm={2} md={2}><span className="price">{this.queryNullPrice(price)}</span></Col>
+                    <Col sm={1} md={1}>
+                      <span>{this.queryNull(bedrooms)}</span>
+                    </Col>
+                    <Col sm={1} md={1}><span className="price">{this.queryNullPrice(price)}</span></Col>
                     <Col sm={8} md={8}><span className="neighborhood">{this.queryNull(neighborhood)}</span></Col>
                   </Row>
                 </Grid>

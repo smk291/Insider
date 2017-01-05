@@ -30,24 +30,61 @@ export default class App extends Component {
       listings: [],
       markers: [],
       importance: {
-        housing: 3,
-        bedrooms: 3,
-        rent: 3,
+        bedrooms: 5,
+        rent: 5,
+        housing: 5,
+        laundry: 5,
+        parking: 5,
+        bath: 5,
+        room: 5,
+        cat: 5,
+        dog: 5,
+        furnished: 5,
+        smoking: 5,
+        wheelchair: 5
       },
-      housingTypes: ['apartment', 'condo', 'house', 'townhouse', 'duplex', 'land', 'inLaw', 'cottage', 'cabin'],
+      minRent: 0,
+      maxRent: 0,
+      minBedrooms: 0,
+      maxBedrooms: 0,
+      housing_types: ['apartment', 'condo', 'house', 'townhouse', 'duplex', 'land', 'in-law', 'cottage', 'cabin'],
       apartment: true,
       condo: true,
       house: true,
       townhouse: true,
       duplex: true,
       land: true,
-      inLaw: true,
+      'in-law': true,
       cottage: true,
       cabin: true,
-      minBedrooms: 'null',
-      maxBedrooms: 'null',
-      minRent: 'null',
-      maxRent: 'null'
+      laundry_types: ['laundry on site', 'w/d in unit', 'laundry in bldg'],
+      'laundry on site': true,
+      'w/d in unit': true,
+      'laundry in bldg': true,
+      parking_types: ['off-street parking', 'detached garage', 'attached garage', 'valet parking', 'street parking', 'carport', 'no parking'],
+      'off-street parking': true,
+      'detached garage': true,
+      'attached garage': true,
+      'valet parking': true,
+      'street parking': true,
+      'carport': true,
+      'no parking': false,
+      'bath_types': ['private bath', 'no private bath'],
+      'private bath': true,
+      'no private bath': true,
+      'private_room_types': ['private room', 'room not private'],
+      'private room': true,
+      'room not private': false,
+      'cat_types': ['cats are OK - purrr'],
+      'cats are OK - purrr': true,
+      'dog_types': ['dogs are OK - wooof'],
+      'dogs are OK - wooof': true,
+      'furnished_types': ['furnished'],
+      'furnished': true,
+      'smoking_types': ['no smoking'],
+      'no smoking': true,
+      'wheelchair_types': ['wheelchair accessible'],
+      'wheelchair accessible': true
     }
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
@@ -63,7 +100,7 @@ export default class App extends Component {
     this.setState = this.setState.bind(this);
     this.getListings = this.getListings.bind(this);
     this.handleCheckbox = this.handleCheckbox.bind(this);
-    this.checkboxHandleChange = this.checkboxHandleChange.bind(this);
+    this.handleChbox = this.handleChbox.bind(this);
   }
 
   close(){
@@ -89,7 +126,7 @@ export default class App extends Component {
     this.setState({change})
   }
 
-  checkboxHandleChange (field, e) {
+  handleChbox (field, e) {
     var nextState = {}
     nextState[field] = e.target.checked
     this.setState(nextState)
@@ -342,4 +379,11 @@ export default class App extends Component {
       </BrowserRouter>
     )
   }
+};
+
+App.propTypes = {
+  maxBedrooms: React.PropTypes.number,
+  minBedrooms: React.PropTypes.number,
+  maxRent: React.PropTypes.number,
+  minRent: React.PropTypes.number,
 };

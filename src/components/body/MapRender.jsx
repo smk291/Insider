@@ -31,7 +31,6 @@ export default class MapRender extends React.Component {
         ref={props.onMapLoad}
         defaultZoom={13}
         center={{ lat: 47.6062, lng: -122.3321 }}
-        onDragEnd={props.onCenterChanged}
       >
         <MarkerClusterer
           averageCenter
@@ -64,14 +63,14 @@ export default class MapRender extends React.Component {
         mapElement={
           <div style={{ height: '100%' }} />
         }
-        lat={this.props.lat}
-        lng={this.props.lng}
-        markers={this.props.markers}
-        onMapLoad={this.props.onMapLoad}
-        onCenterChanged={this.props.onCenterChanged}
-        onMarkerClick={this.props.onMarkerClick}
-        onMarkerClose={this.props.onMarkerClose}
-        onSearchBoxMount={this.props.onSearchBoxMount}
+        // lat={this.props.lat}
+        // lng={this.props.lng}
+        // markers={this.props.markers}
+        // onMapLoad={this.props.onMapLoad}
+        // onCenterChanged={this.props.onCenterChanged}
+        // onMarkerClick={this.props.onMarkerClick}
+        // onMarkerClose={this.props.onMarkerClose}
+        // onSearchBoxMount={this.props.onSearchBoxMount}
       />
     )
   }

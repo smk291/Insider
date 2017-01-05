@@ -12,7 +12,7 @@ import {
 } from 'react-bootstrap';
 import login from './login.css'
 
-export default class LogIn extends React.Component {
+export default class Login extends React.Component {
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);

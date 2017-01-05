@@ -1,0 +1,21 @@
+.label {
+  display: inline-block !important;
+}
+
+.listHeader {
+  font-weight: 600;
+  margin: 0 auto;
+  text-align: center;
+}
+.checkbox {
+  width: 80px;
+  border-radius: 0px !important;
+}
+
+.listDiv {
+  width: 150px;
+}
+
+.controlHeading {
+  margin: auto;
+}

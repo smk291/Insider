@@ -19,3 +19,7 @@
 .controlHeading {
   margin: auto;
 }
+
+.panel-heading {
+  height: 20px !important;
+}

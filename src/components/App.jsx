@@ -29,20 +29,18 @@ export default class App extends Component {
       activeTips: false,
       listings: [],
       markers: [],
-      importance: {
-        bedrooms: 5,
-        rent: 5,
-        housing: 5,
-        laundry: 5,
-        parking: 5,
-        bath: 5,
-        room: 5,
-        cat: 5,
-        dog: 5,
-        furnished: 5,
-        smoking: 5,
-        wheelchair: 5
-      },
+      bedroomsImport: 50,
+      rentImport: 50,
+      housingImport: 50,
+      laundryImport: 50,
+      parkingImport: 50,
+      bathImport: 50,
+      roomImport: 50,
+      catImport: 50,
+      dogImport: 50,
+      furnishedImport: 50,
+      smokingImport: 50,
+      wheelchairImport: 50,
       minRent: 0,
       maxRent: 0,
       minBedrooms: 0,
@@ -68,7 +66,7 @@ export default class App extends Component {
       'valet parking': true,
       'street parking': true,
       'carport': true,
-      'no parking': false,
+      'no parking': true,
       'bath_types': ['private bath', 'no private bath'],
       'private bath': true,
       'no private bath': true,
@@ -101,6 +99,18 @@ export default class App extends Component {
     this.getListings = this.getListings.bind(this);
     this.handleCheckbox = this.handleCheckbox.bind(this);
     this.handleChbox = this.handleChbox.bind(this);
+    this.housingSlider = this.housingSlider.bind(this);
+    this.rentSlider = this.rentSlider.bind(this);
+    this.bedroomSlider = this.bedroomSlider.bind(this);
+    this.roomSlider = this.roomSlider.bind(this);
+    this.bathSlider = this.bathSlider.bind(this);
+    this.parkingSlider = this.parkingSlider.bind(this);
+    this.laundrySlider = this.laundrySlider.bind(this);
+    this.furnishedSlider = this.furnishedSlider.bind(this)
+    this.catSlider = this.catSlider.bind(this)
+    this.dogSlider = this.dogSlider.bind(this)
+    this.smokingSlider = this.smokingSlider.bind(this)
+    this.wheelchairSlider = this.wheelchairSlider.bind(this)
   }
 
   close(){
@@ -242,9 +252,58 @@ export default class App extends Component {
   }
 
   handleChange(e) {
+    console.log(e);
     var change = {};
     change[e.target.name] = e.target.value;
     this.setState(change);
+  }
+
+  housingSlider(e) {
+    this.setState({housingImport: e.value});
+  }
+
+  rentSlider(e) {
+    this.setState({rentImport: e.value});
+  }
+
+  bedroomSlider(e) {
+    this.setState({bedroomsImport: e.value});
+  }
+
+  roomSlider(e) {
+    this.setState({roomImport: e.value});
+  }
+
+  bathSlider(e) {
+    this.setState({bathImport: e.value});
+  }
+
+  parkingSlider(e) {
+    this.setState({parkingImport: e.value});
+  }
+
+  laundrySlider(e) {
+    this.setState({laundryImport: e.value});
+  }
+
+  furnishedSlider(e) {
+    this.setState({furnishedImport: e.value});
+  }
+
+  catSlider(e) {
+    this.setState({catImport: e.value});
+  }
+
+  dogSlider(e) {
+    this.setState({dogImport: e.value});
+  }
+
+  smokingSlider(e) {
+    this.setState({smokingImport: e.value});
+  }
+
+  wheelchairSlider(e) {
+    this.setState({wheelchairImport: e.value});
   }
 
   scrapeNull(e) {

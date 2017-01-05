@@ -1,15 +1,6 @@
 import React, {Component} from 'react';
 import {BrowserRouter, Route, browserHistory} from 'react-router';
-import Button from 'react-bootstrap/lib/Button';
-import Grid from 'react-bootstrap/lib/Grid';
-import Jumbotron from 'react-bootstrap/lib/Jumbotron';
-import Row from 'react-bootstrap/lib/Row';
-import Col from 'react-bootstrap/lib/Col';
-import Popover from 'react-bootstrap/lib/Popover';
-import Tooltip from 'react-bootstrap/lib/Tooltip';
-import Modal from 'react-bootstrap/lib/Modal';
-// import LearnMore from './LearnMore';
-// import Body from './Body';
+import {Button, Grid, Jumbotron, Row, Col, Popover, Tooltip, Modal} from 'react-bootstrap';
 import HeaderNavigation from './header/HeaderNavigation';
 import Footer from './footer/Footer';
 import Login from './body/Login';
@@ -36,7 +27,27 @@ export default class App extends Component {
       signUpEmail: '',
       details: {},
       activeTips: false,
-      listings: []
+      listings: [],
+      markers: [],
+      importance: {
+        housing: 3,
+        bedrooms: 3,
+        rent: 3,
+      },
+      housingTypes: ['apartment', 'condo', 'house', 'townhouse', 'duplex', 'land', 'inLaw', 'cottage', 'cabin'],
+      apartment: true,
+      condo: true,
+      house: true,
+      townhouse: true,
+      duplex: true,
+      land: true,
+      inLaw: true,
+      cottage: true,
+      cabin: true,
+      minBedrooms: 'null',
+      maxBedrooms: 'null',
+      minRent: 'null',
+      maxRent: 'null'
     }
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
@@ -51,6 +62,8 @@ export default class App extends Component {
     this.showTips = this.showTips.bind(this);
     this.setState = this.setState.bind(this);
     this.getListings = this.getListings.bind(this);
+    this.handleCheckbox = this.handleCheckbox.bind(this);
+    this.checkboxHandleChange = this.checkboxHandleChange.bind(this);
   }
 
   close(){
@@ -68,6 +81,18 @@ export default class App extends Component {
     } else {
       this.setState({ loggedIn: true });
     }
+  }
+
+  handleCheckbox(e) {
+    let change = {}
+    change[e.target.name] = e.target.checked;
+    this.setState({change})
+  }
+
+  checkboxHandleChange (field, e) {
+    var nextState = {}
+    nextState[field] = e.target.checked
+    this.setState(nextState)
   }
 
   logOut (e) {
@@ -186,9 +211,6 @@ export default class App extends Component {
   }
 
   scrapeNull(e) {
-    // let errBool = false;
-    // //
-    // while (!errBool){
       e.preventDefault();
 
       axios({
@@ -200,7 +222,6 @@ export default class App extends Component {
         // errBool = true;
         console.log(err);
       });
-    // }
   }
 
   scrapeList(e) {
@@ -254,7 +275,6 @@ export default class App extends Component {
       listings = listings.filter((el) => {
         return !el.void && el.checked;
       })
-      console.log(listings);
 
       let Jan = listings.filter((el) => {
         return el.post_date.indexOf('Jan') !== -1;
@@ -263,8 +283,6 @@ export default class App extends Component {
       Jan.sort((a,b) => {
         return b.post_date.split(' ')[1] - a.post_date.split(' ')[1]
       })
-      console.log(`Jan!`);
-      console.log(Jan);
 
       let Dec = listings.filter((el) => {
         return el.post_date.indexOf('Dec') !== -1;
@@ -274,12 +292,23 @@ export default class App extends Component {
         return b.post_date.split(' ')[1] - a.post_date.split(' ')[1]
       })
 
-      console.log(`Dec`);
-      console.log(Dec);
+      listings = Jan.concat(Dec);
+      let markers = [];
 
-      this.setState({listings: Jan.concat(Dec)});
+      markers = listings.filter((el) => {
+        return el.lat && el.lon;
+      });
+
+      markers = markers.map((el) => {
+        let position = new google.maps.LatLng(el.lat, el.lon);
+        let {urlnum, bedrooms, price, title} = el;
+
+        return {position, urlnum, bedrooms, price, title, showInfo: false}
+      });
+
+      this.setState({listings, markers});
     }).catch((err) => {
-      console.log(err);
+      // console.log(err);
     })
   }
 

@@ -1,87 +1,210 @@
 import React from 'react'
-import Button from 'react-bootstrap/lib/Button'
-import Grid from 'react-bootstrap/lib/Grid'
-import Jumbotron from 'react-bootstrap/lib/Jumbotron'
-import Row from 'react-bootstrap/lib/Row'
-import Col from 'react-bootstrap/lib/Col'
-import Popover from 'react-bootstrap/lib/Popover'
-import Tooltip from 'react-bootstrap/lib/Tooltip'
-import Modal from 'react-bootstrap/lib/Modal'
-import HeaderNavigation from '../header/HeaderNavigation'
-import Footer from '../footer/Footer'
-import Login from './Login'
-import SignUp from './SignUp'
-import axios from 'axios'
+import {Button, HelpBlock, ButtonGroup, FormGroup, ControlLabel, FormControl,Grid, Jumbotron, Row, Col, Popover, Tooltip, Modal, Checkbox } from 'react-bootstrap'
 import main2 from './main2.css'
 import InlineSVG from 'svg-inline-react'
-import MdSearch from 'react-icons/lib/md/search'
-import MdCompare from 'react-icons/lib/md/compare'
-import MdMap from 'react-icons/lib/md/map'
+import ListingsView from './ListingsView'
 
 export default class Search extends React.Component {
   constructor(props) {
     super(props);
-    this.scrapeList = this.scrapeList.bind(this);
-    this.scrapeRows = this.scrapeRows.bind(this);
-    this.scrapeNull = this.scrapeNull.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleCheckbox = this.handleCheckbox.bind(this)
+    this.checkboxHandleChange = this.checkboxHandleChange.bind(this)
   }
 
-  scrapeList(e){
-    this.props.scrapeList(e);
+  handleChange(e){
+    this.props.handleChange(e);
   }
 
-  scrapeRows(e){
-    this.props.scrapeRows(e);
+  handleCheckbox(e){
+    this.props.handleCheckbox(e)
   }
 
-  scrapeNull(e){
-    this.props.scrapeNull(e);
+  checkboxHandleChange(e, field){
+    this.props.checkboxHandleChange(e, field);
   }
 
   render() {
     return (
       <div>
-        <Jumbotron style={{backgroundColor: '#DCE1DE'}}>
+        <Button onClick={this.getListings}>get listings</Button>
           <Grid fluid>
-            <h1 style={{fontWeight: '300'}}>Search! </h1>
-            <p>craigslist is indispensible when you're looking for a sublet in a major US city. craigslist is also awful. The interface is dated and user-hostile. The search functions are limited. Sorting and ranking results according to your particular needs aren't possible. Maps provide almost no information.</p>
-
-            <p> It doesn't need to be this way. Insider shows just how easy it would be to make craigslist better, more functional , more useful, more usable.</p>
+            <h1 style={{fontWeight: '300'}}>Listings! </h1>
             <div>
-              <Button onClick={this.scrapeNull}>get null</Button>
-              <Button onClick={this.scrapeList}>get list</Button>
-              <Button onClick={this.scrapeRows}>get row scrapes</Button>
-              {this.props.loggedIn ? <p>Logged in!</p> : <p> Not logged in </p>}
+              <form>
+                <FormGroup>
+                  <ControlLabel>Min. bedrooms</ControlLabel>
+                  <FormControl
+                    id="bedroomsMin"
+                    name="minBedrooms"
+                    type="number"
+                    label="Min. bedrooms"
+                    placeholder=" "
+                    min="0"
+                    value={this.props.minBedrooms}
+                    onChange={this.handleChange}
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <ControlLabel>Max bedrooms</ControlLabel>
+                  <FormControl
+                    id="bedroomsnMax"
+                    name="maxBedrooms"
+                    type="number"
+                    label="Max. bedrooms"
+                    placeholder="0"
+                    min={this.props.minBedrooms}
+                    value={this.props.maxBedrooms}
+                    onChange={this.handleChange}
+                  />
+                </FormGroup>
+
+                <FormGroup>
+                  <ControlLabel>Min. rent</ControlLabel>
+                  <FormControl
+                    id="rentMin"
+                    type="number"
+                    label="Min. rent"
+                    placeholder="0"
+                    min={0}
+                    step={100}
+                    name="minRent"
+                    value={this.props.minRent}
+                    onChange={this.handleChange}
+                  />
+                  <ControlLabel>Max rent</ControlLabel>
+                  <FormControl
+                    id="rentMax"
+                    type="number"
+                    label="Max. rent"
+                    placeholder="0"
+                    step={100}
+                    min={this.props.minRent}
+                    name="maxRent"
+                    value={this.props.maxRent}
+                    onChange={this.handleChange}
+                  />
+                </FormGroup>
+
+                <ControlLabel>Types of housing</ControlLabel>
+                  {this.props.housingTypes.map((type, idx) => {
+                    return <Checkbox
+                      key={idx}
+                      type="checkbox"
+                      checked={this.props[type]}
+                      // onChange={this.handleCheckbox}
+                      onChange={this.checkboxHandleChange.bind(this, type)}
+                      >{type}</Checkbox>
+                  })}
+                    {/* <Checkbox type="checkbox" onChange={this.handleCheckBox} checked={this.state.checked} /> */}
+
+                  {/* })} */}
+              </form>
+                <Row>
+                  <Col md={6}>
+                    <ListingsView
+                      {...this.props}
+                    />
+                  </Col>
+                </Row>
+
+                  <Row>
+                    <Col>
+                    <Grid>
+                    </Grid>
+                  </Col>
+                  </Row>
+                  <Row>
+                    <Col>
+
+                    </Col>
+                  </Row>
             </div>
           </Grid>
-
-        </Jumbotron>
-        {/* <Grid className={main2.thirdsGrid}>
-          <Row>
-            <Col className={main2.thirds} md={4}>
-              <h2><MdSearch />   Search better.</h2>
-              <p className={main2.thirdsP}>Click below to set your priorities -- not just with booleans but by weighting and ranking parameters. Insider will take these into consideration and rank listings accordingly.</p>
-              <p>
-                <Button>Create and save search parameters »</Button>
-              </p>
-            </Col>
-            <Col className={main2.thirds} md={4}>
-              <h2><MdCompare />   Compare.</h2>
-              <p className={main2.thirdsP}>Comparing listings side-by-side is ridiculously easy to implement, but no housing-search website or web app that I've used offers it. </p>
-              <p>
-                <Button>Compare saved listings »</Button>
-              </p>
-            </Col>
-            <Col className={main2.thirds} md={4}>
-              <h2><MdMap />   Use maps.</h2>
-              <p className={main2.thirdsP}>Did you know that it's possible to style map markers? Did you know that it's possible to display information about a listing visually via its map marker? Amazing, right?</p>
-              <p>
-                <Button>Make mapping useful»</Button>
-              </p>
-            </Col>
-          </Row>
-        </Grid> */}
       </div>
+
+
+
     );
   }
 }
+
+/* <FormGroup controlId={}>
+  <ControlLabel>{}</ControlLabel>
+  <FormControl
+    type="text"
+    value={}
+    id="searchButton"
+    ref="input"
+    className="searchButton"
+    onKeyUp={}
+    onChange={}
+    buttonAfter={}
+    placeholder="Search..."
+  /> */
+
+/*
+  function FieldGroup({ id, label, help, ...props }) {
+  return (
+  <FormGroup controlId={id}>
+  <ControlLabel>{label}</ControlLabel>
+  <FormControl {...props} />
+  {help && <HelpBlock>{help}</HelpBlock>}
+</FormGroup>
+);
+}
+
+sqft
+price - min and max
+
+laundry type
+table.enu('laundry_types', ['laundry on site', 'w/d in unit', 'laundry in bldg', null]).defaultTo(null);
+<ButtonGroup justified>
+<Button href="#">Left</Button>
+<Button href="#">Middle</Button>
+<DropdownButton title="Dropdown" id="bg-justified-dropdown">
+<MenuItem eventKey="1">Dropdown link</MenuItem>
+<MenuItem eventKey="2">Dropdown link</MenuItem>
+</DropdownButton>
+</ButtonGroup>
+parking type
+table.enu('parking_types', ['off-street parking', 'detached garage', 'attached garage', 'valet parking', 'street parking', 'carport', 'no parking', null]).defaultTo(null);
+<ButtonGroup justified>
+<Button href="#">Left</Button>
+<Button href="#">Middle</Button>
+<DropdownButton title="Dropdown" id="bg-justified-dropdown">
+<MenuItem eventKey="1">Dropdown link</MenuItem>
+<MenuItem eventKey="2">Dropdown link</MenuItem>
+</DropdownButton>
+</ButtonGroup>
+bath type
+table.enu('bath_types', ['private bath', 'no private bath', null]).defaultTo(null);
+
+private room type
+table.enu('private_room_types', ['private room', 'room not private', null]).defaultTo(null);
+
+cat type
+table.enu('cat_types', ['cats are OK - purrr', null]).defaultTo(null);
+
+dog type
+table.enu('dog_types', ['dogs are OK - wooof', null]).defaultTo(null);
+
+furnished type
+table.enu('furnished_types', ['furnished', null]).defaultTo(null);
+
+smoking_types
+table.enu('smoking_types', ['no smoking', null]).defaultTo(null);
+
+wheelchair accessible
+table.enu('wheelchair_types', ['wheelchair accessible', null]).defaultTo(null);
+
+
+table.jsonb('photos');
+
+});
+};
+
+
+exports.down = (knex) => {
+return knex.schema.dropTable('listings');
+}; */

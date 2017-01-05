@@ -1,31 +1,6 @@
 import React from 'react';
 import { withGoogleMap, GoogleMap, Marker, InfoWindow } from 'react-google-maps';
-// import MapControl from './MapControl';
-
-// Create a div to hold the control.
-var controlDiv = document.createElement('div');
-
-// Set CSS for the control border
-var controlUI = document.createElement('div');
-controlUI.style.backgroundColor = '#fff';
-controlUI.style.border = '2px solid #fff';
-controlUI.style.cursor = 'pointer';
-controlUI.style.marginBottom = '22px';
-controlUI.style.textAlign = 'center';
-controlUI.title = 'Click to recenter the map';
-controlDiv.appendChild(controlUI);
-
-// Set CSS for the control interior
-var controlText = document.createElement('div');
-controlText.style.color = 'rgb(25,25,25)';
-controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
-controlText.style.fontSize = '16px';
-controlText.style.lineHeight = '38px';
-controlText.style.paddingLeft = '5px';
-controlText.style.paddingRight = '5px';
-controlText.innerHTML = 'Center Map';
-controlUI.appendChild(controlText);
-
+import MarkerClusterer from 'react-google-maps/lib/addons/MarkerClusterer';
 
 export default class MapRender extends React.Component {
   constructor(props) {
@@ -33,18 +8,51 @@ export default class MapRender extends React.Component {
   }
 
   render() {
-    let props = this.props;
+    let markers = this.props.markers;
+    let marker = {
+      // animation: null,
+      // attribution: null,
+      clickable: true,
+      // cursor: null,
+      // draggable: null,
+      // icon: null,
+      // label: null,
+      // opacity: null,
+      // options: null,
+      // place: null,
+      // position: null,
+      // shape: null,
+      title: 'Listing!',
+      visible: true,
+      zIndex: 9
+    }
     const CityMap = withGoogleMap(props => (
-      <GoogleMap ref={props.onMapLoad} defaultZoom={13} center={{ lat: 47.6062, lng: -122.3321 }} onDragEnd={props.onCenterChanged}>
-        {this.props.listings.map((el, idx) => (
-          <Marker marker = {{lat: el.lat, lng: el.lon}} onClick={() => props.onMarkerClick(marker)} infoContent = {el}>
-            {marker.showInfo && (
-              <InfoWindow onCloseClick={() => props.onMarkerClose(marker)}>
+      <GoogleMap
+        ref={props.onMapLoad}
+        defaultZoom={13}
+        center={{ lat: 47.6062, lng: -122.3321 }}
+        onDragEnd={props.onCenterChanged}
+      >
+        <MarkerClusterer
+          averageCenter
+          enableRetinaIcons
+          gridSize={30}
+        >
+          {markers.map((el, idx) => (
+            <Marker
+              key={idx}
+              position = {el.position}
+              onClick={() => props.onMarkerClick(el)}
+              infoContent = {el}
+            >
+            {el.showInfo && (
+              <InfoWindow onCloseClick={() => props.onMarkerClose(el)}>
                 <div>{el.infoContent}</div>
               </InfoWindow>
             )}
-          </Marker>
-        ))}
+            </Marker>
+          ))}
+        </MarkerClusterer>
       </GoogleMap>
     ));
 
@@ -58,7 +66,7 @@ export default class MapRender extends React.Component {
         }
         lat={this.props.lat}
         lng={this.props.lng}
-        // markers={this.props.markers}
+        markers={this.props.markers}
         onMapLoad={this.props.onMapLoad}
         onCenterChanged={this.props.onCenterChanged}
         onMarkerClick={this.props.onMarkerClick}

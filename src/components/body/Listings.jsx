@@ -1,14 +1,9 @@
 import React from 'react'
-import Button from 'react-bootstrap/lib/Button'
-import Grid from 'react-bootstrap/lib/Grid'
-import Jumbotron from 'react-bootstrap/lib/Jumbotron'
-import Row from 'react-bootstrap/lib/Row'
-import Col from 'react-bootstrap/lib/Col'
-import Tooltip from 'react-bootstrap/lib/Tooltip'
+import { Button, Grid, Jumbotron, Row, Col, Tooltip, Accordion, Panel } from 'react-bootstrap'
+
 import main2 from './main2.css'
-import Accordion from 'react-bootstrap/lib/Accordion'
-import Panel from 'react-bootstrap/lib/Panel'
 import ListingHeader from './ListingHeader'
+import ListingsView from './ListingsView'
 
 export default class Listings extends React.Component {
   constructor(props) {
@@ -44,28 +39,9 @@ export default class Listings extends React.Component {
             <div>
                 <Row>
                   <Col md={6}>
-                    <Accordion style={{overflow: 'hidden'}}>
-                      {this.props.listings.map((el, key) => {
-                        return <Panel
-                          style={{margin: '0px', borderRadius: '0px'}}
-                          key={key}
-                          eventKey={key}
-                          header={
-                            <div>
-                              <ListingHeader
-                                price={el.price}
-                                title={el.title}
-                                bedrooms={el.bedrooms}
-                                neighborhood={el.neighborhood}
-                                neighborhood={el.neighborhood}
-                                post_date={el.post_date}
-                              />
-                            </div>}
-                          >
-                            <p>{el.descr}</p>
-                        </Panel>
-                        })}
-                    </Accordion>
+                    <ListingsView
+                      {...this.props}
+                    />
                   </Col>
                 </Row>
 

@@ -29,18 +29,18 @@ export default class App extends Component {
       activeTips: false,
       listings: [],
       markers: [],
-      bedroomsImport: 50,
-      rentImport: 50,
-      housingImport: 50,
-      laundryImport: 50,
-      parkingImport: 50,
-      bathImport: 50,
-      roomImport: 50,
-      catImport: 50,
-      dogImport: 50,
-      furnishedImport: 50,
-      smokingImport: 50,
-      wheelchairImport: 50,
+      bedroomsImport: 5,
+      rentImport: 5,
+      housingImport: 5,
+      laundryImport: 5,
+      parkingImport: 5,
+      bathImport: 5,
+      roomImport: 5,
+      catImport: 5,
+      dogImport: 5,
+      furnishedImport: 5,
+      smokingImport: 5,
+      wheelchairImport: 5,
       minRent: 0,
       maxRent: 0,
       minBedrooms: 0,
@@ -412,18 +412,18 @@ export default class App extends Component {
     return (
       <BrowserRouter>
         <div>
-          <Grid fluid>
-            <Row>
-              <Col sm={12} md={12}>
-                <Header
+          <Grid fluid style={{height: '90vh', minWidth: '1000px'}}>
+            <Row style={{minWidth: '1000px'}}>
+              <Col>
+                <Header style={{height: '50px'}}
                   {...this.props}
                   {...this.state}
                   {...this}
                 />
               </Col>
             </Row>
-            <Row>
-              <Col sm={12} md={12}>
+            <Row style={{minWidth: '1000px'}}>
+              <Col>
                 <Main
                   getListings={this.getListings}
                   {...this.props}
@@ -433,7 +433,7 @@ export default class App extends Component {
               </Col>
             </Row>
           </Grid>
-          <Footer style={{padding: '0px', margin: '0px'}}/>
+          <Footer style={{minWidth: '1000px', padding: '0px', margin: '0px'}}/>
         </div>
       </BrowserRouter>
     )

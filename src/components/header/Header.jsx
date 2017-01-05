@@ -59,7 +59,7 @@ export default class Header extends React.Component {
 
     return (
       <header>
-        <Navbar className={header.navbar} fluid>
+        <Navbar className={header.navbar} fluid style={{height: '50px'}}>
           <Nav pullLeft>
             <Link activeOnlyWhenExact className={header.navButton} activeClassName={header.active} to='/'><MdHome /></Link>
             <Link className={header.navButton} activeClassName={header.active} to='/search'><MdSearch /> search</Link>

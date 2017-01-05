@@ -1,3 +1,7 @@
+* {
+  border-radius: 0px !important;
+}
+
 .label {
   display: inline-block !important;
 }
@@ -13,7 +17,8 @@
 }
 
 .listDiv {
-  width: 150px;
+  width: 190px;
+  padding-right: 10px;
 }
 
 .controlHeading {

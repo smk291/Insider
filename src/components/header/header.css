@@ -3,6 +3,9 @@ body {
   font-weight: 200;
 }
 
+nav {
+  margin-bottom: 0px !important;
+}
 h1, h2, h3 {
   font-weight: 100;
 }

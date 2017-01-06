@@ -346,9 +346,7 @@ router.get('/listings/:id', authorize, (req, res, next) => {
 });
 
 //Get all listings
-router.get('/listings', authorize, (req, res, next) => {
-  const {userId} = req.token;
-
+router.get('/listings', (req, res, next) => {
   knex('listings')
     .orderBy('id', 'desc')
     .then((listings) => {

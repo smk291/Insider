@@ -47,6 +47,7 @@ export default class Main2 extends React.Component {
               <Button onClick={this.scrapeNull}>get null</Button>
               <Button onClick={this.scrapeList}>get list</Button>
               <Button onClick={this.scrapeRows}>get row scrapes</Button>
+              <Button onClick={this.getListings}>get listings</Button>
               {this.props.loggedIn ? <p>Logged in!</p> : <p> Not logged in </p>}
               {/* <Button onClick={console.log(this.state.list)}>log list</Button> */}
             </div>

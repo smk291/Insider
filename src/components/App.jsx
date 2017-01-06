@@ -11,7 +11,6 @@ import Header from './header/Header';
 import notify from 'react-notify-toast';
 import globalCSS from '../../globalCSS.css'
 import MapPage from './body/MapPage'
-// import Router from './Router';
 
 export default class App extends Component {
   constructor(props) {
@@ -41,10 +40,10 @@ export default class App extends Component {
       furnishedImport: 5,
       smokingImport: 5,
       wheelchairImport: 5,
-      minRent: 0,
-      maxRent: 0,
-      minBedrooms: 0,
-      maxBedrooms: 0,
+      minRent: '',
+      maxRent: '',
+      minBedrooms: '',
+      maxBedrooms: '',
       housing_types: ['apartment', 'condo', 'house', 'townhouse', 'duplex', 'land', 'in-law', 'cottage', 'cabin'],
       apartment: true,
       condo: true,
@@ -82,7 +81,16 @@ export default class App extends Component {
       'smoking_types': ['no smoking'],
       'no smoking': true,
       'wheelchair_types': ['wheelchair accessible'],
-      'wheelchair accessible': true
+      'wheelchair accessible': true,
+      rentAvg: '',
+      rent0brAvg: '',
+      rent1brAvg: '',
+      rent2brAvg: '',
+      rent3brAvg: '',
+      rent4brAvg: '',
+      adToView: {},
+      start: 0,
+      stop: 9
     }
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
@@ -111,6 +119,8 @@ export default class App extends Component {
     this.dogSlider = this.dogSlider.bind(this)
     this.smokingSlider = this.smokingSlider.bind(this)
     this.wheelchairSlider = this.wheelchairSlider.bind(this)
+    this.increment = this.increment.bind(this)
+    this.decrement = this.decrement.bind(this)
   }
 
   close(){
@@ -252,7 +262,6 @@ export default class App extends Component {
   }
 
   handleChange(e) {
-    console.log(e);
     var change = {};
     change[e.target.name] = e.target.value;
     this.setState(change);
@@ -408,6 +417,41 @@ export default class App extends Component {
     })
   }
 
+  decrement(e){
+    let start = this.state.start;
+    let stop = this.state.stop;
+    console.log(start);
+    console.log(stop);
+    if (start < 10){
+      start = 0;
+      stop = 9;
+    } else {
+      start -= 10;
+      stop -= 10;
+    }
+    console.log(start);
+    console.log(stop);
+    this.setState({start: start, stop: stop});
+  }
+
+  increment(e){
+    let start = this.state.start;
+    let stop = this.state.stop;
+    console.log(start);
+    console.log(stop);
+    if (this.state.listings.length - stop < 10){
+      stop = this.state.listings.length - 1;
+      start = this.state.listings.length - 10;
+    } else {
+      start += 10;
+      stop += 10;
+    }
+    console.log(start);
+    console.log(stop);
+    this.setState({start: start, stop: stop});
+
+  }
+
   render() {
     return (
       <BrowserRouter>
@@ -438,11 +482,4 @@ export default class App extends Component {
       </BrowserRouter>
     )
   }
-};
-
-App.propTypes = {
-  maxBedrooms: React.PropTypes.number,
-  minBedrooms: React.PropTypes.number,
-  maxRent: React.PropTypes.number,
-  minRent: React.PropTypes.number,
 };

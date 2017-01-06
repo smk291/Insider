@@ -33,31 +33,7 @@ export default class Listings extends React.Component {
   render() {
     return (
       <div>
-        <Button onClick={this.getListings}>get listings</Button>
-          <Grid fluid>
-            <h1 style={{fontWeight: '300'}}>Listings! </h1>
-            <div>
-                <Row>
-                  <Col md={6}>
-                    <ListingsView
-                      {...this.props}
-                    />
-                  </Col>
-                </Row>
 
-                  <Row>
-                    <Col>
-                    <Grid>
-                    </Grid>
-                  </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-
-                    </Col>
-                  </Row>
-            </div>
-          </Grid>
       </div>
     );
   }

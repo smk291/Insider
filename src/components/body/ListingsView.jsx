@@ -117,7 +117,7 @@ export default class ListingsView extends React.Component {
         </Accordion>
         <Pager>
           <Pager.Item onSelect={this.decrement} previous href="#">&larr; Previous Page</Pager.Item>
-          <p style={{display: 'inline-block'}}>Listings {this.props.start + 1} - {this.props.stop + 1}</p>
+          <p style={{display: 'inline-block'}}>Listings {this.props.start + 1} - {this.props.stop + 1} out of {this.props.listings.length}</p>
           <Pager.Item onSelect={this.increment} next href="#">Next Page &rarr;</Pager.Item>
         </Pager> </div>: ''}
       </div>

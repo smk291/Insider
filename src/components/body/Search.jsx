@@ -7,12 +7,6 @@ import main2 from './main2.css'
 import ListingsView from './ListingsView'
 import humanize from 'underscore.string/humanize'
 import searchstyle from './searchstyle'
-import Bedrooms from './parameters/Bedrooms'
-import Rent from './parameters/Rent'
-import Housing from './parameters/Housing'
-import Laundry from './parameters/Laundry'
-import Bathroom from './parameters/Bathroom'
-import Room from './parameters/Room'
 import InlineSVG from 'svg-inline-react'
 import MdBackup from 'react-icons/lib/md/backup'
 import {Chart} from 'react-google-charts'
@@ -287,6 +281,68 @@ export default class Search extends React.Component {
     // Important values: importance, meeting criteria
     // What to do:
       // If meets criteria, add import number to listing's import number
+    //   function DropdownGroup({header, name, onChange, value, items, checked, onChange2}){
+    //     return(
+    //       <Panel
+    //         className={searchstyle.listDiv}
+    //         collapsible
+    //         header={header}>
+    //           <ListGroup
+    //             fill>
+    //             <ListGroupItem
+    //               className={searchstyle.listGroupItem}>
+    //               <ReactSimpleRange
+    //                 max={10}
+    //                 min={0}
+    //                 label
+    //                 name={name}
+    //                 onChange={onChange}
+    //                 value={value}
+    //               />
+    //             </ListGroupItem>
+    //             {items.map((type, idx) => {
+    //               return <ListGroupItem
+    //                 key={idx}
+    //                 style={{padding: '4px 10px'}}>
+    //                 <Checkbox
+    //                   inline
+    //                   key={idx}
+    //                   type="checkbox"
+    //                   checked={this.props[type]}
+    //                   onChange={this.handleChbox.bind(this, type)}>{humanize(type)}</Checkbox>
+    //               </ListGroupItem>
+    //             })}
+    //           </ListGroup>
+    //         </Panel>
+    //     );
+    //   }
+    //
+    //
+    // const dropDowns = (
+    //   <form>
+    //     <DropdownGroup
+    //       header='Housing type ▾'
+    //       name='housingImport'
+    //       onChange={this.housingSlider}
+    //       value={this.props.housingImport}>
+    //         {this.props.housing_types.map((type, idx) => {
+    //           return <ListGroupItem
+    //             key={idx}
+    //             style={{padding: '4px 10px'}}>
+    //             <Checkbox
+    //               inline
+    //               key={idx}
+    //               type="checkbox"
+    //                checked={this.props[type]}
+    //                onChange={this.handleChbox.bind(this, type)}>{humanize(type)}
+    //               >{humanize(type)}
+    //             </Checkbox>
+    //           </ListGroupItem>
+    //         })}
+    //       </DropdownGroup>
+    //     />
+    //   </form>
+    // );
 
     return (
       <div style={{height: '85vh'}}>
@@ -297,12 +353,12 @@ export default class Search extends React.Component {
                 <Col sm={1} md={2}>
                   <Grid fluid>
                     <Row>
-                      <Col style={{minWidth: '170px', height: '83vh', borderRight: '1px solid #eee'}}>
+                      <Col className={searchstyle.sideMenu}>
                         <Grid fluid>
                           <Row>
-                            <Col style={{height: '70vh', overflowY: 'scroll'}}>
-                                  <div>
-                                    <a href="#"><Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded header='Housing type ▾'>
+                            <Col className={searchstyle.dropdowns}>
+                              {/* {drowndowns} */}
+                                  <Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible header='Housing type ▾'>
                                       <ListGroup fill>
                                         <ListGroupItem style={{padding: '4px 10px'}}>
                                           <ReactSimpleRange
@@ -316,16 +372,12 @@ export default class Search extends React.Component {
                                         </ListGroupItem>
                                         {this.props.housing_types.map((type, idx) => {
                                           return <ListGroupItem key={idx} style={{padding: '4px 10px'}}>
-                                          <div>
                                             <Checkbox inline key={idx} type="checkbox" checked={this.props[type]} onChange={this.handleChbox.bind(this, type)}>{humanize(type)}</Checkbox>
-                                          </div>
                                           </ListGroupItem>
                                         })}
                                       </ListGroup>
-                                    </Panel></a>
-                                  </div>
-                                  <div>
-                                    <a href="#"><Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded header='Rent ▾'>
+                                    </Panel>
+                                    <Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded header='Rent ▾'>
                                       <ListGroup fill>
                                         <ListGroupItem style={{padding: '4px 10px'}}>
                                           <FormControl style={{width: '64px', padding: '4px 10px', display: 'inline-block'}} name="minRent" type="number" placeholder="min" min="0" step={50} value={this.props.minRent} onChange={this.handleChange}/>
@@ -340,10 +392,8 @@ export default class Search extends React.Component {
                                           />
                                         </ListGroupItem>
                                       </ListGroup>
-                                    </Panel></a>
-                                  </div>
-                                  <div>
-                                    <a href="#"><Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded={false} header='Bedrooms ▾'>
+                                    </Panel>
+                                    <Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded={false} header='Bedrooms ▾'>
                                       <ListGroup fill>
                                         <ListGroupItem style={{padding: '4px 10px'}}>
                                           <FormControl style={{width: '64px', padding: '4px 10px', display: 'inline-block'}} name="minBedrooms" type="number" placeholder="min" min="0" value={this.props.minBedrooms} onChange={this.handleChange}/>
@@ -358,10 +408,8 @@ export default class Search extends React.Component {
                                           />
                                         </ListGroupItem>
                                       </ListGroup>
-                                    </Panel></a>
-                                  </div>
-                                  <div>
-                                    <a href="#"><Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded={false} header='Private room ▾'>
+                                    </Panel>
+                                    <Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded={false} header='Private room ▾'>
                                       <ListGroup fill>
                                         <ListGroupItem style={{padding: '4px 10px'}}>
                                           {this.props.private_room_types.map((type, idx) => {
@@ -377,10 +425,8 @@ export default class Search extends React.Component {
                                           />
                                         </ListGroupItem>
                                       </ListGroup>
-                                    </Panel></a>
-                                  </div>
-                                  <div>
-                                    <a href="#"><Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded={false} header='Private bath ▾'>
+                                    </Panel>
+                                    <Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded={false} header='Private bath ▾'>
                                       <ListGroup fill>
                                         <ListGroupItem style={{padding: '4px 10px'}}>
                                           {this.props.bath_types.map((type, idx) => {
@@ -396,10 +442,8 @@ export default class Search extends React.Component {
                                           />
                                         </ListGroupItem>
                                       </ListGroup>
-                                    </Panel></a>
-                                  </div>
-                                  <div>
-                                    <a href="#"><Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded={false} header="Parking ▾">
+                                    </Panel>
+                                    <Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded={false} header="Parking ▾">
                                       <ListGroup fill>
                                         <ListGroupItem style={{padding: '4px 10px'}}>
                                           <ReactSimpleRange style={{padding: '4px 10px'}}
@@ -413,16 +457,12 @@ export default class Search extends React.Component {
                                         </ListGroupItem>
                                         {this.props.parking_types.map((type, idx) => {
                                           return <ListGroupItem key={idx} style={{padding: '4px 10px'}}>
-                                          <div>
                                             <Checkbox inline key={idx} type="checkbox" checked={this.props[type]} onChange={this.handleChbox.bind(this, type)}>{humanize(type)}</Checkbox>
-                                          </div>
                                         </ListGroupItem>
                                         })}
                                       </ListGroup>
-                                    </Panel></a>
-                                  </div>
-                                  <div>
-                                    <a href="#"><Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded={false} header="Laundry ▾">
+                                    </Panel>
+                                    <Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded={false} header="Laundry ▾">
                                       <ListGroup fill>
                                         <ListGroupItem style={{padding: '4px 10px'}}>
                                           <ReactSimpleRange style={{padding: '4px 10px'}}
@@ -436,16 +476,12 @@ export default class Search extends React.Component {
                                         </ListGroupItem>
                                         {this.props.laundry_types.map((type, idx) => {
                                           return <ListGroupItem key={idx} style={{padding: '4px 10px'}}>
-                                            <div>
                                               <Checkbox inline key={idx} type="checkbox" checked={this.props[type]} onChange={this.handleChbox.bind(this, type)}>{humanize(type)}</Checkbox>
-                                            </div>
                                           </ListGroupItem>
                                         })}
                                       </ListGroup>
-                                    </Panel></a>
-                                  </div>
-                                  <div>
-                                    <a href="#"><Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded={false} header='Misc ▾'>
+                                    </Panel>
+                                    <Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded={false} header='Misc ▾'>
                                       <ListGroup fill>
                                         <ListGroupItem style={{padding: '4px 10px'}}>
                                           {this.props.furnished_types.map((type, idx) => {
@@ -515,8 +551,7 @@ export default class Search extends React.Component {
                                           />
                                         </ListGroupItem>
                                       </ListGroup>
-                                    </Panel></a>
-                                  </div>
+                                    </Panel>
                             </Col>
                           </Row>
                           <Row>
@@ -553,8 +588,13 @@ export default class Search extends React.Component {
                         <Row>
                           <Col sm={12} md={4}>
                             <div className={searchstyle.leftInfo}>
-                              <p>Info</p>
-                              <p>Average rents</p>
+                              <p>Currently you're browsing {listings.length} listings.</p>
+                              <p>Average rent for an apartment is ${rentAvg.toFixed(2)}</p>
+                              <p>Average rent for a 0BR is ${rent0brAvg.toFixed(2)}</p>
+                              <p>Average rent for a 1BR is ${rent1brAvg.toFixed(2)}</p>
+                              <p>Average rent for a 2BR is ${rent2brAvg.toFixed(2)}</p>
+                              <p>Average rent for a 3BR is ${rent3brAvg.toFixed(2)}</p>
+                              <p>Average rent for a 4BR is ${rent4brAvg.toFixed(2)}</p>
                               <p>Averages after filtering</p>
                               <p>Filtering</p>
                               <p>Number of places that specify a particular option or don't</p>

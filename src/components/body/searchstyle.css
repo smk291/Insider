@@ -2,8 +2,27 @@
   border-radius: 0px !important;
 }
 
+.listDiv {
+  marginRight: 10px;
+}
+
+.listGroupItem {
+  padding: 4px 10px;
+}
+
 .label {
   display: inline-block !important;
+}
+
+.sideMenu {
+  min-width: 170px;
+  height: 83vh;
+  border-right: 1px solid #eee;
+}
+
+.dropdowns {
+  height: 70vh;
+  overflow-y: scroll;
 }
 
 .saveSettings {

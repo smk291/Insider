@@ -17,7 +17,7 @@ import InlineSVG from 'svg-inline-react'
 import MdBackup from 'react-icons/lib/md/backup'
 import {Chart} from 'react-google-charts'
 import ViewAd from './ViewAd'
-
+import ListingsViewFiltered from './ListingsViewFiltered'
 
 export default class Search extends React.Component {
   constructor(props) {
@@ -40,7 +40,6 @@ export default class Search extends React.Component {
     this.scrapeList = this.scrapeList.bind(this);
     this.scrapeRows = this.scrapeRows.bind(this);
     this.scrapeNull = this.scrapeNull.bind(this);
-    this.getListings = this.getListings.bind(this);
     this.state={
       options:{
         title: 'Age vs. Weight comparison',
@@ -141,10 +140,6 @@ export default class Search extends React.Component {
     this.props.avgs();
   }
 
-  getListings(e){
-    this.props.getListings(e);
-  }
-
   render() {
     const listings = this.props.listings;
 
@@ -197,88 +192,89 @@ export default class Search extends React.Component {
     let rent3brAvg = avgbrs(listings, '3BR');
     let rent4brAvg = avgbrs(listings, '4BR');
 
-    const prefs = {
-      'bedroomsImport': 'bedroomRange',
-      'rentImport': 'rentRange',
-      'housingImport': 'housing_types',
-      'laundryImport': 'laundry_types',
-      'parkingImport': 'parking_types',
-      'bathImport': 'bath_types',
-      'roomImport': 'room_types',
-      'catImport': 'cat_types',
-      'dogImport': 'dog_types',
-      'furnishedImport': 'furnished_types',
-      'smokingImport': 'smoking_types',
-      'wheelchairImport': 'wheelchair_types',
-    }
+    const typesAndPrefs = [
+      ['bedroomsRange', 'bedroomsImport', ['minBedrooms', 'maxBedrooms']],
+      ['rentRange', 'rentImport', ['minRent', 'maxRent']],
+      ['housing_types', 'housingImport', ['apartment', 'condo', 'house', 'townhouse', 'duplex', 'land', 'in-law', 'cottage', 'cabin']],
+      ['laundry_types', 'laundryImport', ['laundry on site', 'w/d in unit', 'laundry in bldg']],
+      ['parking_types', 'parkingImport', ['off-street parking', 'detached garage', 'attached garage', 'valet parking', 'street parking', 'carport', 'no parking']],
+      ['bath_types', 'bathImport', ['private bath', 'no private bath']],
+      ['private_room_types', 'roomImport', ['private room', 'room not private']],
+      ['cat_types', 'catImport', ['cats are OK - purrr']],
+      ['dog_types', 'dogImport', ['dogs are OK - wooof']],
+      ['furnished_types', 'furnishedImport', ['furnished']],
+      ['smoking_types', 'smokingImport', ['no smoking']],
+      ['wheelchair_types', 'wheelchairImport', ['wheelchair accessible']],
+    ]
 
-    const prefsReversed = {
-      'bedroomRange': 'bedroomsImport',
-      'rentRange': 'rentImport',
-      'housing_types': 'housingImport',
-      'laundry_types': 'laundryImport',
-      'parking_types': 'parkingImport',
-      'bath_types': 'bathImport',
-      'room_types': 'roomImport',
-      'cat_types': 'catImport',
-      'dog_types': 'dogImport',
-      'furnished_types': 'furnishedImport',
-      'smoking_types': 'smokingImport',
-      'wheelchair_types': 'wheelchairImport'
-    }
-
-    const rentRange = ['minRent', 'maxRent'];
-    const bedroomRange = ['minBedrooms', 'maxBedrooms'];
-    const housing_types = ['apartment', 'condo', 'house', 'townhouse', 'duplex', 'land', 'in-law', 'cottage', 'cabin'];
-    const laundry_types = ['laundry on site', 'w/d in unit', 'laundry in bldg'];
-    const parking_types = ['off-street parking', 'detached garage', 'attached garage', 'valet parking', 'street parking', 'carport', 'no parking'];
-    const bath_types = ['private bath', 'no private bath'];
-    const private_room_types = ['private room', 'room not private'];
-    const cat_types = ['cats are OK - purrr'];
-    const dog_types = ['dogs are OK - wooof'];
-    const furnished_types = ['furnished'];
-    const smoking_types = ['no smoking'];
-    const wheelchair_types = ['wheelchair accessible'];
-
-    // rentRange, bedroomRange,
-
-    let options = [housing_types, laundry_types, parking_types, bath_types, private_room_types, cat_types, dog_types, furnished_types, smoking_types, wheelchair_types]
-    let optionsObj = [housing_types, laundry_types, parking_types, bath_types, private_room_types, cat_types, dog_types, furnished_types, smoking_types, wheelchair_types]
 
     // 1. Before looping through the listings,
       // Store listings in a new variable
 
       // Loop through the values of each importance category
       let maxScore = 0
-      maxScore = Object.keys(prefs).reduce((acc, key, idx) => {
-        // console.log(key);
-        // console.log(this.props[key]);
-        return acc + this.props[key]
+      maxScore = typesAndPrefs.reduce((acc, pref, idx) => {
+        return acc + this.props[pref[1]]
       }, 0);
-      // console.log(maxScore);
         // sum them
         // store that value in state(?)
     // 2. Loop through every option and remove those whose state is false
-      let filteredOptions = [];
 
-      filteredOptions = options.map((type) => {
-        return type.filter((option) => {
-          return this.props[option]
-        })
-      });
-
-      console.log(filteredOptions);
     // 2. Loop through listings
-    let filteredList = [];
-
-    // filteredList = listings.map((el) => {
-      Object.keys(options)
-      // .map((el) => {
-      //   console.log(el);
-      // })
+    // let filteredList = [];
+    //
+    // filteredList = listings.filter((el) => {
+    //   el.score = 0;
+    //
+    //   if(el.bedrooms){
+    //     let minBed = Number(this.props.minBedrooms);
+    //     let maxBed = Number(this.props.maxBedrooms);
+    //     let brs = Number(el.bedrooms.slice(0, el.bedrooms.indexOf('BR')));
+    //
+    //     if (brs >= minBed && brs <= maxBed){
+    //       el.score += this.props.bedroomsImport;
+    //     } else if (this.props.bedroomsImport === 10){
+    //       return false;
+    //     }
+    //   } else if (this.props.strictMode === true) {
+    //     return false;
+    //   }
+    //
+    //   if (el.price){
+    //     let minRent = Number(this.props.minRent);
+    //     let maxRent = Number(this.props.maxRent);
+    //     let rent = Number(el.price);
+    //
+    //     if (rent >= minRent && rent <= maxRent){
+    //       el.score += this.props.rentImport;
+    //     } else if (this.props.rentImport === 10){
+    //       return false;
+    //     }
+    //   } else if (this.props.strictMode === true) {
+    //     return false;
+    //   }
+    //
+    //   // for (let i = 2; i < filteredOptions.length; i++) {
+    //   //   let listingValue = el[filteredOptions[i][0]];
+    //   //   let acceptableValues = filteredOptions[i][2];
+    //   //   let importValue = this.props[filteredOptions[i][1]];
+    //   //
+    //   //   if (listingValue && acceptableValues.indexOf(listingValue)){
+    //   //     el.score += importValue;
+    //   //   } else if (importValue === 10){
+    //   //     return false;
+    //   //   }
+    //   // }
+    //
+    //   return true;
     // });
 
-    console.log(filteredList);
+    // this.setState({filteredList})
+    // console.log(this.props.listings);
+    // console.log(this.props.filteredList);
+
+
+    // console.log(filteredList);
 
       // Determine whether listing meets criteria
         // Do that as follows
@@ -292,22 +288,21 @@ export default class Search extends React.Component {
     // What to do:
       // If meets criteria, add import number to listing's import number
 
-
     return (
       <div style={{height: '85vh'}}>
         <div>
           <div>
             <Grid fluid>
               <Row>
-                <Col sm={12} md={2}>
+                <Col sm={1} md={2}>
                   <Grid fluid>
                     <Row>
-                      <Col style={{mimWidth: '170px', height: '83vh', borderRight: '1px solid #eee'}}>
+                      <Col style={{minWidth: '170px', height: '83vh', borderRight: '1px solid #eee'}}>
                         <Grid fluid>
                           <Row>
                             <Col style={{height: '70vh', overflowY: 'scroll'}}>
                                   <div>
-                                    <Panel style={{marginRight: '10px'}}className={searchstyle.listDiv} collapsible defaultExpanded header='Housing type ▾'>
+                                    <a href="#"><Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded header='Housing type ▾'>
                                       <ListGroup fill>
                                         <ListGroupItem style={{padding: '4px 10px'}}>
                                           <ReactSimpleRange
@@ -327,10 +322,10 @@ export default class Search extends React.Component {
                                           </ListGroupItem>
                                         })}
                                       </ListGroup>
-                                    </Panel>
+                                    </Panel></a>
                                   </div>
                                   <div>
-                                    <Panel style={{marginRight: '10px'}}className={searchstyle.listDiv} collapsible defaultExpanded header='Rent ▾'>
+                                    <a href="#"><Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded header='Rent ▾'>
                                       <ListGroup fill>
                                         <ListGroupItem style={{padding: '4px 10px'}}>
                                           <FormControl style={{width: '64px', padding: '4px 10px', display: 'inline-block'}} name="minRent" type="number" placeholder="min" min="0" step={50} value={this.props.minRent} onChange={this.handleChange}/>
@@ -345,10 +340,10 @@ export default class Search extends React.Component {
                                           />
                                         </ListGroupItem>
                                       </ListGroup>
-                                    </Panel>
+                                    </Panel></a>
                                   </div>
                                   <div>
-                                    <Panel style={{marginRight: '10px'}}className={searchstyle.listDiv} collapsible defaultExpanded={false} header='Bedrooms ▾'>
+                                    <a href="#"><Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded={false} header='Bedrooms ▾'>
                                       <ListGroup fill>
                                         <ListGroupItem style={{padding: '4px 10px'}}>
                                           <FormControl style={{width: '64px', padding: '4px 10px', display: 'inline-block'}} name="minBedrooms" type="number" placeholder="min" min="0" value={this.props.minBedrooms} onChange={this.handleChange}/>
@@ -363,10 +358,10 @@ export default class Search extends React.Component {
                                           />
                                         </ListGroupItem>
                                       </ListGroup>
-                                    </Panel>
+                                    </Panel></a>
                                   </div>
                                   <div>
-                                    <Panel style={{marginRight: '10px'}}className={searchstyle.listDiv} collapsible defaultExpanded={false} header='Private room ▾'>
+                                    <a href="#"><Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded={false} header='Private room ▾'>
                                       <ListGroup fill>
                                         <ListGroupItem style={{padding: '4px 10px'}}>
                                           {this.props.private_room_types.map((type, idx) => {
@@ -382,10 +377,10 @@ export default class Search extends React.Component {
                                           />
                                         </ListGroupItem>
                                       </ListGroup>
-                                    </Panel>
+                                    </Panel></a>
                                   </div>
                                   <div>
-                                    <Panel style={{marginRight: '10px'}}className={searchstyle.listDiv} collapsible defaultExpanded={false} header='Private bath ▾'>
+                                    <a href="#"><Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded={false} header='Private bath ▾'>
                                       <ListGroup fill>
                                         <ListGroupItem style={{padding: '4px 10px'}}>
                                           {this.props.bath_types.map((type, idx) => {
@@ -401,10 +396,10 @@ export default class Search extends React.Component {
                                           />
                                         </ListGroupItem>
                                       </ListGroup>
-                                    </Panel>
+                                    </Panel></a>
                                   </div>
                                   <div>
-                                    <Panel style={{marginRight: '10px'}}className={searchstyle.listDiv} collapsible defaultExpanded={false} header="Parking ▾">
+                                    <a href="#"><Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded={false} header="Parking ▾">
                                       <ListGroup fill>
                                         <ListGroupItem style={{padding: '4px 10px'}}>
                                           <ReactSimpleRange style={{padding: '4px 10px'}}
@@ -424,10 +419,10 @@ export default class Search extends React.Component {
                                         </ListGroupItem>
                                         })}
                                       </ListGroup>
-                                    </Panel>
+                                    </Panel></a>
                                   </div>
                                   <div>
-                                    <Panel style={{marginRight: '10px'}}className={searchstyle.listDiv} collapsible defaultExpanded={false} header="Laundry ▾">
+                                    <a href="#"><Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded={false} header="Laundry ▾">
                                       <ListGroup fill>
                                         <ListGroupItem style={{padding: '4px 10px'}}>
                                           <ReactSimpleRange style={{padding: '4px 10px'}}
@@ -447,10 +442,10 @@ export default class Search extends React.Component {
                                           </ListGroupItem>
                                         })}
                                       </ListGroup>
-                                    </Panel>
+                                    </Panel></a>
                                   </div>
                                   <div>
-                                    <Panel style={{marginRight: '10px'}}className={searchstyle.listDiv} collapsible defaultExpanded={false} header='Misc ▾'>
+                                    <a href="#"><Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded={false} header='Misc ▾'>
                                       <ListGroup fill>
                                         <ListGroupItem style={{padding: '4px 10px'}}>
                                           {this.props.furnished_types.map((type, idx) => {
@@ -520,7 +515,7 @@ export default class Search extends React.Component {
                                           />
                                         </ListGroupItem>
                                       </ListGroup>
-                                    </Panel>
+                                    </Panel></a>
                                   </div>
                             </Col>
                           </Row>
@@ -540,47 +535,41 @@ export default class Search extends React.Component {
                             </div>
                           </Row>
                         </Grid>
-
                       </Col>
                     </Row>
                   </Grid>
-
                 </Col>
                 <Col sm={12} md={10}>
-                  <Tabs defaultActiveKey={2} id="placeholder1">
-                    <Tab eventKey={1} title="Housing data at a glance">
+                  <Tabs style={{fontWeight: '500', fontSize: '16pt'}}  defaultActiveKey={1} id="placeholder1">
+                    <Tab eventKey={1} title='Housing data at a glance'>
                       <Grid className={searchstyle.dashboard} fluid>
                         <Row>
                           <Col sm={12} md={12}>
                             <div className={searchstyle.dashboardHeader}>
                               <h2></h2>
                             </div>
-
                           </Col>
                         </Row>
                         <Row>
                           <Col sm={12} md={4}>
-                              <div className={searchstyle.leftInfo}>
-                                <p>Info</p>
-                                <p>Average rents</p>
-                                <p>Averages after filtering</p>
-                                <p>Filtering</p>
-                                <p>Number of places that specify a particular option or don't</p>
-                                <p>Standard deviation</p>
-                              </div>
-
+                            <div className={searchstyle.leftInfo}>
+                              <p>Info</p>
+                              <p>Average rents</p>
+                              <p>Averages after filtering</p>
+                              <p>Filtering</p>
+                              <p>Number of places that specify a particular option or don't</p>
+                              <p>Standard deviation</p>
+                            </div>
                           </Col>
                           <Col sm={12} md={8}>
                             <div className={searchstyle.charts}>
                               CHARTS
                               <p>rent (x), no. of apts -- lump?</p>
                             </div>
-
                           </Col>
                         </Row>
                         <Row>
                           <Col sm={12} md={12}>
-
                             <div className={searchstyle.dashboardFooter}>
                               <h2>Housing data at a glance</h2>
                             </div>
@@ -588,12 +577,22 @@ export default class Search extends React.Component {
                         </Row>
                       </Grid>
                     </Tab>
-                    <Tab eventKey={2} title="Browse filtered / sorted listings">
-                      <Button onClick={this.getListings}>get listings</Button>
+                    <Tab eventKey={2} title="Browse all listings">
                       <Grid fluid>
                         <Row>
                           <Col md={12}>
                             <ListingsView
+                              {...this.props}
+                            />
+                          </Col>
+                        </Row>
+                      </Grid>
+                    </Tab>
+                    <Tab eventKey={3} title="Browse filtered / sorted listings">
+                      <Grid fluid>
+                        <Row>
+                          <Col md={12}>
+                            <ListingsViewFiltered
                               {...this.props}
                             />
                           </Col>

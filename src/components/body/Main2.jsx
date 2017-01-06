@@ -17,6 +17,7 @@ export default class Main2 extends React.Component {
     this.scrapeList = this.scrapeList.bind(this);
     this.scrapeRows = this.scrapeRows.bind(this);
     this.scrapeNull = this.scrapeNull.bind(this);
+    this.filterListings = this.filterListings.bind(this)
   }
 
   scrapeList(e){
@@ -29,6 +30,10 @@ export default class Main2 extends React.Component {
 
   scrapeNull(e){
     this.props.scrapeNull(e);
+  }
+
+  filterListings(){
+    this.props.filterListings();
   }
 
   render() {
@@ -48,6 +53,8 @@ export default class Main2 extends React.Component {
               <Button onClick={this.scrapeList}>get list</Button>
               <Button onClick={this.scrapeRows}>get row scrapes</Button>
               <Button onClick={this.getListings}>get listings</Button>
+              <Button onClick={this.filterListings}>filter listings</Button>
+              <Button onClick={console.log(this.props.filteredList)}>filter listings</Button>
               {this.props.loggedIn ? <p>Logged in!</p> : <p> Not logged in </p>}
               {/* <Button onClick={console.log(this.state.list)}>log list</Button> */}
             </div>

@@ -1,4 +1,4 @@
-a'use strict';
+'use strict';
 
 exports.up = (knex) => {
   return knex.schema.createTable('users_housing_searches', (table) => {

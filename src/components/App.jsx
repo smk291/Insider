@@ -90,7 +90,11 @@ export default class App extends Component {
       rent4brAvg: '',
       adToView: {},
       start: 0,
-      stop: 9
+      stop: 9,
+      startFiltered: 0,
+      stopFiltered: 9,
+      strictMode: false,
+      filteredList: []
     }
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
@@ -121,6 +125,9 @@ export default class App extends Component {
     this.wheelchairSlider = this.wheelchairSlider.bind(this)
     this.increment = this.increment.bind(this)
     this.decrement = this.decrement.bind(this)
+    this.incrementFiltered = this.incrementFiltered.bind(this)
+    this.decrementFiltered = this.decrementFiltered.bind(this)
+    this.filterListings = this.filterListings.bind(this)
   }
 
   close(){
@@ -150,6 +157,33 @@ export default class App extends Component {
     var nextState = {}
     nextState[field] = e.target.checked
     this.setState(nextState)
+
+    const typesAndPrefs = [
+      ['bedroomsRange', 'bedroomsImport', ['minBedrooms', 'maxBedrooms']],
+      ['rentRange', 'rentImport', ['minRent', 'maxRent']],
+      ['housing_type', 'housingImport', ['apartment', 'condo', 'house', 'townhouse', 'duplex', 'land', 'in-law', 'cottage', 'cabin']],
+      ['laundry_types', 'laundryImport', ['laundry on site', 'w/d in unit', 'laundry in bldg']],
+      ['parking_types', 'parkingImport', ['off-street parking', 'detached garage', 'attached garage', 'valet parking', 'street parking', 'carport', 'no parking']],
+      ['bath_types', 'bathImport', ['private bath', 'no private bath']],
+      ['private_room_types', 'roomImport', ['private room', 'room not private']],
+      ['cat_types', 'catImport', ['cats are OK - purrr']],
+      ['dog_types', 'dogImport', ['dogs are OK - wooof']],
+      ['furnished_types', 'furnishedImport', ['furnished']],
+      ['smoking_types', 'smokingImport', ['no smoking']],
+      ['wheelchair_types', 'wheelchairImport', ['wheelchair accessible']],
+    ]
+
+    let filteredOptions = [];
+
+    filteredOptions = typesAndPrefs.map((type) => {
+      return type[2].filter((option) => {
+        return this.state[option]
+      })
+    });
+
+    this.setState({filteredOptions})
+
+    console.log(filteredOptions);
   }
 
   logOut (e) {
@@ -367,16 +401,12 @@ export default class App extends Component {
     console.log(details);
   }
 
-  getListings(e){
-    e.preventDefault()
-
+  getListings(){
     axios({
       method: 'get',
       url: `/listings`
     }).then((res) => {
       let listings = res.data;
-      // console.log(res.data);
-      // console.log(listings);
       listings = listings.filter((el) => {
         return !el.void && el.checked;
       })
@@ -412,6 +442,7 @@ export default class App extends Component {
       });
 
       this.setState({listings, markers});
+      // console.log(this.state.listings);
     }).catch((err) => {
       // console.log(err);
     })
@@ -449,7 +480,168 @@ export default class App extends Component {
     console.log(start);
     console.log(stop);
     this.setState({start: start, stop: stop});
+  }
 
+  decrementFiltered(e){
+    let start = this.state.startFiltered;
+    let stop = this.state.stopFiltered;
+
+    if (start < 10){
+      start = 0;
+      stop = 9;
+    } else {
+      start -= 10;
+      stop -= 10;
+    }
+
+    this.setState({startFiltered: start, stopFiltered: stop});
+  }
+
+  incrementFiltered(e){
+    let start = this.state.startFiltered;
+    let stop = this.state.stopFiltered;
+    console.log(start);
+    console.log(stop);
+    if (this.state.filteredList.length - stop < 10){
+      stop = this.state.filteredList.length - 1;
+      start = this.state.fileredList.length - 10;
+    } else {
+      start += 10;
+      stop += 10;
+    }
+    console.log(start);
+    console.log(stop);
+    this.setState({startFiltered: start, stopFiltered: stop});
+  }
+
+  filterListings(){
+    const typesAndPrefs = [
+      ['bedroomsRange', 'bedroomsImport', ['minBedrooms', 'maxBedrooms']],
+      ['rentRange', 'rentImport', ['minRent', 'maxRent']],
+      ['housing_type', 'housingImport', ['apartment', 'condo', 'house', 'townhouse', 'duplex', 'land', 'in-law', 'cottage', 'cabin']],
+      ['laundry_types', 'laundryImport', ['laundry on site', 'w/d in unit', 'laundry in bldg']],
+      ['parking_types', 'parkingImport', ['off-street parking', 'detached garage', 'attached garage', 'valet parking', 'street parking', 'carport', 'no parking']],
+      ['bath_types', 'bathImport', ['private bath', 'no private bath']],
+      ['private_room_types', 'roomImport', ['private room', 'room not private']],
+      ['cat_types', 'catImport', ['cats are OK - purrr']],
+      ['dog_types', 'dogImport', ['dogs are OK - wooof']],
+      ['furnished_types', 'furnishedImport', ['furnished']],
+      ['smoking_types', 'smokingImport', ['no smoking']],
+      ['wheelchair_types', 'wheelchairImport', ['wheelchair accessible']],
+    ]
+
+
+    let maxScore = 0
+
+    maxScore = typesAndPrefs.reduce((acc, pref, idx) => {
+      return acc + this.props[pref[1]]
+    }, 0);
+
+    let filteredOptions = [];
+
+      filteredOptions = typesAndPrefs.map((type) => {
+        return type[2].filter((option) => {
+          return this.props[option];
+        })
+      });
+
+    // 2. Loop through listings
+    let filteredList = [];
+    console.log(filteredOptions);
+
+    filteredList = this.state.listings.filter((el) => {
+      el.score = 0;
+
+      // if(el.bedrooms){
+      //   let minBed = Number(this.props.minBedrooms);
+      //   let maxBed = Number(this.props.maxBedrooms);
+      //   let brs = Number(el.bedrooms.slice(0, el.bedrooms.indexOf('BR')));
+      //
+      //   if (brs >= minBed && brs <= maxBed){
+      //     el.score += this.props.bedroomsImport;
+      //   } else if (this.props.bedroomsImport === 10){
+      //     return false;
+      //   }
+      // } else if (this.props.strictMode === true) {
+      //   return false;
+      // }
+      //
+      // if (el.price){
+      //   let minRent = Number(this.props.minRent);
+      //   let maxRent = Number(this.props.maxRent);
+      //   let rent = Number(el.price);
+      //
+      //   if (rent >= minRent && rent <= maxRent){
+      //     el.score += this.props.rentImport;
+      //   } else if (this.props.rentImport === 10){
+      //     return false;
+      //   }
+      // } else if (this.props.strictMode === true) {
+      //   return false;
+      // }
+      //
+      if (el['housing_type'] !== null){
+        let housingArr = filteredOptions[2];
+        let listingType = el['housing_type'];
+        console.log(housingArr);
+        console.log(listingType);
+        console.log(housingArr.indexOf(listingType));
+
+        if (housingArr.indexOf(listingType) !== -1){
+          el.score += this.props.housingImport;
+        } else {
+          return false
+        }
+      }
+
+      // console.log(el.laundry_types);
+      // if (el['laundry_types']){
+      //   let laundryArr = filteredOptions[3]
+      //   let listingType = el['laundry_types']
+      //   console.log(laundryArr);
+      //   console.log(listingType);
+      //   console.log(laundryArr.indexOf(listingType));
+      //
+      //   if (el['laundry_types'] === null || laundryArr.length === 0 || laundryArr.indexOf(listingType) !== -1){
+      //     return false
+      //   } else {
+      //     el.score += this.props.laundryImport;
+      //   }
+      // } else if (el['laundry_types' === null]){
+      //   return false
+      // }
+      // ['parking_types', 'parkingImport', ['off-street parking', 'detached garage', 'attached garage', 'valet parking', 'street parking', 'carport', 'no parking']],
+      // ['bath_types', 'bathImport', ['private bath', 'no private bath']],
+      // ['room_types', 'roomImport', ['private room', 'room not private']],
+      // ['cat_types', 'catImport', ['cats are OK - purrr']],
+      // ['dog_types', 'dogImport', ['dogs are OK - wooof']],
+      // ['furnished_types', 'furnishedImport', ['furnished']],
+      // ['smoking_types', 'smokingImport', ['no smoking']],
+      // ['wheelchair_types', 'wheelchairImport', ['wheelchair accessible']],
+
+      // for (let i = 2; i < this.state.filteredOptions.length; i++) {
+      //   let listingValue = el[this.state.filteredOptions[i][0]];
+      //   let acceptableValues = this.state.filteredOptions[i][2];
+      //   let importValue = this.state[this.state.filteredOptions[i][1]];
+      //
+      //   console.log(listingValue);
+      //   console.log(acceptableValues);
+      //   console.log(importValue);
+      //   console.log(listingValue && acceptableValues.indexOf(listingValue));
+      //
+      //   if (listingValue && acceptableValues.indexOf(listingValue)){
+      //     el.score += importValue;
+      //   } else if (importValue === 10){
+      //     return false;
+      //   }
+      // }
+
+      return true;
+    });
+
+    this.setState({filteredList})
+    console.log(this.state.listings);
+    console.log(this.state.filteredList);
   }
 
   render() {

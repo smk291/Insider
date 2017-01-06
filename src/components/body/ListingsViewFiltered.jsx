@@ -4,36 +4,27 @@ import main2 from './main2.css'
 import ListingHeader from './ListingHeader'
 import humanize from 'underscore.string/humanize'
 
-export default class ListingsView extends React.Component {
+export default class ListingsViewFiltered extends React.Component {
   constructor(props) {
     super(props);
-    this.decrement = this.decrement.bind(this)
-    this.increment = this.increment.bind(this)
-    this.getListings = this.getListings.bind(this);
+    this.decrementFiltered = this.decrementFiltered.bind(this)
+    this.incrementFiltered = this.incrementFiltered.bind(this)
   }
 
-  decrement(e){
-    this.props.decrement(e);
+  decrementFiltered(e){
+    this.props.decrementFiltered(e);
   }
 
-  increment(e){
-    this.props.increment(e);
-  }
-
-  getListings(e){
-    this.props.getListings(e);
-  }
-
-  componentDidMount(){
-    this.props.getListings()
+  incrementFiltered(e){
+    this.props.incrementFiltered(e);
   }
 
   render() {
     return (
       <div>
-      {this.props.listings.length && this.props.listings.length > 0 ? <div>
+      {this.props.filteredList.length && this.props.filteredList.length > 0 ? <div>
         <Accordion style={{overflow: 'hidden', height: '65vh', fontWeight: 400}}>
-          {this.props.listings.slice(this.props.start,this.props.stop).map((el, key) => {
+          {this.props.filteredList.slice(this.props.start,this.props.stop).map((el, key) => {
             return <Panel
               style={{margin: '0px', borderRadius: '0px'}}
               key={key}
@@ -116,9 +107,9 @@ export default class ListingsView extends React.Component {
             })}
         </Accordion>
         <Pager>
-          <Pager.Item onSelect={this.decrement} previous href="#">&larr; Previous Page</Pager.Item>
+          <Pager.Item onSelect={this.decrementFiltered} previous href="#">&larr; Previous Page</Pager.Item>
           <p style={{display: 'inline-block'}}>Listings {this.props.start + 1} - {this.props.stop + 1}</p>
-          <Pager.Item onSelect={this.increment} next href="#">Next Page &rarr;</Pager.Item>
+          <Pager.Item onSelect={this.incrementFiltered} next href="#">Next Page &rarr;</Pager.Item>
         </Pager> </div>: ''}
       </div>
     );

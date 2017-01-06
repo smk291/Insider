@@ -53,7 +53,7 @@ a.active {
 }
 
 .active {
-  background-color: hsla(0,80%,100%,1);
+  background-color: rgb(60, 81, 90);
   color: hsla(0, 0%, 34%, 1);
   border-bottom: 10px solid #49A078;
 }

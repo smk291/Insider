@@ -7,7 +7,7 @@ import Main2 from './Main2'
 import MapPage from './MapPage'
 import Tables from  './Tables'
 import Search from './Search'
-import Listings from './Listings'
+// import Listings from './Listings'
 
 export default class Main extends Component {
   constructor(props){
@@ -25,10 +25,6 @@ export default class Main extends Component {
         />} />
         <Match pattern="/search" render={() => <Search
           {...this.props}
-        />} />
-        <Match pattern="/list" render={() => <Listings
-          {...this.props}
-          getListings = {this.props.getListings}
         />} />
         <Match pattern="/map" render={() => <MapPage
           {...this.props}

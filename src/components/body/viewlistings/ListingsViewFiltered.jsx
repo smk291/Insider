@@ -1,6 +1,6 @@
 import React from 'react'
 import {Button, Grid, Row, Col, Tooltip, Accordion, Panel, ListGroup, ListGroupItem, Table, Pager} from 'react-bootstrap'
-import main2 from './main2.css'
+import primary from '../primary.css'
 import ListingHeader from './ListingHeader'
 import humanize from 'underscore.string/humanize'
 

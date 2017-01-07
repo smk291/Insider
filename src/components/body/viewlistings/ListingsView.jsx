@@ -1,6 +1,6 @@
 import React from 'react'
 import {Button, Grid, Row, Col, Tooltip, Accordion, Panel, ListGroup, ListGroupItem, Table, Pager} from 'react-bootstrap'
-import main2 from './main2.css'
+import primary from '../primary.css'
 import ListingHeader from './ListingHeader'
 import humanize from 'underscore.string/humanize'
 
@@ -9,23 +9,14 @@ export default class ListingsView extends React.Component {
     super(props);
     this.decrement = this.decrement.bind(this)
     this.increment = this.increment.bind(this)
-    this.getListings = this.getListings.bind(this);
   }
 
-  decrement(e){
-    this.props.decrement(e);
+  decrement(e, start, stop){
+    this.props.decrement(e, start, stop);
   }
 
-  increment(e){
-    this.props.increment(e);
-  }
-
-  getListings(e){
-    this.props.getListings(e);
-  }
-
-  componentDidMount(){
-    this.props.getListings()
+  increment(e, start, stop){
+    this.props.increment(e, start, stop);
   }
 
   render() {
@@ -33,7 +24,7 @@ export default class ListingsView extends React.Component {
       <div>
       {this.props.listings.length && this.props.listings.length > 0 ? <div>
         <Accordion style={{overflow: 'hidden', height: '65vh', fontWeight: 400}}>
-          {this.props.listings.slice(this.props.start,this.props.stop).map((el, key) => {
+          {this.props.listings.slice(this.props.start, this.props.stop).map((el, key) => {
             return <Panel
               style={{margin: '0px', borderRadius: '0px'}}
               key={key}
@@ -116,10 +107,11 @@ export default class ListingsView extends React.Component {
             })}
         </Accordion>
         <Pager>
-          <Pager.Item onSelect={this.decrement} previous href="#">&larr; Previous Page</Pager.Item>
+          <Pager.Item onSelect={this.decrement.bind(this, 'start', 'stop')} previous href="#">&larr; Previous Page</Pager.Item>
           <p style={{display: 'inline-block'}}>Listings {this.props.start + 1} - {this.props.stop + 1} out of {this.props.listings.length}</p>
-          <Pager.Item onSelect={this.increment} next href="#">Next Page &rarr;</Pager.Item>
-        </Pager> </div>: ''}
+          <Pager.Item onSelect={this.props.increment.bind(this, 'start', 'stop')} next href="#">Next Page &rarr;</Pager.Item>
+        </Pager>
+       </div>: ''}
       </div>
     );
   }

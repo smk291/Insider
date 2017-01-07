@@ -565,7 +565,6 @@ router.get('/scrape_list/:city', (req, res) => {
       neighborhood: new TextSelector('.result-hood', 0),
       urlnum: new TransformSelector('', 0, function(el) {
         console.log(el._root[0].attribs['data-pid']);
-        // console.log(el[0].attribs['data-pid');
         return el._root[0].attribs['data-pid'];
       }),
       url: new TransformSelector('.result-title', 0, function(el) {
@@ -582,7 +581,6 @@ router.get('/scrape_list/:city', (req, res) => {
       return new Promise(function(resolve, reject) {
         resolve();
         list.push(pageItem);
-        //date, title, photos, br_sqft, place, url, price
         knex('listings')
           .where('url', pageItem.url)
           .first()

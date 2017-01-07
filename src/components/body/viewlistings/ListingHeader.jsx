@@ -7,6 +7,7 @@ import Jumbotron from 'react-bootstrap/lib/Jumbotron'
 import Row from 'react-bootstrap/lib/Row'
 import listingheader from './listingheader.css'
 import Col from 'react-bootstrap/lib/Col'
+//  Used by ListingsView and ListingsViewFiltered
 
 export default class ListingsHeader extends React.Component {
   constructor(props) {

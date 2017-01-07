@@ -1,18 +1,7 @@
 import {Link} from 'react-router'
-// import {IndexLink} from 'react-router'
-// import { LinkContainer } from 'react-router-bootstrap'
-// import { IndexLinkContainer } from 'react-router-bootstrap'
 import React from 'react'
-import Navbar from 'react-bootstrap/lib/Navbar'
-import {Tooltip, OverlayTrigger} from 'react-bootstrap'
-import Nav from 'react-bootstrap/lib/Nav'
-import NavItem from 'react-bootstrap/lib/NavItem'
-import NavDropdown from 'react-bootstrap/lib/NavDropdown'
-import MenuItem from 'react-bootstrap/lib/MenuItem'
-// import InlineLogin from './InlineLogin'
-import Grid from 'react-bootstrap/lib/Grid'
-import Row from 'react-bootstrap/lib/Row'
-import Login from '../body/Login'
+import {Nav, NavItem, NavDropdown, MenuItem, Grid, Row, Navbar, Tooltip, OverlayTrigger} from 'react-bootstrap'
+import Login from '../body/auth/Login'
 import header from './header.css'
 import InlineSVG from 'svg-inline-react'
 import MdHome from 'react-icons/lib/md/home'
@@ -47,10 +36,6 @@ export default class Header extends React.Component {
   showTips(e) {
     this.props.showTips(e)
   }
-
-  // showTooltips(e){
-  //   this.props.showTooltips(e);
-  // }
 
   render() {
     const tooltip = (

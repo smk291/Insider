@@ -1,11 +1,10 @@
 import { Match, Miss } from 'react-router'
 import NotFound from '../planets/NotFound'
 import React, { Component } from 'react'
-import SignUp from './SignUp'
-import Login from './Login'
-import Main2 from './Main2'
-import MapPage from './MapPage'
-import Tables from  './Tables'
+import Login from './auth/Login'
+import Home from './Home'
+import MapPage from './mapping/MapPage'
+import Compare from  './Compare'
 import Search from './Search'
 // import Listings from './Listings'
 
@@ -20,7 +19,7 @@ export default class Main extends Component {
         <Match pattern="/login" render={() => <Login
           {...this.props}
         />} />
-        <Match pattern="/" exactly render={() => <Main2
+        <Match pattern="/" exactly render={() => <Home
           {...this.props}
         />} />
         <Match pattern="/search" render={() => <Search
@@ -29,7 +28,7 @@ export default class Main extends Component {
         <Match pattern="/map" render={() => <MapPage
           {...this.props}
         />} />
-        <Match pattern="/tables" render={() => <Tables
+        <Match pattern="/tables" render={() => <Compare
           {...this.props}
         />} />
         <Miss component={NotFound} />

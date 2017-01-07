@@ -1,57 +1,31 @@
 import React, {Component} from 'react';
 import {BrowserRouter, Route, browserHistory} from 'react-router';
 import {Button, Grid, Jumbotron, Row, Col, Popover, Tooltip, Modal} from 'react-bootstrap';
-import HeaderNavigation from './header/HeaderNavigation';
 import Footer from './footer/Footer';
-import Login from './body/Login';
-import Main from './body/Main';
+import Main from './body/Routing';
 import 'bootstrap/less/bootstrap.less'
 import axios from 'axios';
 import Header from './header/Header';
 import notify from 'react-notify-toast';
 import globalCSS from '../../globalCSS.css'
-import MapPage from './body/MapPage'
 
 export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
       showModal: false,
+      //For login
       email: '',
       password: '',
+      //For sign up
       firstName: '',
       lastName: '',
       loggedIn: '',
       signUpPassword: '',
       signUpEmail: '',
-      details: {},
-      activeTips: false,
       listings: [],
       markers: [],
-      bedroomsImport: 5,
-      rentImport: 5,
-      housingImport: 5,
-      laundryImport: 5,
-      parkingImport: 5,
-      bathImport: 5,
-      roomImport: 5,
-      catImport: 5,
-      dogImport: 5,
-      furnishedImport: 5,
-      smokingImport: 5,
-      wheelchairImport: 5,
-      bedroomsImportRequired: false,
-      rentImportRequired: false,
-      housingImportRequired: false,
-      laundryImportRequired: false,
-      parkingImportRequired: false,
-      bathImportRequired: false,
-      roomImportRequired: false,
-      catImportRequired: false,
-      dogImportRequired: false,
-      furnishedImportRequired: false,
-      smokingImportRequired: false,
-      wheelchairImportRequired: false,
+      // User preferences
       minRent: '',
       maxRent: '',
       minBedrooms: '',
@@ -94,6 +68,32 @@ export default class App extends Component {
       'no smoking': true,
       'wheelchair_types': ['wheelchair accessible'],
       'wheelchair accessible': true,
+      // User's priorities
+      bedroomsImport: 5,
+      rentImport: 5,
+      housingImport: 5,
+      laundryImport: 5,
+      parkingImport: 5,
+      bathImport: 5,
+      roomImport: 5,
+      catImport: 5,
+      dogImport: 5,
+      furnishedImport: 5,
+      smokingImport: 5,
+      wheelchairImport: 5,
+      //  If true, null values will be omitted
+      bedroomsImportRequired: false,
+      rentImportRequired: false,
+      housingImportRequired: false,
+      laundryImportRequired: false,
+      parkingImportRequired: false,
+      bathImportRequired: false,
+      roomImportRequired: false,
+      catImportRequired: false,
+      dogImportRequired: false,
+      furnishedImportRequired: false,
+      smokingImportRequired: false,
+      wheelchairImportRequired: false,
       rentAvg: '',
       rent0brAvg: '',
       rent1brAvg: '',
@@ -155,40 +155,42 @@ export default class App extends Component {
       ]
 
     }
+    //<editor-fold> Unused
+    // Unused -- modal controls
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
+    this.showTips = this.showTips.bind(this);
+    //</editor-fold>
+    //<editor-fold> Auth
+    // Authentication
     this.logOut = this.logOut.bind(this);
     this.logIn = this.logIn.bind(this);
     this.signUp = this.signUp.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.changeState = this.changeState.bind(this);
+    //</editor-fold>
+    //<editor-fold> HTTP
+    // HTTP requests
     this.scrapeList = this.scrapeList.bind(this);
     this.scrapeRows = this.scrapeRows.bind(this);
     this.scrapeNull = this.scrapeNull.bind(this);
-    this.showTips = this.showTips.bind(this);
-    this.setState = this.setState.bind(this);
     this.getListings = this.getListings.bind(this);
-    this.handleCheckbox = this.handleCheckbox.bind(this);
-    this.handleChbox = this.handleChbox.bind(this);
-    this.housingSlider = this.housingSlider.bind(this);
-    this.rentSlider = this.rentSlider.bind(this);
-    this.bedroomSlider = this.bedroomSlider.bind(this);
-    this.roomSlider = this.roomSlider.bind(this);
-    this.bathSlider = this.bathSlider.bind(this);
-    this.parkingSlider = this.parkingSlider.bind(this);
-    this.laundrySlider = this.laundrySlider.bind(this);
-    this.furnishedSlider = this.furnishedSlider.bind(this)
-    this.catSlider = this.catSlider.bind(this)
-    this.dogSlider = this.dogSlider.bind(this)
-    this.smokingSlider = this.smokingSlider.bind(this)
-    this.wheelchairSlider = this.wheelchairSlider.bind(this)
+    //</editor-fold>
+    //<editor-fold> Listing functions and pagination
+    this.filterListings = this.filterListings.bind(this)
     this.increment = this.increment.bind(this)
     this.decrement = this.decrement.bind(this)
-    this.incrementFiltered = this.incrementFiltered.bind(this)
-    this.decrementFiltered = this.decrementFiltered.bind(this)
-    this.filterListings = this.filterListings.bind(this)
+    //</editor-fold>
+    //<editor-fold> Handle changes
+    // Handle changes, set state {
+    this.setState = this.setState.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.changeState = this.changeState.bind(this);
+    this.handleCheckbox = this.handleCheckbox.bind(this);
+    this.handleChbox = this.handleChbox.bind(this);
+    this.handleSlider = this.handleSlider.bind(this)
+    // </editor-fold>
   }
 
+  // <editor-fold> Unused
   close(){
     this.setState({ showModal: false });
   }
@@ -197,27 +199,20 @@ export default class App extends Component {
     this.setState({ showModal: true });
   }
 
-  changeState() {
-    const bool = this.state.loggedIn;
+  showTips(e){
+    e.preventDefault();
+
+    const bool = this.state.activeTips;
     if (bool) {
-      this.setState({ loggedIn: false });
-    } else {
       this.setState({ loggedIn: true });
+    } else {
+      this.setState({ loggedIn: false });
     }
   }
 
-  handleCheckbox(e) {
-    let change = {}
-    change[e.target.name] = e.target.checked;
-    this.setState({change})
-  }
+  //</editor-fold>
 
-  handleChbox (field, e) {
-    var nextState = {}
-    nextState[field] = e.target.checked
-    this.setState(nextState)
-  }
-
+  // <editor-fold> Auth
   logOut (e) {
     e.preventDefault();
 
@@ -237,6 +232,15 @@ export default class App extends Component {
       // notify.show(err.response.data, 'error', 3000);
     });
     this.changeState();
+  }
+
+  changeState() {
+    const bool = this.state.loggedIn;
+    if (bool) {
+      this.setState({ loggedIn: false });
+    } else {
+      this.setState({ loggedIn: true });
+    }
   }
 
   signUp(e) {
@@ -286,17 +290,6 @@ export default class App extends Component {
     });
   }
 
-  showTips(e){
-    e.preventDefault();
-
-    const bool = this.state.activeTips;
-    if (bool) {
-      this.setState({ loggedIn: true });
-    } else {
-      this.setState({ loggedIn: false });
-    }
-  }
-
   logIn(e) {
     e.preventDefault();
 
@@ -326,6 +319,26 @@ export default class App extends Component {
       // notify.show(err.response.data, 'error', 3000);
     });
   }
+  //</editor-fold>
+
+  // <editor-fold> handle changes
+  handleSlider (field, e) {
+    var nextState = {}
+    nextState[field] = e.value
+    this.setState(nextState)
+  }
+
+  handleCheckbox(e) {
+    let change = {}
+    change[e.target.name] = e.target.checked;
+    this.setState({change})
+  }
+
+  handleChbox (field, e) {
+    var nextState = {}
+    nextState[field] = e.target.checked
+    this.setState(nextState)
+  }
 
   handleChange(e) {
     var change = {};
@@ -333,54 +346,9 @@ export default class App extends Component {
     this.setState(change);
   }
 
-  housingSlider(e) {
-    this.setState({housingImport: e.value});
-  }
+  //</editor-fold>
 
-  rentSlider(e) {
-    this.setState({rentImport: e.value});
-  }
-
-  bedroomSlider(e) {
-    this.setState({bedroomsImport: e.value});
-  }
-
-  roomSlider(e) {
-    this.setState({roomImport: e.value});
-  }
-
-  bathSlider(e) {
-    this.setState({bathImport: e.value});
-  }
-
-  parkingSlider(e) {
-    this.setState({parkingImport: e.value});
-  }
-
-  laundrySlider(e) {
-    this.setState({laundryImport: e.value});
-  }
-
-  furnishedSlider(e) {
-    this.setState({furnishedImport: e.value});
-  }
-
-  catSlider(e) {
-    this.setState({catImport: e.value});
-  }
-
-  dogSlider(e) {
-    this.setState({dogImport: e.value});
-  }
-
-  smokingSlider(e) {
-    this.setState({smokingImport: e.value});
-  }
-
-  wheelchairSlider(e) {
-    this.setState({wheelchairImport: e.value});
-  }
-
+  // <editor-fold> HTTP
   scrapeNull(e) {
       e.preventDefault();
 
@@ -433,113 +401,20 @@ export default class App extends Component {
       url: `/listings`
     }).then((res) => {
       let listings = res.data;
-      listings = listings.filter((el) => {
-        return !el.void && el.checked;
-      })
-
-      let Jan = listings.filter((el) => {
-        return el.post_date.indexOf('Jan') !== -1;
-      })
-
-      Jan.sort((a,b) => {
-        return b.post_date.split(' ')[1] - a.post_date.split(' ')[1]
-      })
-
-      let Dec = listings.filter((el) => {
-        return el.post_date.indexOf('Dec') !== -1;
-      })
-
-      Dec.sort((a,b) => {
-        return b.post_date.split(' ')[1] - a.post_date.split(' ')[1]
-      })
-
-      listings = Jan.concat(Dec);
       let markers = [];
 
       markers = listings.filter((el) => {
         return el.lat && el.lon;
       });
 
-      markers = markers.map((el) => {
-        let position = new google.maps.LatLng(el.lat, el.lon);
-        let {urlnum, bedrooms, price, title} = el;
-
-        return {position, urlnum, bedrooms, price, title, showInfo: false}
-      });
-
       this.setState({listings, markers});
-      // console.log(this.state.listings);
     }).catch((err) => {
       // console.log(err);
     })
   }
+  // </editor-fold>
 
-  decrement(e){
-    let start = this.state.start;
-    let stop = this.state.stop;
-    console.log(start);
-    console.log(stop);
-    if (start < 10){
-      start = 0;
-      stop = 9;
-    } else {
-      start -= 10;
-      stop -= 10;
-    }
-    console.log(start);
-    console.log(stop);
-    this.setState({start: start, stop: stop});
-  }
-
-  increment(e){
-    let start = this.state.start;
-    let stop = this.state.stop;
-    console.log(start);
-    console.log(stop);
-    if (this.state.listings.length - stop < 10){
-      stop = this.state.listings.length - 1;
-      start = this.state.listings.length - 10;
-    } else {
-      start += 10;
-      stop += 10;
-    }
-    console.log(start);
-    console.log(stop);
-    this.setState({start: start, stop: stop});
-  }
-
-  decrementFiltered(e){
-    let start = this.state.startFiltered;
-    let stop = this.state.stopFiltered;
-
-    if (start < 10){
-      start = 0;
-      stop = 9;
-    } else {
-      start -= 10;
-      stop -= 10;
-    }
-
-    this.setState({startFiltered: start, stopFiltered: stop});
-  }
-
-  incrementFiltered(e){
-    let start = this.state.startFiltered;
-    let stop = this.state.stopFiltered;
-    console.log(start);
-    console.log(stop);
-    if (this.state.filteredList.length - stop < 10){
-      stop = this.state.filteredList.length - 1;
-      start = this.state.fileredList.length - 10;
-    } else {
-      start += 10;
-      stop += 10;
-    }
-    console.log(start);
-    console.log(stop);
-    this.setState({startFiltered: start, stopFiltered: stop});
-  }
-
+  // <editor-fold> Listing functions and pagination
   filterListings(){
     let maxScore = 0;
 
@@ -548,7 +423,6 @@ export default class App extends Component {
     }, 0);
 
     this.setState({maxScore})
-
     let filteredOptions = [];
 
     filteredOptions = this.state.optionArrays.map((type) => {
@@ -558,8 +432,6 @@ export default class App extends Component {
     });
 
     this.setState({filteredOptions})
-
-    // 2. Loop through listings
     let filteredList = [];
 
     filteredList = this.state.listings.filter((el, idx) => {
@@ -598,6 +470,7 @@ export default class App extends Component {
         let filteredTypeOptions = filteredOptions[i];
         let importance = this.state[this.state.importTypes[i]]
         let requiredBool = this.state[this.state.requiredTypes[i]]
+
         if (value !== null){
           if (filteredTypeOptions.indexOf(value) !== -1){
             el.score += Number(importance);
@@ -607,7 +480,6 @@ export default class App extends Component {
         } else if (requiredBool){
           return false
         }
-
       }
 
       return true
@@ -616,19 +488,40 @@ export default class App extends Component {
     this.setState({filteredList})
   }
 
-  // if (el.housing_type){
-  //   let housingArr = filteredOptions[2];
-  //   let listingType = el['housing_type'];
-  //
-  //   if (housingArr.indexOf(listingType) !== -1){
-  //     el.score += this.state.housingImport;
-  //   } else if (this.state.housingImportRequired){
-  //     return false
-  //   }
-  // } else if (this.state.housingImportRequired){
-  //   return false
-  // }
-  //
+  decrement(begin, end, e){
+    let start = this.state[begin];
+    let stop = this.state[end];
+
+    if (start < 10){
+      start = 0;
+      stop = 9;
+    } else {
+      start -= 10;
+      stop -= 10;
+    }
+
+    this.setState({start, stop});
+  }
+
+  increment(begin, end, e){
+    let start = this.state[begin];
+    let stop = this.state[end];
+
+    if (this.state.listings.length - stop < 10){
+      stop = this.state.listings.length - 1;
+      start = this.state.listings.length - 10;
+    } else {
+      start += 10;
+      stop += 10;
+    }
+
+    this.setState({start, stop});
+  }
+  // </editor-fold>
+
+  componentWillMount(){
+    this.getListings();
+  }
 
   render() {
     return (

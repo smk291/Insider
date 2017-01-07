@@ -8,15 +8,6 @@ import mapstyle from './mapstyle'
 export default class MapPage extends Component {
   constructor(props) {
     super(props)
-    this.getListings = this.getListings.bind(this);
-  }
-
-  getListings(e){
-    this.props.getListings(e);
-  }
-
-  componentDidMount(){
-      this.getListings()
   }
 
   render() {

@@ -1,15 +1,6 @@
 import React, {Component} from 'react'
 import {Link} from 'react-router'
-import {
-  FormGroup,
-  FormControl,
-  controlId,
-  ControlLabel,
-  FieldGroup,
-  Button,
-  Row,
-  Col
-} from 'react-bootstrap';
+import { FormGroup, FormControl, controlId, ControlLabel, FieldGroup, Button, Row, Col } from 'react-bootstrap';
 import login from './login.css'
 
 export default class Login extends React.Component {

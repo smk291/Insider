@@ -185,38 +185,38 @@ export default class Search extends React.Component {
     let rent2brAvg = avgbrs(listings, '2BR');
     let rent3brAvg = avgbrs(listings, '3BR');
     let rent4brAvg = avgbrs(listings, '4BR');
-
-    const typesAndPrefs = [
-      ['bedroomsRange', 'bedroomsImport', ['minBedrooms', 'maxBedrooms']],
-      ['rentRange', 'rentImport', ['minRent', 'maxRent']],
-      ['housing_types', 'housingImport', ['apartment', 'condo', 'house', 'townhouse', 'duplex', 'land', 'in-law', 'cottage', 'cabin']],
-      ['laundry_types', 'laundryImport', ['laundry on site', 'w/d in unit', 'laundry in bldg']],
-      ['parking_types', 'parkingImport', ['off-street parking', 'detached garage', 'attached garage', 'valet parking', 'street parking', 'carport', 'no parking']],
-      ['bath_types', 'bathImport', ['private bath', 'no private bath']],
-      ['private_room_types', 'roomImport', ['private room', 'room not private']],
-      ['cat_types', 'catImport', ['cats are OK - purrr']],
-      ['dog_types', 'dogImport', ['dogs are OK - wooof']],
-      ['furnished_types', 'furnishedImport', ['furnished']],
-      ['smoking_types', 'smokingImport', ['no smoking']],
-      ['wheelchair_types', 'wheelchairImport', ['wheelchair accessible']],
-    ]
+    //
+    // const typesAndPrefs = [
+    //   ['bedroomsRange', 'bedroomsImport', ['minBedrooms', 'maxBedrooms']],
+    //   ['rentRange', 'rentImport', ['minRent', 'maxRent']],
+    //   ['housing_types', 'housingImport', ['apartment', 'condo', 'house', 'townhouse', 'duplex', 'land', 'in-law', 'cottage', 'cabin']],
+    //   ['laundry_types', 'laundryImport', ['laundry on site', 'w/d in unit', 'laundry in bldg']],
+    //   ['parking_types', 'parkingImport', ['off-street parking', 'detached garage', 'attached garage', 'valet parking', 'street parking', 'carport', 'no parking']],
+    //   ['bath_types', 'bathImport', ['private bath', 'no private bath']],
+    //   ['private_room_types', 'roomImport', ['private room', 'room not private']],
+    //   ['cat_types', 'catImport', ['cats are OK - purrr']],
+    //   ['dog_types', 'dogImport', ['dogs are OK - wooof']],
+    //   ['furnished_types', 'furnishedImport', ['furnished']],
+    //   ['smoking_types', 'smokingImport', ['no smoking']],
+    //   ['wheelchair_types', 'wheelchairImport', ['wheelchair accessible']],
+    // ]
 
 
     // 1. Before looping through the listings,
       // Store listings in a new variable
 
       // Loop through the values of each importance category
-      let maxScore = 0
-      maxScore = typesAndPrefs.reduce((acc, pref, idx) => {
-        return acc + this.props[pref[1]]
-      }, 0);
+      // let maxScore = 0
+      // maxScore = typesAndPrefs.reduce((acc, pref, idx) => {
+      //   return acc + this.props[pref[1]]
+      // }, 0);
         // sum them
         // store that value in state(?)
     // 2. Loop through every option and remove those whose state is false
 
     // 2. Loop through listings
     // let filteredList = [];
-    //
+    // //
     // filteredList = listings.filter((el) => {
     //   el.score = 0;
     //
@@ -233,7 +233,7 @@ export default class Search extends React.Component {
     //   } else if (this.props.strictMode === true) {
     //     return false;
     //   }
-    //
+    // //
     //   if (el.price){
     //     let minRent = Number(this.props.minRent);
     //     let maxRent = Number(this.props.maxRent);
@@ -259,10 +259,10 @@ export default class Search extends React.Component {
     //   //     return false;
     //   //   }
     //   // }
-    //
+
     //   return true;
     // });
-
+    //
     // this.setState({filteredList})
     // console.log(this.props.listings);
     // console.log(this.props.filteredList);
@@ -281,68 +281,50 @@ export default class Search extends React.Component {
     // Important values: importance, meeting criteria
     // What to do:
       // If meets criteria, add import number to listing's import number
-    //   function DropdownGroup({header, name, onChange, value, items, checked, onChange2}){
-    //     return(
-    //       <Panel
-    //         className={searchstyle.listDiv}
-    //         collapsible
-    //         header={header}>
-    //           <ListGroup
-    //             fill>
-    //             <ListGroupItem
-    //               className={searchstyle.listGroupItem}>
-    //               <ReactSimpleRange
-    //                 max={10}
-    //                 min={0}
-    //                 label
-    //                 name={name}
-    //                 onChange={onChange}
-    //                 value={value}
-    //               />
-    //             </ListGroupItem>
-    //             {items.map((type, idx) => {
-    //               return <ListGroupItem
-    //                 key={idx}
-    //                 style={{padding: '4px 10px'}}>
-    //                 <Checkbox
-    //                   inline
-    //                   key={idx}
-    //                   type="checkbox"
-    //                   checked={this.props[type]}
-    //                   onChange={this.handleChbox.bind(this, type)}>{humanize(type)}</Checkbox>
-    //               </ListGroupItem>
-    //             })}
-    //           </ListGroup>
-    //         </Panel>
-    //     );
-    //   }
-    //
-    //
-    // const dropDowns = (
-    //   <form>
-    //     <DropdownGroup
-    //       header='Housing type ▾'
-    //       name='housingImport'
-    //       onChange={this.housingSlider}
-    //       value={this.props.housingImport}>
-    //         {this.props.housing_types.map((type, idx) => {
-    //           return <ListGroupItem
-    //             key={idx}
-    //             style={{padding: '4px 10px'}}>
-    //             <Checkbox
-    //               inline
-    //               key={idx}
-    //               type="checkbox"
-    //                checked={this.props[type]}
-    //                onChange={this.handleChbox.bind(this, type)}>{humanize(type)}
-    //               >{humanize(type)}
-    //             </Checkbox>
-    //           </ListGroupItem>
-    //         })}
-    //       </DropdownGroup>
-    //     />
-    //   </form>
-    // );
+    function DropdownGroup({header, name, onChange, value, items}){
+        return(
+          <Panel
+            className={searchstyle.listDiv}
+            collapsible
+            header={header}>
+              <ListGroup
+                fill>
+                <ListGroupItem
+                  className={searchstyle.listGroupItem}>
+                  <ReactSimpleRange
+                    max={10}
+                    min={0}
+                    label
+                    name={name}
+                    onChange={onChange}
+                    value={value}
+                  />
+                </ListGroupItem>
+                <MappedOptions
+                  items={items}/>
+              </ListGroup>
+          </Panel>
+      );
+    }
+
+    const MappedOptions = ({items}) => {
+      return(
+        <div>
+          {items.map((type, idx) => {
+          return <ListGroupItem
+            key={idx}
+            style={{padding: '4px 10px'}}>
+            <Checkbox
+              inline
+              key={idx}
+              type="checkbox"
+              checked={this.props[type]}
+              onChange={this.handleChbox.bind(this, type)}>{humanize(type)}</Checkbox>
+          </ListGroupItem>
+        })}
+      </div>
+      )
+    }
 
     return (
       <div style={{height: '85vh'}}>
@@ -358,26 +340,16 @@ export default class Search extends React.Component {
                           <Row>
                             <Col className={searchstyle.dropdowns}>
                               {/* {drowndowns} */}
-                                  <Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible header='Housing type ▾'>
-                                      <ListGroup fill>
-                                        <ListGroupItem style={{padding: '4px 10px'}}>
-                                          <ReactSimpleRange
-                                            max={10}
-                                            min={0}
-                                            label
-                                            name='housingImport'
-                                            onChange={this.housingSlider}
-                                            value={this.props.housingImport}
-                                          />
-                                        </ListGroupItem>
-                                        {this.props.housing_types.map((type, idx) => {
-                                          return <ListGroupItem key={idx} style={{padding: '4px 10px'}}>
-                                            <Checkbox inline key={idx} type="checkbox" checked={this.props[type]} onChange={this.handleChbox.bind(this, type)}>{humanize(type)}</Checkbox>
-                                          </ListGroupItem>
-                                        })}
-                                      </ListGroup>
-                                    </Panel>
-                                    <Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded header='Rent ▾'>
+                              <DropdownGroup
+                                header='Housing type ▾'
+                                name='housingImport'
+                                onChange={this.housingSlider}
+                                value={this.props.housingImport}
+                                items={this.props.housing_types}
+                              />
+
+                                    <Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded={false} header='Rent ▾'>
+                                      <Checkbox inline type="checkbox" checked={this.props.rentImportRequired} onChange={this.handleChbox.bind(this, 'rentImportRequired')}>Required?</Checkbox>
                                       <ListGroup fill>
                                         <ListGroupItem style={{padding: '4px 10px'}}>
                                           <FormControl style={{width: '64px', padding: '4px 10px', display: 'inline-block'}} name="minRent" type="number" placeholder="min" min="0" step={50} value={this.props.minRent} onChange={this.handleChange}/>
@@ -394,6 +366,7 @@ export default class Search extends React.Component {
                                       </ListGroup>
                                     </Panel>
                                     <Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded={false} header='Bedrooms ▾'>
+                                      <Checkbox inline type="checkbox" checked={this.props.bedroomsImportRequired} onChange={this.handleChbox.bind(this, 'bedroomsImportRequired')}>Required?</Checkbox>
                                       <ListGroup fill>
                                         <ListGroupItem style={{padding: '4px 10px'}}>
                                           <FormControl style={{width: '64px', padding: '4px 10px', display: 'inline-block'}} name="minBedrooms" type="number" placeholder="min" min="0" value={this.props.minBedrooms} onChange={this.handleChange}/>
@@ -410,6 +383,7 @@ export default class Search extends React.Component {
                                       </ListGroup>
                                     </Panel>
                                     <Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded={false} header='Private room ▾'>
+                                      <Checkbox inline type="checkbox" checked={this.props.roomImportRequired} onChange={this.handleChbox.bind(this, 'roomImportRequired')}>Required?</Checkbox>
                                       <ListGroup fill>
                                         <ListGroupItem style={{padding: '4px 10px'}}>
                                           {this.props.private_room_types.map((type, idx) => {
@@ -427,6 +401,7 @@ export default class Search extends React.Component {
                                       </ListGroup>
                                     </Panel>
                                     <Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded={false} header='Private bath ▾'>
+                                      <Checkbox inline type="checkbox" checked={this.props.bathImportRequired} onChange={this.handleChbox.bind(this, 'bathImportRequired')}>Required?</Checkbox>
                                       <ListGroup fill>
                                         <ListGroupItem style={{padding: '4px 10px'}}>
                                           {this.props.bath_types.map((type, idx) => {
@@ -444,6 +419,7 @@ export default class Search extends React.Component {
                                       </ListGroup>
                                     </Panel>
                                     <Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded={false} header="Parking ▾">
+                                      <Checkbox inline type="checkbox" checked={this.props.parkingImportRequired} onChange={this.handleChbox.bind(this, 'parkingImportRequired')}>Required?</Checkbox>
                                       <ListGroup fill>
                                         <ListGroupItem style={{padding: '4px 10px'}}>
                                           <ReactSimpleRange style={{padding: '4px 10px'}}
@@ -463,6 +439,7 @@ export default class Search extends React.Component {
                                       </ListGroup>
                                     </Panel>
                                     <Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded={false} header="Laundry ▾">
+                                      <Checkbox inline type="checkbox" checked={this.props.laundryImportRequired} onChange={this.handleChbox.bind(this, 'laundryImportRequired')}>Required?</Checkbox>
                                       <ListGroup fill>
                                         <ListGroupItem style={{padding: '4px 10px'}}>
                                           <ReactSimpleRange style={{padding: '4px 10px'}}
@@ -495,6 +472,7 @@ export default class Search extends React.Component {
                                             onChange={this.furnishedSlider}
                                             value={this.props.furnishedImport}
                                           />
+                                          <Checkbox inline type="checkbox" checked={this.props.furnishedImportRequired} onChange={this.handleChbox.bind(this, 'furnishedImportRequired')}>Required?</Checkbox>
                                         </ListGroupItem>
                                         <ListGroupItem  style={{padding: '4px 10px'}}>
                                           {this.props.cat_types.map((type, idx) => {
@@ -508,6 +486,7 @@ export default class Search extends React.Component {
                                             onChange={this.catSlider}
                                             value={this.props.catImport}
                                           />
+                                          <Checkbox inline type="checkbox" checked={this.props.catImportRequired} onChange={this.handleChbox.bind(this, 'catImportRequired')}>Required?</Checkbox>
                                         </ListGroupItem>
                                         <ListGroupItem  style={{padding: '4px 10px'}}>
                                           {this.props.dog_types.map((type, idx) => {
@@ -521,6 +500,7 @@ export default class Search extends React.Component {
                                             onChange={this.dogSlider}
                                             value={this.props.dogImport}
                                           />
+                                          <Checkbox inline type="checkbox" checked={this.props.dogImportRequired} onChange={this.handleChbox.bind(this, 'dogImportRequired')}>Required?</Checkbox>
                                         </ListGroupItem>
                                         <ListGroupItem  style={{padding: '4px 10px'}}>
                                           {this.props.smoking_types.map((type, idx) => {
@@ -534,6 +514,7 @@ export default class Search extends React.Component {
                                             onChange={this.smokingSlider}
                                             value={this.props.smokingImport}
                                           />
+                                          <Checkbox inline type="checkbox" checked={this.props.smokingImportRequired} onChange={this.handleChbox.bind(this, 'smokingImportRequired')}>Required?</Checkbox>
                                         </ListGroupItem>
                                         <ListGroupItem  style={{padding: '4px 10px'}}>
                                         </ListGroupItem>
@@ -549,6 +530,7 @@ export default class Search extends React.Component {
                                             onChange={this.wheelchairSlider}
                                             value={this.props.wheelchairImport}
                                           />
+                                        <Checkbox inline type="checkbox" checked={this.props.wheelchairImportRequired} onChange={this.handleChbox.bind(this, 'wheelchairImportRequired')}>Required?</Checkbox>
                                         </ListGroupItem>
                                       </ListGroup>
                                     </Panel>

@@ -30,7 +30,7 @@ export default class App extends Component {
       markers: [],
       bedroomsImport: 5,
       rentImport: 5,
-      housingImport: 5,
+      housingImport: 10,
       laundryImport: 5,
       parkingImport: 5,
       bathImport: 5,
@@ -40,6 +40,18 @@ export default class App extends Component {
       furnishedImport: 5,
       smokingImport: 5,
       wheelchairImport: 5,
+      bedroomsImportRequired: false,
+      rentImportRequired: false,
+      housingImportRequired: false,
+      laundryImportRequired: false,
+      parkingImportRequired: false,
+      bathImportRequired: false,
+      roomImportRequired: false,
+      catImportRequired: false,
+      dogImportRequired: false,
+      furnishedImportRequired: false,
+      smokingImportRequired: false,
+      wheelchairImportRequired: false,
       minRent: '',
       maxRent: '',
       minBedrooms: '',
@@ -94,7 +106,40 @@ export default class App extends Component {
       startFiltered: 0,
       stopFiltered: 9,
       strictMode: false,
-      filteredList: []
+      filteredList: [],
+      filteredOptions: [],
+      maxScore: [],
+      types: ['bedroomsRange', 'rentRange', 'housing_type', 'laundry_types', 'parking_types', 'bath_types', 'private_room_types', 'cat_types', 'dog_types', 'furnished_types', 'smoking_types', 'wheelchair_types'],
+      importTypes: ['bedroomsImport', 'rentImport', 'housingImport', 'laundryImport', 'parkingImport', 'bathImport', 'roomImport', 'catImport', 'dogImport', 'furnishedImport', 'smokingImport', 'wheelchairImport'],
+      optionArrays: [
+        ['minBedrooms', 'maxBedrooms'],
+        ['minRent', 'maxRent'],
+        ['apartment', 'condo', 'house', 'townhouse', 'duplex', 'land', 'in-law', 'cottage', 'cabin'],
+        ['laundry on site', 'w/d in unit', 'laundry in bldg'],
+        ['off-street parking', 'detached garage', 'attached garage', 'valet parking', 'street parking', 'carport', 'no parking'],
+        ['private bath', 'no private bath'],
+        ['private room', 'room not private'],
+        ['cats are OK - purrr'],
+        ['dogs are OK - wooof'],
+        ['furnished'],
+        ['no smoking'],
+        ['wheelchair accessible']
+      ],
+      typesAndPrefs: [
+        ['bedroomsRange', 'bedroomsImport', ['minBedrooms', 'maxBedrooms']],
+        ['rentRange', 'rentImport', ['minRent', 'maxRent']],
+        ['housing_type', 'housingImport', ['apartment', 'condo', 'house', 'townhouse', 'duplex', 'land', 'in-law', 'cottage', 'cabin']],
+        ['laundry_types', 'laundryImport', ['laundry on site', 'w/d in unit', 'laundry in bldg']],
+        ['parking_types', 'parkingImport', ['off-street parking', 'detached garage', 'attached garage', 'valet parking', 'street parking', 'carport', 'no parking']],
+        ['bath_types', 'bathImport', ['private bath', 'no private bath']],
+        ['private_room_types', 'roomImport', ['private room', 'room not private']],
+        ['cat_types', 'catImport', ['cats are OK - purrr']],
+        ['dog_types', 'dogImport', ['dogs are OK - wooof']],
+        ['furnished_types', 'furnishedImport', ['furnished']],
+        ['smoking_types', 'smokingImport', ['no smoking']],
+        ['wheelchair_types', 'wheelchairImport', ['wheelchair accessible']],
+      ]
+
     }
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
@@ -157,33 +202,6 @@ export default class App extends Component {
     var nextState = {}
     nextState[field] = e.target.checked
     this.setState(nextState)
-
-    const typesAndPrefs = [
-      ['bedroomsRange', 'bedroomsImport', ['minBedrooms', 'maxBedrooms']],
-      ['rentRange', 'rentImport', ['minRent', 'maxRent']],
-      ['housing_type', 'housingImport', ['apartment', 'condo', 'house', 'townhouse', 'duplex', 'land', 'in-law', 'cottage', 'cabin']],
-      ['laundry_types', 'laundryImport', ['laundry on site', 'w/d in unit', 'laundry in bldg']],
-      ['parking_types', 'parkingImport', ['off-street parking', 'detached garage', 'attached garage', 'valet parking', 'street parking', 'carport', 'no parking']],
-      ['bath_types', 'bathImport', ['private bath', 'no private bath']],
-      ['private_room_types', 'roomImport', ['private room', 'room not private']],
-      ['cat_types', 'catImport', ['cats are OK - purrr']],
-      ['dog_types', 'dogImport', ['dogs are OK - wooof']],
-      ['furnished_types', 'furnishedImport', ['furnished']],
-      ['smoking_types', 'smokingImport', ['no smoking']],
-      ['wheelchair_types', 'wheelchairImport', ['wheelchair accessible']],
-    ]
-
-    let filteredOptions = [];
-
-    filteredOptions = typesAndPrefs.map((type) => {
-      return type[2].filter((option) => {
-        return this.state[option]
-      })
-    });
-
-    this.setState({filteredOptions})
-
-    console.log(filteredOptions);
   }
 
   logOut (e) {
@@ -356,10 +374,7 @@ export default class App extends Component {
         method: 'get',
         url: '/scrape_null'
       }).then((res) => {
-        console.log(res);
       }).catch((err) => {
-        // errBool = true;
-        console.log(err);
       });
   }
 
@@ -370,7 +385,6 @@ export default class App extends Component {
       method: 'get',
       url: '/scrape_list/seattle'
     }).then((res) => {
-      console.log(res);
       this.setState({list: res.data});
     }).catch((err) => {
       // notify.show(err.response.data.errors[0].messages[0], 'error', 3000);
@@ -379,7 +393,6 @@ export default class App extends Component {
 
   scrapeRows(e) {
     let details = [];
-    console.log(this.state.list.data);
 
     this.state.list.map((el) => {
       if (el.urlnum){
@@ -398,7 +411,6 @@ export default class App extends Component {
         this.setState({details});
       }
     })
-    console.log(details);
   }
 
   getListings(){
@@ -515,84 +527,98 @@ export default class App extends Component {
   }
 
   filterListings(){
-    const typesAndPrefs = [
-      ['bedroomsRange', 'bedroomsImport', ['minBedrooms', 'maxBedrooms']],
-      ['rentRange', 'rentImport', ['minRent', 'maxRent']],
-      ['housing_type', 'housingImport', ['apartment', 'condo', 'house', 'townhouse', 'duplex', 'land', 'in-law', 'cottage', 'cabin']],
-      ['laundry_types', 'laundryImport', ['laundry on site', 'w/d in unit', 'laundry in bldg']],
-      ['parking_types', 'parkingImport', ['off-street parking', 'detached garage', 'attached garage', 'valet parking', 'street parking', 'carport', 'no parking']],
-      ['bath_types', 'bathImport', ['private bath', 'no private bath']],
-      ['private_room_types', 'roomImport', ['private room', 'room not private']],
-      ['cat_types', 'catImport', ['cats are OK - purrr']],
-      ['dog_types', 'dogImport', ['dogs are OK - wooof']],
-      ['furnished_types', 'furnishedImport', ['furnished']],
-      ['smoking_types', 'smokingImport', ['no smoking']],
-      ['wheelchair_types', 'wheelchairImport', ['wheelchair accessible']],
-    ]
+    let maxScore = 0;
 
-
-    let maxScore = 0
-
-    maxScore = typesAndPrefs.reduce((acc, pref, idx) => {
-      return acc + this.props[pref[1]]
+    maxScore = this.state.importTypes.reduce((acc, pref, idx) => {
+      return acc + this.props[pref];
     }, 0);
+
+    this.setState({maxScore})
 
     let filteredOptions = [];
 
-      filteredOptions = typesAndPrefs.map((type) => {
-        return type[2].filter((option) => {
-          return this.props[option];
-        })
-      });
+    filteredOptions = this.state.optionArrays.map((type) => {
+      return type.filter((option) => {
+        return this.state[option]
+      })
+    });
+
+    this.setState({filteredOptions})
 
     // 2. Loop through listings
     let filteredList = [];
-    console.log(filteredOptions);
 
     filteredList = this.state.listings.filter((el) => {
       el.score = 0;
 
-      // if(el.bedrooms){
-      //   let minBed = Number(this.props.minBedrooms);
-      //   let maxBed = Number(this.props.maxBedrooms);
-      //   let brs = Number(el.bedrooms.slice(0, el.bedrooms.indexOf('BR')));
-      //
-      //   if (brs >= minBed && brs <= maxBed){
-      //     el.score += this.props.bedroomsImport;
-      //   } else if (this.props.bedroomsImport === 10){
-      //     return false;
-      //   }
-      // } else if (this.props.strictMode === true) {
-      //   return false;
-      // }
-      //
-      // if (el.price){
-      //   let minRent = Number(this.props.minRent);
-      //   let maxRent = Number(this.props.maxRent);
-      //   let rent = Number(el.price);
-      //
-      //   if (rent >= minRent && rent <= maxRent){
-      //     el.score += this.props.rentImport;
-      //   } else if (this.props.rentImport === 10){
-      //     return false;
-      //   }
-      // } else if (this.props.strictMode === true) {
-      //   return false;
-      // }
-      //
       if (el['housing_type'] !== null){
         let housingArr = filteredOptions[2];
         let listingType = el['housing_type'];
-        console.log(housingArr);
-        console.log(listingType);
-        console.log(housingArr.indexOf(listingType));
 
         if (housingArr.indexOf(listingType) !== -1){
-          el.score += this.props.housingImport;
-        } else {
+          el.score += this.state.housingImport;
+        } else if (this.state.housingImportRequired){
           return false
         }
+      } else if (this.state.housingImportRequired){
+        console.log(null);
+        return false
       }
+
+      console.log(el.score);
+      return true;
+    });
+      // if(el.bedrooms){
+      //   let minBed = Number(this.state.minBedrooms);
+      //   let maxBed = Number(this.state.maxBedrooms);
+      //   let brs = Number(el.bedrooms.slice(0, el.bedrooms.indexOf('BR')));
+      //
+      //   console.log(minBed);
+      //   console.log(maxBed);
+      //   console.log(brs);
+      //   console.log(brs >= minBed && brs <= maxBed);
+      //
+      //   if (brs >= minBed && brs <= maxBed){
+      //     el.score += this.state.bedroomsImport;
+      //   } else if (this.state.bedroomsImportRequired){
+      //     return false;
+      //   }
+      // } else if (this.state.bedroomsImportRequired) {
+      //   return false;
+      // }
+
+      // if (el.price){
+      //   if (minRent = '' ) {
+      //     minRent = 0;
+      //   }
+      //
+      //   if (maxRent = '' || maxRent < minRent){
+      //     maxRent = Infinity;
+      //   }
+      //
+      //   let minRent = Number(this.state.minRent);
+      //   let maxRent = Number(this.state.maxRent);
+      //
+      //   let rent = Number(el.price);
+      //
+      //   console.log(minRent);
+      //   console.log(maxRent);
+      //   console.log(rent);
+      //   console.log(rent >= minRent && rent <= maxRent);
+      //
+      //   if (rent >= minRent && rent <= maxRent){
+      //     el.score += this.state.rentImport;
+      //   } else if (this.state.rentImportRequired){
+      //     return false;
+      //   }
+      // } else if (this.state.rentImportRequired) {
+      //   return false;
+      // }
+
+
+      //
+      //
+
 
       // console.log(el.laundry_types);
       // if (el['laundry_types']){
@@ -636,8 +662,6 @@ export default class App extends Component {
       //   }
       // }
 
-      return true;
-    });
 
     this.setState({filteredList})
     console.log(this.state.listings);

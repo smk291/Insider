@@ -281,14 +281,14 @@ export default class Search extends React.Component {
     // Important values: importance, meeting criteria
     // What to do:
       // If meets criteria, add import number to listing's import number
-    function DropdownGroup({header, name, onChange, value, items}){
+    const DropdownGroup = ({header, name, onChange, value, items, propsRequired, required}) => {
         return(
           <Panel
             className={searchstyle.listDiv}
-            collapsible
             header={header}>
               <ListGroup
                 fill>
+                <Checkbox inline type="checkbox" checked={propsRequired} onChange={this.handleChbox.bind(this, required)}>Required?</Checkbox>
                 <ListGroupItem
                   className={searchstyle.listGroupItem}>
                   <ReactSimpleRange
@@ -339,201 +339,166 @@ export default class Search extends React.Component {
                         <Grid fluid>
                           <Row>
                             <Col className={searchstyle.dropdowns}>
-                              {/* {drowndowns} */}
                               <DropdownGroup
                                 header='Housing type ▾'
                                 name='housingImport'
                                 onChange={this.housingSlider}
                                 value={this.props.housingImport}
                                 items={this.props.housing_types}
+                                propsRequired={this.props.housingImportRequired}
+                                required='housingImportRequired'
+                              />
+                              <Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded={false} header='Rent ▾'>
+                                <Checkbox inline type="checkbox" checked={this.props.rentImportRequired} onChange={this.handleChbox.bind(this, 'rentImportRequired')}>Required?</Checkbox>
+                                <ListGroup fill>
+                                  <ListGroupItem style={{padding: '4px 10px'}}>
+                                    <FormControl style={{width: '64px', padding: '4px 10px', display: 'inline-block'}} name="minRent" type="number" placeholder="min" min="0" step={50} value={this.props.minRent} onChange={this.handleChange}/>
+                                    <FormControl style={{width: '64px', padding: '4px 10px', display: 'inline-block'}} name="maxRent" type="number" placeholder="max" min={this.props.minRent} step={50} value={this.props.maxRent} onChange={this.handleChange}/>
+                                    <ReactSimpleRange style={{padding: '4px 10px'}}
+                                      max={10}
+                                      min={0}
+                                      label
+                                      name='rentImport'
+                                      onChange={this.rentSlider}
+                                      value={this.props.rentImport}
+                                    />
+                                  </ListGroupItem>
+                                </ListGroup>
+                              </Panel>
+                              <Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded={false} header='Bedrooms ▾'>
+                                <Checkbox inline type="checkbox" checked={this.props.bedroomsImportRequired} onChange={this.handleChbox.bind(this, 'bedroomsImportRequired')}>Required?</Checkbox>
+                                <ListGroup fill>
+                                  <ListGroupItem style={{padding: '4px 10px'}}>
+                                    <FormControl style={{width: '64px', padding: '4px 10px', display: 'inline-block'}} name="minBedrooms" type="number" placeholder="min" min="0" value={this.props.minBedrooms} onChange={this.handleChange}/>
+                                    <FormControl style={{width: '64px', padding: '4px 10px', display: 'inline-block'}} name="maxBedrooms" type="number" placeholder="max" min={this.props.minBedrooms} value={this.props.maxBedrooms} onChange={this.handleChange}/>
+                                    <ReactSimpleRange style={{padding: '4px 10px'}}
+                                      max={10}
+                                      min={0}
+                                      label
+                                      name='bedroomsImport'
+                                      onChange={this.bedroomSlider}
+                                      value={this.props.bedroomsImport}
+                                    />
+                                  </ListGroupItem>
+                                </ListGroup>
+                              </Panel>
+
+                              <DropdownGroup
+                                header='Private room ▾'
+                                name='roomImport'
+                                onChange={this.roomSlider}
+                                value={this.props.roomImport}
+                                items={this.props.private_room_types}
+                                propsRequired={this.props.roomImportRequired}
+                                required='roomImportRequired'
                               />
 
-                                    <Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded={false} header='Rent ▾'>
-                                      <Checkbox inline type="checkbox" checked={this.props.rentImportRequired} onChange={this.handleChbox.bind(this, 'rentImportRequired')}>Required?</Checkbox>
-                                      <ListGroup fill>
-                                        <ListGroupItem style={{padding: '4px 10px'}}>
-                                          <FormControl style={{width: '64px', padding: '4px 10px', display: 'inline-block'}} name="minRent" type="number" placeholder="min" min="0" step={50} value={this.props.minRent} onChange={this.handleChange}/>
-                                          <FormControl style={{width: '64px', padding: '4px 10px', display: 'inline-block'}} name="maxRent" type="number" placeholder="max" min={this.props.minRent} step={50} value={this.props.maxRent} onChange={this.handleChange}/>
-                                          <ReactSimpleRange style={{padding: '4px 10px'}}
-                                            max={10}
-                                            min={0}
-                                            label
-                                            name='rentImport'
-                                            onChange={this.rentSlider}
-                                            value={this.props.rentImport}
-                                          />
-                                        </ListGroupItem>
-                                      </ListGroup>
-                                    </Panel>
-                                    <Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded={false} header='Bedrooms ▾'>
-                                      <Checkbox inline type="checkbox" checked={this.props.bedroomsImportRequired} onChange={this.handleChbox.bind(this, 'bedroomsImportRequired')}>Required?</Checkbox>
-                                      <ListGroup fill>
-                                        <ListGroupItem style={{padding: '4px 10px'}}>
-                                          <FormControl style={{width: '64px', padding: '4px 10px', display: 'inline-block'}} name="minBedrooms" type="number" placeholder="min" min="0" value={this.props.minBedrooms} onChange={this.handleChange}/>
-                                          <FormControl style={{width: '64px', padding: '4px 10px', display: 'inline-block'}} name="maxBedrooms" type="number" placeholder="max" min={this.props.minBedrooms} value={this.props.maxBedrooms} onChange={this.handleChange}/>
-                                          <ReactSimpleRange style={{padding: '4px 10px'}}
-                                            max={10}
-                                            min={0}
-                                            label
-                                            name='bedroomsImport'
-                                            onChange={this.bedroomSlider}
-                                            value={this.props.bedroomsImport}
-                                          />
-                                        </ListGroupItem>
-                                      </ListGroup>
-                                    </Panel>
-                                    <Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded={false} header='Private room ▾'>
-                                      <Checkbox inline type="checkbox" checked={this.props.roomImportRequired} onChange={this.handleChbox.bind(this, 'roomImportRequired')}>Required?</Checkbox>
-                                      <ListGroup fill>
-                                        <ListGroupItem style={{padding: '4px 10px'}}>
-                                          {this.props.private_room_types.map((type, idx) => {
-                                            return <Checkbox key={idx} type="checkbox" checked={this.props[type]} onChange={this.handleChbox.bind(this, type)}>{humanize(type)}</Checkbox>
-                                          })}
-                                          <ReactSimpleRange style={{padding: '4px 10px'}}
-                                            max={10}
-                                            min={0}
-                                            label
-                                            name='roomImport'
-                                            onChange={this.roomSlider}
-                                            value={this.props.roomImport}
-                                          />
-                                        </ListGroupItem>
-                                      </ListGroup>
-                                    </Panel>
-                                    <Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded={false} header='Private bath ▾'>
-                                      <Checkbox inline type="checkbox" checked={this.props.bathImportRequired} onChange={this.handleChbox.bind(this, 'bathImportRequired')}>Required?</Checkbox>
-                                      <ListGroup fill>
-                                        <ListGroupItem style={{padding: '4px 10px'}}>
-                                          {this.props.bath_types.map((type, idx) => {
-                                            return <Checkbox key={idx} type="checkbox" checked={this.props[type]} onChange={this.handleChbox.bind(this, type)}>{humanize(type)}</Checkbox>
-                                          })}
-                                          <ReactSimpleRange style={{padding: '4px 10px'}}
-                                            max={10}
-                                            min={0}
-                                            label
-                                            name='bathImport'
-                                            onChange={this.bathSlider}
-                                            value={this.props.bathImport}
-                                          />
-                                        </ListGroupItem>
-                                      </ListGroup>
-                                    </Panel>
-                                    <Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded={false} header="Parking ▾">
-                                      <Checkbox inline type="checkbox" checked={this.props.parkingImportRequired} onChange={this.handleChbox.bind(this, 'parkingImportRequired')}>Required?</Checkbox>
-                                      <ListGroup fill>
-                                        <ListGroupItem style={{padding: '4px 10px'}}>
-                                          <ReactSimpleRange style={{padding: '4px 10px'}}
-                                            max={10}
-                                            min={0}
-                                            label
-                                            name='parkingImport'
-                                            onChange={this.parkingSlider}
-                                            value={this.props.parkingImport}
-                                          />
-                                        </ListGroupItem>
-                                        {this.props.parking_types.map((type, idx) => {
-                                          return <ListGroupItem key={idx} style={{padding: '4px 10px'}}>
-                                            <Checkbox inline key={idx} type="checkbox" checked={this.props[type]} onChange={this.handleChbox.bind(this, type)}>{humanize(type)}</Checkbox>
-                                        </ListGroupItem>
-                                        })}
-                                      </ListGroup>
-                                    </Panel>
-                                    <Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded={false} header="Laundry ▾">
-                                      <Checkbox inline type="checkbox" checked={this.props.laundryImportRequired} onChange={this.handleChbox.bind(this, 'laundryImportRequired')}>Required?</Checkbox>
-                                      <ListGroup fill>
-                                        <ListGroupItem style={{padding: '4px 10px'}}>
-                                          <ReactSimpleRange style={{padding: '4px 10px'}}
-                                            max={10}
-                                            min={0}
-                                            label
-                                            name='laundryImport'
-                                            onChange={this.laundrySlider}
-                                            value={this.props.laundryImport}
-                                          />
-                                        </ListGroupItem>
-                                        {this.props.laundry_types.map((type, idx) => {
-                                          return <ListGroupItem key={idx} style={{padding: '4px 10px'}}>
-                                              <Checkbox inline key={idx} type="checkbox" checked={this.props[type]} onChange={this.handleChbox.bind(this, type)}>{humanize(type)}</Checkbox>
-                                          </ListGroupItem>
-                                        })}
-                                      </ListGroup>
-                                    </Panel>
-                                    <Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded={false} header='Misc ▾'>
-                                      <ListGroup fill>
-                                        <ListGroupItem style={{padding: '4px 10px'}}>
-                                          {this.props.furnished_types.map((type, idx) => {
-                                            return <Checkbox key={idx} type="checkbox" checked={this.props[type]} onChange={this.handleChbox.bind(this, type)}>{humanize(type)}</Checkbox>
-                                          })}
-                                          <ReactSimpleRange style={{padding: '4px 10px'}}
-                                            max={10}
-                                            min={0}
-                                            label
-                                            name='furnishedImport'
-                                            onChange={this.furnishedSlider}
-                                            value={this.props.furnishedImport}
-                                          />
-                                          <Checkbox inline type="checkbox" checked={this.props.furnishedImportRequired} onChange={this.handleChbox.bind(this, 'furnishedImportRequired')}>Required?</Checkbox>
-                                        </ListGroupItem>
-                                        <ListGroupItem  style={{padding: '4px 10px'}}>
-                                          {this.props.cat_types.map((type, idx) => {
-                                            return <Checkbox key={idx} type="checkbox" checked={this.props[type]} onChange={this.handleChbox.bind(this, type)}>{humanize(type)}</Checkbox>
-                                          })}
-                                          <ReactSimpleRange style={{padding: '4px 10px'}}
-                                            max={10}
-                                            min={0}
-                                            label
-                                            name='catImport'
-                                            onChange={this.catSlider}
-                                            value={this.props.catImport}
-                                          />
-                                          <Checkbox inline type="checkbox" checked={this.props.catImportRequired} onChange={this.handleChbox.bind(this, 'catImportRequired')}>Required?</Checkbox>
-                                        </ListGroupItem>
-                                        <ListGroupItem  style={{padding: '4px 10px'}}>
-                                          {this.props.dog_types.map((type, idx) => {
-                                            return <Checkbox key={idx} type="checkbox" checked={this.props[type]} onChange={this.handleChbox.bind(this, type)}>{humanize(type)}</Checkbox>
-                                          })}
-                                          <ReactSimpleRange style={{padding: '4px 10px'}}
-                                            max={10}
-                                            min={0}
-                                            label
-                                            name='dogImport'
-                                            onChange={this.dogSlider}
-                                            value={this.props.dogImport}
-                                          />
-                                          <Checkbox inline type="checkbox" checked={this.props.dogImportRequired} onChange={this.handleChbox.bind(this, 'dogImportRequired')}>Required?</Checkbox>
-                                        </ListGroupItem>
-                                        <ListGroupItem  style={{padding: '4px 10px'}}>
-                                          {this.props.smoking_types.map((type, idx) => {
-                                            return <Checkbox key={idx} type="checkbox" checked={this.props[type]} onChange={this.handleChbox.bind(this, type)}>{humanize(type)}</Checkbox>
-                                          })}
-                                          <ReactSimpleRange style={{padding: '4px 10px'}}
-                                            max={10}
-                                            min={0}
-                                            label
-                                            name='smokingImport'
-                                            onChange={this.smokingSlider}
-                                            value={this.props.smokingImport}
-                                          />
-                                          <Checkbox inline type="checkbox" checked={this.props.smokingImportRequired} onChange={this.handleChbox.bind(this, 'smokingImportRequired')}>Required?</Checkbox>
-                                        </ListGroupItem>
-                                        <ListGroupItem  style={{padding: '4px 10px'}}>
-                                        </ListGroupItem>
-                                        <ListGroupItem  style={{padding: '4px 10px'}}>
-                                          {this.props.wheelchair_types.map((type, idx) => {
-                                            return <Checkbox type="checkbox" key={idx} checked={this.props[type]} onChange={this.handleChbox.bind(this, type)}>{humanize(type)}</Checkbox>
-                                          })}
-                                          <ReactSimpleRange style={{padding: '4px 10px'}}
-                                            max={10}
-                                            min={0}
-                                            label
-                                            name='wheelchairImport'
-                                            onChange={this.wheelchairSlider}
-                                            value={this.props.wheelchairImport}
-                                          />
-                                        <Checkbox inline type="checkbox" checked={this.props.wheelchairImportRequired} onChange={this.handleChbox.bind(this, 'wheelchairImportRequired')}>Required?</Checkbox>
-                                        </ListGroupItem>
-                                      </ListGroup>
-                                    </Panel>
+                              <DropdownGroup
+                                header='Private bath ▾'
+                                name='bathImport'
+                                onChange={this.bathSlider}
+                                value={this.props.bathImport}
+                                items={this.props.bath_types}
+                                propsRequired={this.props.bathImportRequired}
+                                required='bathImportRequired'
+                              />
+
+                              <DropdownGroup
+                                header='Parking ▾'
+                                name='parkingImport'
+                                onChange={this.parkingSlider}
+                                value={this.props.parkingImport}
+                                items={this.props.parking_types}
+                                propsRequired={this.props.parkingImportRequired}
+                                required='parkingImportRequired'
+                              />
+
+                              <DropdownGroup
+                                header='Laundry ▾'
+                                name='laundryImport'
+                                onChange={this.laundrySlider}
+                                value={this.props.laundryImport}
+                                items={this.props.laundry_types}
+                                propsRequired={this.props.laundryImportRequired}
+                                required='laundryImportRequired'
+                              />
+
+                              <Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded={false} header='Misc ▾'>
+                                <ListGroup fill>
+                                  <ListGroupItem style={{padding: '4px 10px'}}>
+                                    {this.props.furnished_types.map((type, idx) => {
+                                      return <Checkbox key={idx} type="checkbox" checked={this.props[type]} onChange={this.handleChbox.bind(this, type)}>{humanize(type)}</Checkbox>
+                                    })}
+                                    <ReactSimpleRange style={{padding: '4px 10px'}}
+                                      max={10}
+                                      min={0}
+                                      label
+                                      name='furnishedImport'
+                                      onChange={this.furnishedSlider}
+                                      value={this.props.furnishedImport}
+                                    />
+                                    <Checkbox inline type="checkbox" checked={this.props.furnishedImportRequired} onChange={this.handleChbox.bind(this, 'furnishedImportRequired')}>Required?</Checkbox>
+                                  </ListGroupItem>
+                                  <ListGroupItem  style={{padding: '4px 10px'}}>
+                                    {this.props.cat_types.map((type, idx) => {
+                                      return <Checkbox key={idx} type="checkbox" checked={this.props[type]} onChange={this.handleChbox.bind(this, type)}>{humanize(type)}</Checkbox>
+                                    })}
+                                    <ReactSimpleRange style={{padding: '4px 10px'}}
+                                      max={10}
+                                      min={0}
+                                      label
+                                      name='catImport'
+                                      onChange={this.catSlider}
+                                      value={this.props.catImport}
+                                    />
+                                    <Checkbox inline type="checkbox" checked={this.props.catImportRequired} onChange={this.handleChbox.bind(this, 'catImportRequired')}>Required?</Checkbox>
+                                  </ListGroupItem>
+                                  <ListGroupItem  style={{padding: '4px 10px'}}>
+                                    {this.props.dog_types.map((type, idx) => {
+                                      return <Checkbox key={idx} type="checkbox" checked={this.props[type]} onChange={this.handleChbox.bind(this, type)}>{humanize(type)}</Checkbox>
+                                    })}
+                                    <ReactSimpleRange style={{padding: '4px 10px'}}
+                                      max={10}
+                                      min={0}
+                                      label
+                                      name='dogImport'
+                                      onChange={this.dogSlider}
+                                      value={this.props.dogImport}
+                                    />
+                                    <Checkbox inline type="checkbox" checked={this.props.dogImportRequired} onChange={this.handleChbox.bind(this, 'dogImportRequired')}>Required?</Checkbox>
+                                  </ListGroupItem>
+                                  <ListGroupItem  style={{padding: '4px 10px'}}>
+                                    {this.props.smoking_types.map((type, idx) => {
+                                      return <Checkbox key={idx} type="checkbox" checked={this.props[type]} onChange={this.handleChbox.bind(this, type)}>{humanize(type)}</Checkbox>
+                                    })}
+                                    <ReactSimpleRange style={{padding: '4px 10px'}}
+                                      max={10}
+                                      min={0}
+                                      label
+                                      name='smokingImport'
+                                      onChange={this.smokingSlider}
+                                      value={this.props.smokingImport}
+                                    />
+                                    <Checkbox inline type="checkbox" checked={this.props.smokingImportRequired} onChange={this.handleChbox.bind(this, 'smokingImportRequired')}>Required?</Checkbox>
+                                  </ListGroupItem>
+                                  <ListGroupItem  style={{padding: '4px 10px'}}>
+                                  </ListGroupItem>
+                                  <ListGroupItem  style={{padding: '4px 10px'}}>
+                                    {this.props.wheelchair_types.map((type, idx) => {
+                                      return <Checkbox type="checkbox" key={idx} checked={this.props[type]} onChange={this.handleChbox.bind(this, type)}>{humanize(type)}</Checkbox>
+                                    })}
+                                    <ReactSimpleRange style={{padding: '4px 10px'}}
+                                      max={10}
+                                      min={0}
+                                      label
+                                      name='wheelchairImport'
+                                      onChange={this.wheelchairSlider}
+                                      value={this.props.wheelchairImport}
+                                    />
+                                  <Checkbox inline type="checkbox" checked={this.props.wheelchairImportRequired} onChange={this.handleChbox.bind(this, 'wheelchairImportRequired')}>Required?</Checkbox>
+                                  </ListGroupItem>
+                                </ListGroup>
+                              </Panel>
                             </Col>
                           </Row>
                           <Row>

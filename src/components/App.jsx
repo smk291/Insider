@@ -30,7 +30,7 @@ export default class App extends Component {
       markers: [],
       bedroomsImport: 5,
       rentImport: 5,
-      housingImport: 10,
+      housingImport: 5,
       laundryImport: 5,
       parkingImport: 5,
       bathImport: 5,
@@ -124,6 +124,20 @@ export default class App extends Component {
         ['furnished'],
         ['no smoking'],
         ['wheelchair accessible']
+      ],
+      requiredTypes: [
+        'bedroomsImportRequired',
+        'rentImportRequired',
+        'housingImportRequired',
+        'laundryImportRequired',
+        'parkingImportRequired',
+        'bathImportRequired',
+        'roomImportRequired',
+        'catImportRequired',
+        'dogImportRequired',
+        'furnishedImportRequired',
+        'smokingImportRequired',
+        'wheelchairImportRequired'
       ],
       typesAndPrefs: [
         ['bedroomsRange', 'bedroomsImport', ['minBedrooms', 'maxBedrooms']],
@@ -548,125 +562,73 @@ export default class App extends Component {
     // 2. Loop through listings
     let filteredList = [];
 
-    filteredList = this.state.listings.filter((el) => {
+    filteredList = this.state.listings.filter((el, idx) => {
       el.score = 0;
 
-      if (el['housing_type'] !== null){
-        let housingArr = filteredOptions[2];
-        let listingType = el['housing_type'];
+      if(el.bedrooms){
+        let minBed = Number(this.state.minBedrooms);
+        let maxBed = Number(this.state.maxBedrooms);
+        let brs = Number(el.bedrooms.slice(0, el.bedrooms.indexOf('BR')));
 
-        if (housingArr.indexOf(listingType) !== -1){
-          el.score += this.state.housingImport;
-        } else if (this.state.housingImportRequired){
-          return false
+        if (brs >= minBed && brs <= maxBed){
+          el.score += Number(this.state.bedroomsImport);
+        } else if (this.state.bedroomsImportRequired){
+          return false;
         }
-      } else if (this.state.housingImportRequired){
-        console.log(null);
-        return false
+      } else if (this.state.bedroomsImportRequired) {
+        return false;
       }
 
-      console.log(el.score);
-      return true;
+      if (el.price){
+        let minRent = Number(this.state.minRent);
+        let maxRent = Number(this.state.maxRent);
+        let rent = Number(el.price);
+
+        if (rent >= minRent && rent <= maxRent){
+          el.score += Number(this.state.rentImport);
+        } else if (this.state.rentImportRequired){
+          return false;
+        }
+      } else if (this.state.rentImportRequired) {
+        return false;
+      }
+
+      for (let i = 2; i < this.state.types.length; i++){
+        let value = el[this.state.types[i]];
+        let filteredTypeOptions = filteredOptions[i];
+        let importance = this.state[this.state.importTypes[i]]
+        let requiredBool = this.state[this.state.requiredTypes[i]]
+        if (value !== null){
+          if (filteredTypeOptions.indexOf(value) !== -1){
+            el.score += Number(importance);
+          } else if (requiredBool){
+            return false
+          }
+        } else if (requiredBool){
+          return false
+        }
+
+      }
+
+      return true
     });
-      // if(el.bedrooms){
-      //   let minBed = Number(this.state.minBedrooms);
-      //   let maxBed = Number(this.state.maxBedrooms);
-      //   let brs = Number(el.bedrooms.slice(0, el.bedrooms.indexOf('BR')));
-      //
-      //   console.log(minBed);
-      //   console.log(maxBed);
-      //   console.log(brs);
-      //   console.log(brs >= minBed && brs <= maxBed);
-      //
-      //   if (brs >= minBed && brs <= maxBed){
-      //     el.score += this.state.bedroomsImport;
-      //   } else if (this.state.bedroomsImportRequired){
-      //     return false;
-      //   }
-      // } else if (this.state.bedroomsImportRequired) {
-      //   return false;
-      // }
-
-      // if (el.price){
-      //   if (minRent = '' ) {
-      //     minRent = 0;
-      //   }
-      //
-      //   if (maxRent = '' || maxRent < minRent){
-      //     maxRent = Infinity;
-      //   }
-      //
-      //   let minRent = Number(this.state.minRent);
-      //   let maxRent = Number(this.state.maxRent);
-      //
-      //   let rent = Number(el.price);
-      //
-      //   console.log(minRent);
-      //   console.log(maxRent);
-      //   console.log(rent);
-      //   console.log(rent >= minRent && rent <= maxRent);
-      //
-      //   if (rent >= minRent && rent <= maxRent){
-      //     el.score += this.state.rentImport;
-      //   } else if (this.state.rentImportRequired){
-      //     return false;
-      //   }
-      // } else if (this.state.rentImportRequired) {
-      //   return false;
-      // }
-
-
-      //
-      //
-
-
-      // console.log(el.laundry_types);
-      // if (el['laundry_types']){
-      //   let laundryArr = filteredOptions[3]
-      //   let listingType = el['laundry_types']
-      //   console.log(laundryArr);
-      //   console.log(listingType);
-      //   console.log(laundryArr.indexOf(listingType));
-      //
-      //   if (el['laundry_types'] === null || laundryArr.length === 0 || laundryArr.indexOf(listingType) !== -1){
-      //     return false
-      //   } else {
-      //     el.score += this.props.laundryImport;
-      //   }
-      // } else if (el['laundry_types' === null]){
-      //   return false
-      // }
-      // ['parking_types', 'parkingImport', ['off-street parking', 'detached garage', 'attached garage', 'valet parking', 'street parking', 'carport', 'no parking']],
-      // ['bath_types', 'bathImport', ['private bath', 'no private bath']],
-      // ['room_types', 'roomImport', ['private room', 'room not private']],
-      // ['cat_types', 'catImport', ['cats are OK - purrr']],
-      // ['dog_types', 'dogImport', ['dogs are OK - wooof']],
-      // ['furnished_types', 'furnishedImport', ['furnished']],
-      // ['smoking_types', 'smokingImport', ['no smoking']],
-      // ['wheelchair_types', 'wheelchairImport', ['wheelchair accessible']],
-
-      // for (let i = 2; i < this.state.filteredOptions.length; i++) {
-      //   let listingValue = el[this.state.filteredOptions[i][0]];
-      //   let acceptableValues = this.state.filteredOptions[i][2];
-      //   let importValue = this.state[this.state.filteredOptions[i][1]];
-      //
-      //   console.log(listingValue);
-      //   console.log(acceptableValues);
-      //   console.log(importValue);
-      //   console.log(listingValue && acceptableValues.indexOf(listingValue));
-      //
-      //   if (listingValue && acceptableValues.indexOf(listingValue)){
-      //     el.score += importValue;
-      //   } else if (importValue === 10){
-      //     return false;
-      //   }
-      // }
-
 
     this.setState({filteredList})
-    console.log(this.state.listings);
-    console.log(this.state.filteredList);
   }
+
+  // if (el.housing_type){
+  //   let housingArr = filteredOptions[2];
+  //   let listingType = el['housing_type'];
+  //
+  //   if (housingArr.indexOf(listingType) !== -1){
+  //     el.score += this.state.housingImport;
+  //   } else if (this.state.housingImportRequired){
+  //     return false
+  //   }
+  // } else if (this.state.housingImportRequired){
+  //   return false
+  // }
+  //
 
   render() {
     return (

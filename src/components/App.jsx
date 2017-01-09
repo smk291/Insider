@@ -413,7 +413,9 @@ export default class App extends Component {
           ld                      = this.state.listingsToDisplay,
           rawFavorites            = this.state.userFavoritesRaw;
 
-      ids = rawFavorites.filter((el, idx) => {
+      console.log(rawFavorites);
+
+      ids = rawFavorites.map((el, idx) => {
         return el.listingsId;
       });
 
@@ -427,6 +429,7 @@ export default class App extends Component {
 
       this.setState({userFavoritesForDisplay});
     }).catch((err) => {
+      console.log(err);
       // notify.show(err.response.data, 'error', 3000);
     });
   }

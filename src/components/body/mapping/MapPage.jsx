@@ -5,6 +5,8 @@ import Row from 'react-bootstrap/lib/Row'
 import Col from 'react-bootstrap/lib/Col'
 import mapstyle from './mapstyle'
 
+// From Routing
+// To MapRender
 export default class MapPage extends Component {
   constructor(props) {
     super(props)

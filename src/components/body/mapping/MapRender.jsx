@@ -40,7 +40,7 @@ export default class MapRender extends React.Component {
           {markers.map((el, idx) => (
             <Marker
               key={idx}
-              position = {el.position}
+              position = {{lat: Number(el.lat), lng: Number(el.lon)}}
               onClick={() => props.onMarkerClick(el)}
               infoContent = {el}
             >

@@ -1,3 +1,4 @@
+// <editor-fold> import
 import React from 'react'
 import ReactDOM from 'react-dom';
 import {render} from 'react-dom'
@@ -5,10 +6,11 @@ import ReactSimpleRange from 'react-simple-range';
 import {Button, HelpBlock, ButtonGroup, FormGroup, ControlLabel, FormControl, Grid, Tooltip, Row, Col, Tab, Checkbox, Panel, ListGroup, ListGroupItem, Accordion, PanelGroup, Tabs} from 'react-bootstrap'
 import primary from '../primary.css'
 import humanize from 'underscore.string/humanize'
-import searchstyle from '../searchstyle'
+import dataviews from '../dataviews'
 import InlineSVG from 'svg-inline-react'
 import MdBackup from 'react-icons/lib/md/backup'
-import {Chart} from 'react-google-charts'
+
+// </editor-fold>
 
 export default class DataSummary extends React.Component {
   constructor(props) {
@@ -88,17 +90,19 @@ export default class DataSummary extends React.Component {
 
 
     return(
-      <Grid className={searchstyle.dashboard} fluid>
+      <div>
+
+      <Grid className={dataviews.dashboard} fluid>
         <Row>
           <Col sm={12} md={12}>
-            <div className={searchstyle.dashboardHeader}>
+            <div className={dataviews.dashboardHeader}>
               <h2></h2>
             </div>
           </Col>
         </Row>
         <Row>
           <Col sm={12} md={4}>
-            <div className={searchstyle.leftInfo}>
+            <div className={dataviews.leftInfo}>
               <p>Currently you're browsing {listings.length} listings.</p>
               <p>Average rent for an apartment is ${rentAvg.toFixed(2)}</p>
               <p>Average rent for a 0BR is ${rent0brAvg.toFixed(2)}</p>
@@ -113,7 +117,7 @@ export default class DataSummary extends React.Component {
             </div>
           </Col>
           <Col sm={12} md={8}>
-            <div className={searchstyle.charts}>
+            <div className={dataviews.charts}>
               CHARTS
               <p>rent (x), no. of apts -- lump?</p>
             </div>
@@ -121,12 +125,13 @@ export default class DataSummary extends React.Component {
         </Row>
         <Row>
           <Col sm={12} md={12}>
-            <div className={searchstyle.dashboardFooter}>
+            <div className={dataviews.dashboardFooter}>
               <h2>Housing data at a glance</h2>
             </div>
           </Col>
         </Row>
       </Grid>
+    </div>
     )
   }
 }

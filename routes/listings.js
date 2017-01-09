@@ -8,15 +8,9 @@ const router                         = express.Router();
 const jwt                            = require('jsonwebtoken');
 const knex                           = require('../knex');
 const ev                             = require('express-validation');
-const bluebird                       = require('bluebird');
 // const validations = require('../validations/token');
 const {camelizeKeys, decamelizeKeys} = require('humps');
 const request                        = require('request');
-const cheerio                        = require('cheerio');
-const fs                             = require('fs');
-const decycle                        = require('json-decycle').decycle;
-const retrocycle                     = require('json-decycle').retrocycle;
-const timeout                        = require('connect-timeout');
 
 const authorize = function(req, res, next) {
   jwt.verify(req.cookies.token, process.env.JWT_SECRET, (err, decoded) => {
@@ -32,12 +26,6 @@ const authorize = function(req, res, next) {
     next();
   });
 };
-
-var CerealScraper   = require('cerealscraper'),
-  TextSelector      = CerealScraper.Blueprint.TextSelector,
-  ConstantSelector  = CerealScraper.Blueprint.ConstantSelector,
-  TransformSelector = CerealScraper.Blueprint.TransformSelector,
-  Promise           = require('bluebird');
 
 //Get individual listing
 router.get('/listings/:id', authorize, (req, res, next) => {
@@ -69,26 +57,30 @@ router.get('/listings', (req, res, next) => {
     });
 });
 
-router.patch('/listings/:id', authorize,/*ev(validations.post),*/ (req, res, next) => {
+router.patch('/listings/:id', authorize, /*ev(validations.post),*/ (req, res, next) => {
+  let patchContents = {};
+  const { id } = req.params;
+  const { userId } = req.token;
 
-  let patchContents = {}
-
-  Obj.keys(req.body).map((key) => {
-    if (req.body[key]){
+  Object.keys(req.body).map((key) => {
+    if (req.body[key] && key !== 'Content-Type'){
       patchContents[key] = req.body[key];
     }
   });
 
-  const { id } = req.params;
-
-  const { userId } = req.token;
-
-  knex('listings').where('id', id).first().then((row) => {
+  knex('listings')
+  .where('id', id)
+  .first()
+  .then((row) => {
     if (!row) {
       throw boom.create(400, `No listing found at listings.id ${id}`);
     }
 
-    // knex('housing_searches_listings_users').where('user_id', userId).where('listings_id', id).first().then((row) => {
+    // knex('housing_searches_listings_users')
+    // .where('user_id', userId)
+    // .where('listings_id', id)
+    // .first()
+    // .then((row) => {
     //   if (!row) {
     //     throw boom.create(400, `Listing at id ${id} does not belong to user.id ${userId}`);
     //   }
@@ -96,7 +88,14 @@ router.patch('/listings/:id', authorize,/*ev(validations.post),*/ (req, res, nex
     //   next(err);
     // });
 
-    return knex('listings').where('id', id).update(decamelizeKeys(updateRow), '*');
+    return knex('listings')
+    .where('id', id)
+    .update(decamelizeKeys(patchContents), '*')
+    .then((row) => {
+      res.send(row)
+    }).catch((err) => {
+      throw boom.create(400, err);
+    })
   }).then((row)  => {
     res.send(camelizeKeys(row));
   }).catch((err) => {

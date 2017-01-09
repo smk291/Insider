@@ -1,14 +1,12 @@
+// <editor-fold import
 import React from 'react'
 import { Button, Grid, Jumbotron, Row, Col, Popover, Tooltip, Modal } from 'react-bootstrap'
-import HeaderNavigation from '../header/HeaderNavigation'
-import Footer from '../footer/Footer'
-import Login from './auth/Login'
-import axios from 'axios'
 import primary from './primary.css'
 import InlineSVG from 'svg-inline-react'
 import MdSearch from 'react-icons/lib/md/search'
 import MdCompare from 'react-icons/lib/md/compare'
 import MdMap from 'react-icons/lib/md/map'
+// </editor-fold>
 
 export default class Home extends React.Component {
   constructor(props) {
@@ -19,6 +17,7 @@ export default class Home extends React.Component {
     this.filterListings = this.filterListings.bind(this)
   }
 
+  //<editor-fold HTTP and list
   scrapeList(e){
     this.props.scrapeList(e);
   }
@@ -34,6 +33,7 @@ export default class Home extends React.Component {
   filterListings(){
     this.props.filterListings();
   }
+  // </editor-fold>
 
   render() {
     return (

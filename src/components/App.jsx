@@ -1,3 +1,4 @@
+//<editor-fold import
 import React, {Component} from 'react';
 import {BrowserRouter, Route, browserHistory} from 'react-router';
 import {Button, Grid, Jumbotron, Row, Col, Popover, Tooltip, Modal} from 'react-bootstrap';
@@ -8,13 +9,17 @@ import axios from 'axios';
 import Header from './header/Header';
 import notify from 'react-notify-toast';
 import globalCSS from '../../globalCSS.css'
+import request from 'request'
+import titleize from 'underscore.string/titleize'
+
+//</editor-fold>
 
 export default class App extends Component {
+  // <editor-fold> props and state used
   constructor(props) {
     super(props);
     this.state = {
-      showModal: false,
-      //For login
+      // <editor-fold> Auth
       email: '',
       password: '',
       //For sign up
@@ -23,9 +28,8 @@ export default class App extends Component {
       loggedIn: '',
       signUpPassword: '',
       signUpEmail: '',
-      listings: [],
-      markers: [],
-      // User preferences
+      // </editor-fold>
+      // <editor-fold> State for determining boolean preferences
       minRent: '',
       maxRent: '',
       minBedrooms: '',
@@ -68,7 +72,8 @@ export default class App extends Component {
       'no smoking': true,
       'wheelchair_types': ['wheelchair accessible'],
       'wheelchair accessible': true,
-      // User's priorities
+      // </editor-fold>
+      // <editor-fold> State for weighting
       bedroomsImport: 5,
       rentImport: 5,
       housingImport: 5,
@@ -81,7 +86,8 @@ export default class App extends Component {
       furnishedImport: 5,
       smokingImport: 5,
       wheelchairImport: 5,
-      //  If true, null values will be omitted
+      // </editor-fold>
+      // <editor-fold> State for removing null values if user specifies strict mode
       bedroomsImportRequired: false,
       rentImportRequired: false,
       housingImportRequired: false,
@@ -94,23 +100,54 @@ export default class App extends Component {
       furnishedImportRequired: false,
       smokingImportRequired: false,
       wheelchairImportRequired: false,
+      // </editor-fold>
+      // <editor-fold> unnecessarily stored data
       rentAvg: '',
       rent0brAvg: '',
       rent1brAvg: '',
       rent2brAvg: '',
       rent3brAvg: '',
       rent4brAvg: '',
-      adToView: {},
-      start: 0,
-      stop: 9,
-      startFiltered: 0,
-      stopFiltered: 9,
       strictMode: false,
+      maxScore: [],
+      // </editor-fold>
+      // <editor-fold> State of listings
+      listings: [],
+      markers: [],
       filteredList: [],
       filteredOptions: [],
-      maxScore: [],
-      types: ['bedroomsRange', 'rentRange', 'housing_type', 'laundry_types', 'parking_types', 'bath_types', 'private_room_types', 'cat_types', 'dog_types', 'furnished_types', 'smoking_types', 'wheelchair_types'],
-      importTypes: ['bedroomsImport', 'rentImport', 'housingImport', 'laundryImport', 'parkingImport', 'bathImport', 'roomImport', 'catImport', 'dogImport', 'furnishedImport', 'smokingImport', 'wheelchairImport'],
+      listingsToDisplay: [],
+      filteredListingsToDisplay: [],
+      // </editor-fold>
+      // <editor-fold> State for filtering listings
+      types : [
+        'bedroomsRange',
+        'rentRange',
+        'housing_type',
+        'laundry_types',
+        'parking_types',
+        'bath_types',
+        'private_room_types',
+        'cat_types',
+        'dog_types',
+        'furnished_types',
+        'smoking_types',
+        'wheelchair_types'
+      ],
+      importTypes : [
+        'bedroomsImport',
+        'rentImport',
+        'housingImport',
+        'laundryImport',
+        'parkingImport',
+        'bathImport',
+        'roomImport',
+        'catImport',
+        'dogImport',
+        'furnishedImport',
+        'smokingImport',
+        'wheelchairImport'
+      ],
       optionArrays: [
         ['minBedrooms', 'maxBedrooms'],
         ['minRent', 'maxRent'],
@@ -152,8 +189,10 @@ export default class App extends Component {
         ['furnished_types', 'furnishedImport', ['furnished']],
         ['smoking_types', 'smokingImport', ['no smoking']],
         ['wheelchair_types', 'wheelchairImport', ['wheelchair accessible']],
-      ]
-
+      ],
+      // </editor-fold>
+      displayAd: {},
+      userId: 0
     }
     //<editor-fold> Unused
     // Unused -- modal controls
@@ -174,10 +213,8 @@ export default class App extends Component {
     this.scrapeNull = this.scrapeNull.bind(this);
     this.getListings = this.getListings.bind(this);
     //</editor-fold>
-    //<editor-fold> Listing functions and pagination
+    //<editor-fold> Listing functions
     this.filterListings = this.filterListings.bind(this)
-    this.increment = this.increment.bind(this)
-    this.decrement = this.decrement.bind(this)
     //</editor-fold>
     //<editor-fold> Handle changes
     // Handle changes, set state {
@@ -186,8 +223,12 @@ export default class App extends Component {
     this.changeState = this.changeState.bind(this);
     this.handleCheckbox = this.handleCheckbox.bind(this);
     this.handleChbox = this.handleChbox.bind(this);
-    this.handleSlider = this.handleSlider.bind(this)
+    this.handleSlider = this.handleSlider.bind(this);
     // </editor-fold>
+  // </editor-fold>
+    this.changeView = this.changeView.bind(this);
+    this.isInFavorites = this.isInFavorites.bind(this)
+    this.saveToFavorites = this.saveToFavorites.bind(this)
   }
 
   // <editor-fold> Unused
@@ -222,12 +263,10 @@ export default class App extends Component {
       headers: {
         'Content-Type': 'application/json'
       }
-    })
-    .then((res) => {
+    }).then((res) => {
       console.log(res);
       // notify.show('Logged Out!', 'success', 3000);
-    })
-    .catch(err => {
+    }).catch(err => {
       console.log(err);
       // notify.show(err.response.data, 'error', 3000);
     });
@@ -255,8 +294,7 @@ export default class App extends Component {
         email: this.state.signUpEmail,
         password: this.state.signUpPassword
       }
-    })
-    .then((res) => {
+    }).then((res) => {
       console.log(res);
       this.setState({
         firstName: '',
@@ -273,19 +311,16 @@ export default class App extends Component {
           email: this.state.signUpEmail,
           password: this.state.signUpPassword
         }
-      })
-      .then((res) => {
+      }).then((res) => {
         this.setState({signUpEmail: '', signUpPassword: ''});
         this.changeState();
         console.log('Logged In!', 'success', 3000);
-      })
-      .catch((err) => {
+      }).catch((err) => {
         console.log(err);
       });
       console.log('Logged In!', 'success', 3000);
       console.log(`success!`);
-    })
-    .catch((err) => {
+    }).catch((err) => {
       console.log(err);
     });
   }
@@ -303,19 +338,61 @@ export default class App extends Component {
         email: this.state.email,
         password: this.state.password
       }
-    })
-    .then((res) => {
+    }).then((res) => {
       this.setState({
         email: '',
         password: ''
       });
       this.changeState();
-      console.log(`logged in`);
-      console.log(res);
+      this.setState({userId: res.data.id})
       // notify.show('Logged In!', 'success', 3000);
-    })
-    .catch((err) => {
-      console.log(err);
+
+      let listings = this.state.listings;
+
+      console.log(listings);
+
+      // let isInFavorites = this.isInFavorites.bind(this);
+
+      let listingsToDisplay = [];
+
+      listingsToDisplay = listings.map((el) => {
+        if (el.title.length > 55 && !el.title.indexOf('…')) {
+          el.title = humanize(el.title.slice(0, 55) + '…');
+        }
+
+        if (el.price && el.price[0] !== '$'){
+          el.price = '$' + el.price;
+        }
+
+        if (el.title.indexOf(' ') === -1 || (el.title.split(' ').length < 1  && el.title.length > 30)) {
+          el.title = el.title.slice(0, 40);
+        }
+
+        if (el.neighborhood[0] === '(' && el.neighborhood[el.neighborhood.length - 1] === ')'){
+          el.neighborhood = el.neighborhood.slice(1)
+          el.neighborhood = el.neighborhood.slice(0, -1)
+        }
+
+        el.neighborhood = el.neighborhood.toLowerCase();
+        el.neighborhood = titleize(el.neighborhood)
+        if (el.neighborhood.length > 14){
+          el.neighborhood = el.neighborhood.slice(0, 14) + '…';
+        }
+
+        el.inFavorites = this.isInFavorites(el)
+        console.log(el.inFavorites);
+
+        return el;
+      });
+
+      // listingsToDisplay = this.state.listings
+
+      console.log(listingsToDisplay);
+
+      this.setState({listingsToDisplay})
+    }).then(() => {
+
+    }).catch((err) => {
       // notify.show(err.response.data, 'error', 3000);
     });
   }
@@ -407,14 +484,41 @@ export default class App extends Component {
         return el.lat && el.lon;
       });
 
+
       this.setState({listings, markers});
+    }).then(() => {
     }).catch((err) => {
       // console.log(err);
     })
   }
+
+  changeView(row) {
+    axios({
+      method: 'get',
+      url: `/listings/${row.id}`
+    }).then((res) => {
+      this.setState({displayAd: res.data})
+    }).catch((err) => {
+      //
+    });
+  }
+
+  saveToFavorites(id){
+    axios({
+      method: 'post',
+      url: `/users_listings/`,
+      data: {
+        listingsId: id
+      }
+    }).then((res) => {
+      console.log(res);
+    }).catch((err) => {
+      console.log(err);
+    })
+  }
   // </editor-fold>
 
-  // <editor-fold> Listing functions and pagination
+  // <editor-fold> Listing functions
   filterListings(){
     let maxScore = 0;
 
@@ -451,10 +555,12 @@ export default class App extends Component {
         return false;
       }
 
+      console.log(el.price);
+
       if (el.price){
         let minRent = Number(this.state.minRent);
         let maxRent = Number(this.state.maxRent);
-        let rent = Number(el.price);
+        let rent = el.price.slice(1);
 
         if (rent >= minRent && rent <= maxRent){
           el.score += Number(this.state.rentImport);
@@ -486,38 +592,59 @@ export default class App extends Component {
     });
 
     this.setState({filteredList})
-  }
 
-  decrement(begin, end, e){
-    let start = this.state[begin];
-    let stop = this.state[end];
+    let filteredListingsToDisplay = [];
 
-    if (start < 10){
-      start = 0;
-      stop = 9;
-    } else {
-      start -= 10;
-      stop -= 10;
-    }
+    filteredListingsToDisplay = filteredList.map((el) => {
+      if (el.title.length > 55 && !el.title.indexOf('…')) {
+        el.title = humanize(el.title.slice(0, 55) + '…');
+      }
 
-    this.setState({start, stop});
-  }
+      if (el.price && el.price[0] !== '$'){
+        el.price = '$' + el.price;
+      }
 
-  increment(begin, end, e){
-    let start = this.state[begin];
-    let stop = this.state[end];
+      if (el.title.indexOf(' ') === -1 || (el.title.split(' ').length < 1  && el.title.length > 30)) {
+        el.title = el.title.slice(0, 40);
+      }
 
-    if (this.state.listings.length - stop < 10){
-      stop = this.state.listings.length - 1;
-      start = this.state.listings.length - 10;
-    } else {
-      start += 10;
-      stop += 10;
-    }
+      if (el.neighborhood[0] === '(' && el.neighborhood[el.neighborhood.length - 1] === ')'){
+        el.neighborhood = el.neighborhood.slice(1)
+        el.neighborhood = el.neighborhood.slice(0, -1)
+      }
 
-    this.setState({start, stop});
+      el.neighborhood = el.neighborhood.toLowerCase();
+      el.neighborhood = titleize(el.neighborhood)
+      if (el.neighborhood.length > 14){
+        el.neighborhood = el.neighborhood.slice(0, 14) + '…';
+      }
+
+      el.inFavorites = this.isInFavorites(el)
+      console.log(el.inFavorites);
+
+      return el;
+    });
+
+    this.setState({filteredListingsToDisplay});
   }
   // </editor-fold>
+
+  isInFavorites(row){
+    axios({
+      method: 'get',
+      url: `/users_listings/${row.id}`
+    }).then((res) => {
+      if (res.data.length > 0){
+        console.log(true);
+        return true
+      } else {
+        console.log(false);
+        return false
+      }
+    }).catch((err) => {
+      console.log(err);
+    })
+  }
 
   componentWillMount(){
     this.getListings();

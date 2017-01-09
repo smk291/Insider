@@ -1,116 +1,75 @@
+// <editor-fold
 import React from 'react'
 import {Button, Grid, Row, Col, Tooltip, Accordion, Panel, ListGroup, ListGroupItem, Table, Pager} from 'react-bootstrap'
 import primary from '../primary.css'
 import ListingHeader from './ListingHeader'
 import humanize from 'underscore.string/humanize'
+import titleize from 'underscore.string/titleize'
+import { BootstrapTable, TableHeaderColumn, TableBody, TableHeader } from 'react-bootstrap-table'
+import dataviews from '../dataviews.css'
+import InlineSVG from 'svg-inline-react'
+import MdDateRange from 'react-icons/lib/md/date-range'
+import FaBed from 'react-icons/lib/fa/bed'
+import MdInsertLink from 'react-icons/lib/md/insert-link'
+import MdAttachMoney from 'react-icons/lib/md/attach-money'
+import MdLocationCity from 'react-icons/lib/md/location-city'
+import axios from 'axios'
+import DisplayedAd from './DisplayedAd'
+import BrowseListings from './BrowseListings'
 
-export default class ListingsViewFiltered extends React.Component {
+// </editor-fold>
+
+// From ViewAndFilter
+// To CustomSortTable and DisplayedAd
+export default class ListingsView extends React.Component {
   constructor(props) {
     super(props);
-    this.decrementFiltered = this.decrementFiltered.bind(this)
-    this.incrementFiltered = this.incrementFiltered.bind(this)
-  }
-
-  decrementFiltered(e){
-    this.props.decrementFiltered(e);
-  }
-
-  incrementFiltered(e){
-    this.props.incrementFiltered(e);
   }
 
   render() {
-    return (
-      <div>
-      {this.props.filteredList.length && this.props.filteredList.length > 0 ? <div>
-        <Accordion style={{overflow: 'hidden', height: '65vh', fontWeight: 400}}>
-          {this.props.filteredList.slice(this.props.start,this.props.stop).map((el, key) => {
-            return <Panel
-              style={{margin: '0px', borderRadius: '0px'}}
-              key={key}
-              eventKey={key}
-              header={
-                <div>
-                  <ListingHeader
-                    price={el.price}
-                    title={el.title}
-                    bedrooms={el.bedrooms}
-                    neighborhood={el.neighborhood}
-                    neighborhood={el.neighborhood}
-                    post_date={el.post_date}
-                  />
-                </div>}
-              >
-                <Grid>
-                  <Row>
-                    <Col sm={5} md={5}>
-                      <Table striped bordered condensed hover>
-                        <tbody>
-                          <tr>
-                            <td>Type of housing:</td>
-                            <td>{el.housing_types ? humanize(el.housing_types) : 'Blank'}</td>
-                          </tr>
-                          <tr>
-                            <td>Square feet:</td>
-                            <td>{el.sqft ? el.sqft + 'ft2' : 'Blank'}</td>
-                          </tr>
-                          <tr>
-                            <td>Private room?</td>
-                            <td>{el.private_room_types ? el.private_room_types : 'Blank'}</td>
-                          </tr>
-                          <tr>
-                            <td>Private bath?</td>
-                            <td>{el.bath_types ? el.bath_types : 'Blank'}</td>
-                          </tr>
-                          <tr>
-                            <td>Furnished?</td>
-                            <td>{el.furnished_type ? el.furnished_type: 'Blank'}</td>
-                          </tr>
-                          <tr>
-                            <td>Laundry?</td>
-                            <td>{el.laundry_types ? humanize(el.laundry_types): 'Blank'}</td>
-                          </tr>
-                          <tr>
-                            <td>Parking?</td>
-                            <td>{el.parking_types ? humanize(el.parking_types): 'Blank'}</td>
-                          </tr>
+    // const shadow = {
+    //   -webkit-box-shadow: 0 3px 8px rgba(0, 0, 0, .25);
+    //   -moz-box-shadow: 0 3px 8px rgba(0, 0, 0, .25);
+    //   box-shadow: 0 3px 8px rgba(0, 0, 0, .25);
+    //   -webkit-border-radius: 3px;
+    //   -moz-border-radius: 3px;
+    //   border-radius: 3px;
+    // }
 
-                        </tbody>
-                      </Table>
-                    </Col>
-                    <Col sm={5} md={5}>
-                      <Table striped bordered condensed hover>
-                        <tbody>
-                          <tr>
-                            <td>Description:</td>
-                            <td>{humanize(el.descr)}</td>
-                          </tr>
-                          <tr>
-                            <td>Street address?</td>
-                            <td>{el.street_address ? el.street_address: 'Blank'}</td>
-                          </tr>
-                          <tr>
-                            <td>Wheelchair accessible?</td>
-                            <td>{el.wheelchair_accessible ? el.wheelchair_accessible: 'Blank'}</td>
-                          </tr>
-                        </tbody>
-                      </Table>
-                      <p></p>
-                      <p>{el.cat_types ? el.cat_types: ''}</p>
-                      <p>{el.dog_types ? el.dog_types: ''}</p>
-                      <p>{el.smoking_types ? el.smoking_types : ''}</p>
-                      <a href={`http://seattle.craigslist.org${el.url}`}>Open the ad on craigslist</a>
-                    </Col>
-                  </Row>
-                </Grid>
-            </Panel>
-            })}
-        </Accordion>
-        <Pager>
-          <Pager.Item onSelect={this.decrementFiltered} previous href="#">&larr; Previous Page</Pager.Item>
-          <p style={{display: 'inline-block'}}>Listings {this.props.start + 1} - {this.props.stop + 1}</p>
-          <Pager.Item onSelect={this.incrementFiltered} next href="#">Next Page &rarr;</Pager.Item>
-        </Pager> </div>: ''}
+    const ClickHere = () => {
+      return(
+        <div className = 'panel panel-default' style={{height: '722px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+          <div>
+            <h1>Click on a row to view the listing's details</h1>
+          </div>
+        </div>
+      )
+    }
+
+    return (
+      <div style={{width: '100%', marginTop: '10px'}}>
+        <Grid style={{width: '100%'}} fluid>
+          <Row>
+            <Col sm={12} md={6}>
+              <BrowseListings
+                listings={this.props.filteredList}
+                displayThese={this.props.filteredListingsToDisplay}
+                {...this.props}
+              />
+            </Col>
+            <Col sm={12} md={6}>
+              <div>
+                <div>
+                  {this.props.displayAd.id ? <DisplayedAd
+                    {...this.props}
+                    listings={this.props.filteredList}
+                  /> :
+                  <ClickHere />}
+                </div>
+              </div>
+            </Col>
+          </Row>
+        </Grid>
       </div>
     );
   }

@@ -5,28 +5,9 @@ body {
 
 nav {
   margin-bottom: 0px !important;
-}
-h1, h2, h3 {
-  font-weight: 100;
-}
-
-header > a {
-    padding: 10px 5px !important;
-    margin-right: 0 !important;
-    color: black;
-    text-align:left !important;
-}
-
-a {
-  color: hsl(200, 50%, 50%);
-}
-
-a.active {
-  color: hsl(20, 50%, 50%);
-}
-
-.inactive {
-
+  border-top: 1px solid rgb(60, 81, 90) !important;
+  border-left: 1px solid rgb(60, 81, 90) !important;
+  border-right: 1px solid rgb(60, 81, 90) !important;
 }
 
 .breadcrumbs a {
@@ -35,6 +16,7 @@ a.active {
 
 .navbar {
   padding: 8px 20px;
+  margin: 0px !important;
   overflow: hidden;
   background-color: rgb(40, 54, 61);
   color: rgb(255, 255, 255);
@@ -52,10 +34,10 @@ a.active {
   border-bottom: 10px solid #49A078;
 }
 
-.active {
+.active, p.active {
   background-color: rgb(60, 81, 90);
   color: hsla(0, 0%, 34%, 1);
-  border-bottom: 10px solid #49A078;
+  border-bottom: 11px solid #49A078;
 }
 
 a, a:hover, a:visited, a:focus {

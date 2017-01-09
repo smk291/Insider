@@ -1,3 +1,4 @@
+// <editor-fold> import
 import React from 'react'
 import ReactDOM from 'react-dom';
 import {render} from 'react-dom'
@@ -5,10 +6,11 @@ import ReactSimpleRange from 'react-simple-range';
 import {Button, HelpBlock, ButtonGroup, FormGroup, ControlLabel, FormControl, Grid, Tooltip, Row, Col, Tab, Checkbox, Panel, ListGroup, ListGroupItem, Accordion, PanelGroup, Tabs} from 'react-bootstrap'
 import primary from '../primary.css'
 import humanize from 'underscore.string/humanize'
-import searchstyle from '../searchstyle'
+import dataviews from '../dataviews'
 import InlineSVG from 'svg-inline-react'
 import MdBackup from 'react-icons/lib/md/backup'
 import {Chart} from 'react-google-charts'
+// </editor-fold>
 
 export default class FilterData extends React.Component {
   constructor(props) {
@@ -19,6 +21,7 @@ export default class FilterData extends React.Component {
     this.handleSlider = this.handleSlider.bind(this)
   }
 
+  //<editor-fold> handle changes
   handleSlider(e, field){
     this.props.handleSlider(e, field)
   }
@@ -34,15 +37,19 @@ export default class FilterData extends React.Component {
   handleChbox(e, field) {
     this.props.handleChbox(e, field);
   }
+  // </editor-fold>
 
   render(){
+    // <editor-fold> composables
     const DropdownGroup = ({header, name, onChange, value, items, propsRequired, required}) => {
       return(
-        <Panel className={searchstyle.listDiv} header={header}>
+        <Panel
+          className={dataviews.listDiv} header={header}>
           <ListGroup fill>
-            <Checkbox inline type="checkbox" checked={propsRequired} onChange={this.handleChbox.bind(this, required)}>Required?</Checkbox>
-
-            <ListGroupItem className={searchstyle.listGroupItem}>
+            <Checkbox inline type="checkbox"
+              checked={propsRequired} onChange={this.handleChbox.bind(this, required)}>Required?</Checkbox>
+            <ListGroupItem
+              className={dataviews.listGroupItem}>
             </ListGroupItem>
             <MappedOptions items={items}/>
           </ListGroup>
@@ -68,11 +75,16 @@ export default class FilterData extends React.Component {
       </div>
       )
     }
+    // </editor-fold>
 
     return(
-      <Grid fluid>
+      <div>
+        <h1>Set options below</h1>
+        <p> Hi there </p>
+        <Grid fluid>
         <Row>
-          <Col className={searchstyle.dropdowns}>
+          <Col
+            className={dataviews.dropdowns}>
             <DropdownGroup
               header='Housing type ▾'
               items={this.props.housing_types}
@@ -85,13 +97,40 @@ export default class FilterData extends React.Component {
               name='housingImport'
               onChange={this.handleSlider.bind(this, 'housingImport')}
               value={this.props.housingImport}/>
-            <Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded={false} header='Rent ▾'>
-              <Checkbox inline type="checkbox" checked={this.props.rentImportRequired} onChange={this.handleChbox.bind(this, 'rentImportRequired')}>Required?</Checkbox>
+            <Panel
+              style={{marginRight: '10px'}}
+
+              className={dataviews.listDiv}
+              collapsible defaultExpanded={false}
+              header='Rent ▾'>
+              <Checkbox
+                inline
+                type="checkbox"
+                checked={this.props.rentImportRequired}
+                onChange={this.handleChbox.bind(this, 'rentImportRequired')}>Required?</Checkbox>
               <ListGroup fill>
-                <ListGroupItem style={{padding: '4px 10px'}}>
-                  <FormControl style={{width: '64px', padding: '4px 10px', display: 'inline-block'}} name="minRent" type="number" placeholder="min" min="0" step={50} value={this.props.minRent} onChange={this.handleChange}/>
-                  <FormControl style={{width: '64px', padding: '4px 10px', display: 'inline-block'}} name="maxRent" type="number" placeholder="max" min={this.props.minRent} step={50} value={this.props.maxRent} onChange={this.handleChange}/>
-                  <ReactSimpleRange style={{padding: '4px 10px'}}
+                <ListGroupItem
+                  style={{padding: '4px 10px'}}>
+                  <FormControl
+                    style={{width: '64px', padding: '4px 10px', display: 'inline-block'}}
+                    name="minRent"
+                    type="number"
+                    placeholder="min"
+                    min={0}
+                    step={50}
+                    value={this.props.minRent}
+                    onChange={this.handleChange}/>
+                  <FormControl
+                    style={{width: '64px', padding: '4px 10px', display: 'inline-block'}}
+                    name="maxRent"
+                    type="number"
+                    placeholder="max"
+                    min={this.props.minRent}
+                    step={50}
+                    value={this.props.maxRent}
+                    onChange={this.handleChange}/>
+                  <ReactSimpleRange
+                    style={{padding: '4px 10px'}}
                     max={10}
                     min={0}
                     label
@@ -102,13 +141,31 @@ export default class FilterData extends React.Component {
                 </ListGroupItem>
               </ListGroup>
             </Panel>
-            <Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded={false} header='Bedrooms ▾'>
-              <Checkbox inline type="checkbox" checked={this.props.bedroomsImportRequired} onChange={this.handleChbox.bind(this, 'bedroomsImportRequired')}>Required?</Checkbox>
+            <Panel
+              style={{marginRight: '10px'}}
+              className={dataviews.listDiv} collapsible defaultExpanded={false} header='Bedrooms ▾'>
+              <Checkbox inline type="checkbox"
+                checked={this.props.bedroomsImportRequired} onChange={this.handleChbox.bind(this, 'bedroomsImportRequired')}>Required?</Checkbox>
               <ListGroup fill>
-                <ListGroupItem style={{padding: '4px 10px'}}>
-                  <FormControl style={{width: '64px', padding: '4px 10px', display: 'inline-block'}} name="minBedrooms" type="number" placeholder="min" min="0" value={this.props.minBedrooms} onChange={this.handleChange}/>
-                  <FormControl style={{width: '64px', padding: '4px 10px', display: 'inline-block'}} name="maxBedrooms" type="number" placeholder="max" min={this.props.minBedrooms} value={this.props.maxBedrooms} onChange={this.handleChange}/>
-                  <ReactSimpleRange style={{padding: '4px 10px'}}
+                <ListGroupItem
+                  style={{padding: '4px 10px'}}>
+                  <FormControl
+                    style={{width: '64px', padding: '4px 10px', display: 'inline-block'}}
+                    name="minBedrooms"
+                    type="number"
+                    placeholder="min"
+                    min={0}
+                    value={this.props.minBedrooms}
+                    onChange={this.handleChange}/>
+                  <FormControl
+                    style={{width: '64px', padding: '4px 10px', display: 'inline-block'}} name="maxBedrooms"
+                    type="number"
+                    placeholder="max"
+                    min={this.props.minBedrooms}
+                    value={this.props.maxBedrooms}
+                    onChange={this.handleChange}/>
+                  <ReactSimpleRange
+                    style={{padding: '4px 10px'}}
                     max={10}
                     min={0}
                     label
@@ -126,7 +183,8 @@ export default class FilterData extends React.Component {
               propsRequired={this.props.roomImportRequired}
               required='roomImportRequired'
             />
-            <ReactSimpleRange style={{padding: '4px 10px'}}
+            <ReactSimpleRange
+              style={{padding: '4px 10px'}}
               max={10}
               min={0}
               name='housingImport'
@@ -139,7 +197,8 @@ export default class FilterData extends React.Component {
               propsRequired={this.props.bathImportRequired}
               required='bathImportRequired'
             />
-            <ReactSimpleRange style={{padding: '4px 10px'}}
+            <ReactSimpleRange
+              style={{padding: '4px 10px'}}
               max={10}
               min={0}
               name='bathImport'
@@ -153,7 +212,8 @@ export default class FilterData extends React.Component {
               propsRequired={this.props.parkingImportRequired}
               required='parkingImportRequired'
             />
-            <ReactSimpleRange style={{padding: '4px 10px'}}
+            <ReactSimpleRange
+              style={{padding: '4px 10px'}}
               max={10}
               min={0}
               name='parkingImport'
@@ -167,7 +227,8 @@ export default class FilterData extends React.Component {
               propsRequired={this.props.laundryImportRequired}
               required='laundryImportRequired'
             />
-            <ReactSimpleRange style={{padding: '4px 10px'}}
+            <ReactSimpleRange
+              style={{padding: '4px 10px'}}
               max={10}
               name='laundryImport'
               onChange={this.handleSlider.bind(this, 'laundryImport')}
@@ -175,13 +236,23 @@ export default class FilterData extends React.Component {
               min={0}
             />
 
-            <Panel style={{marginRight: '10px'}} className={searchstyle.listDiv} collapsible defaultExpanded={false} header='Misc ▾'>
+            <Panel
+              style={{marginRight: '10px'}}
+              className={dataviews.listDiv}
+              collapsible
+              defaultExpanded={false}
+              header='Misc ▾'>
               <ListGroup fill>
-                <ListGroupItem style={{padding: '4px 10px'}}>
+                <ListGroupItem
+                  style={{padding: '4px 10px'}}>
                   {this.props.furnished_types.map((type, idx) => {
-                    return <Checkbox key={idx} type="checkbox" checked={this.props[type]} onChange={this.handleChbox.bind(this, type)}>{humanize(type)}</Checkbox>
+                    return <Checkbox
+                      key={idx} type="checkbox"
+                      checked={this.props[type]}
+                      onChange={this.handleChbox.bind(this, type)}>{humanize(type)}</Checkbox>
                   })}
-                  <ReactSimpleRange style={{padding: '4px 10px'}}
+                  <ReactSimpleRange
+                    style={{padding: '4px 10px'}}
                     max={10}
                     min={0}
                     label
@@ -189,13 +260,20 @@ export default class FilterData extends React.Component {
                     onChange={this.handleSlider.bind(this, 'furnishedImport')}
                     value={this.props.furnishedImport}
                   />
-                  <Checkbox inline type="checkbox" checked={this.props.furnishedImportRequired} onChange={this.handleChbox.bind(this, 'furnishedImportRequired')}>Required?</Checkbox>
+                  <Checkbox inline type="checkbox"
+                    checked={this.props.furnishedImportRequired}
+                    onChange={this.handleChbox.bind(this, 'furnishedImportRequired')}>Required?</Checkbox>
                 </ListGroupItem>
-                <ListGroupItem  style={{padding: '4px 10px'}}>
+                <ListGroupItem
+                  style={{padding: '4px 10px'}}>
                   {this.props.cat_types.map((type, idx) => {
-                    return <Checkbox key={idx} type="checkbox" checked={this.props[type]} onChange={this.handleChbox.bind(this, type)}>{humanize(type)}</Checkbox>
+                    return <Checkbox
+                      key={idx} type="checkbox"
+                      checked={this.props[type]}
+                      onChange={this.handleChbox.bind(this, type)}>{humanize(type)}</Checkbox>
                   })}
-                  <ReactSimpleRange style={{padding: '4px 10px'}}
+                  <ReactSimpleRange
+                    style={{padding: '4px 10px'}}
                     max={10}
                     min={0}
                     label
@@ -203,13 +281,20 @@ export default class FilterData extends React.Component {
                     onChange={this.handleSlider.bind(this, 'catImport')}
                     value={this.props.catImport}
                   />
-                  <Checkbox inline type="checkbox" checked={this.props.catImportRequired} onChange={this.handleChbox.bind(this, 'catImportRequired')}>Required?</Checkbox>
+                  <Checkbox inline type="checkbox"
+                    checked={this.props.catImportRequired}
+                    onChange={this.handleChbox.bind(this, 'catImportRequired')}>Required?</Checkbox>
                 </ListGroupItem>
-                <ListGroupItem  style={{padding: '4px 10px'}}>
+                <ListGroupItem
+                  style={{padding: '4px 10px'}}>
                   {this.props.dog_types.map((type, idx) => {
-                    return <Checkbox key={idx} type="checkbox" checked={this.props[type]} onChange={this.handleChbox.bind(this, type)}>{humanize(type)}</Checkbox>
+                    return <Checkbox
+                      key={idx} type="checkbox"
+                      checked={this.props[type]}
+                      onChange={this.handleChbox.bind(this, type)}>{humanize(type)}</Checkbox>
                   })}
-                  <ReactSimpleRange style={{padding: '4px 10px'}}
+                  <ReactSimpleRange
+                    style={{padding: '4px 10px'}}
                     max={10}
                     min={0}
                     label
@@ -217,13 +302,20 @@ export default class FilterData extends React.Component {
                     onChange={this.handleSlider.bind(this, 'dogImport')}
                     value={this.props.dogImport}
                   />
-                  <Checkbox inline type="checkbox" checked={this.props.dogImportRequired} onChange={this.handleChbox.bind(this, 'dogImportRequired')}>Required?</Checkbox>
+                  <Checkbox inline type="checkbox"
+                    checked={this.props.dogImportRequired}
+                    onChange={this.handleChbox.bind(this, 'dogImportRequired')}>Required?</Checkbox>
                 </ListGroupItem>
-                <ListGroupItem  style={{padding: '4px 10px'}}>
+                <ListGroupItem
+                  style={{padding: '4px 10px'}}>
                   {this.props.smoking_types.map((type, idx) => {
-                    return <Checkbox key={idx} type="checkbox" checked={this.props[type]} onChange={this.handleChbox.bind(this, type)}>{humanize(type)}</Checkbox>
+                    return <Checkbox
+                      key={idx} type="checkbox"
+                      checked={this.props[type]}
+                      onChange={this.handleChbox.bind(this, type)}>{humanize(type)}</Checkbox>
                   })}
-                  <ReactSimpleRange style={{padding: '4px 10px'}}
+                  <ReactSimpleRange
+                    style={{padding: '4px 10px'}}
                     max={10}
                     min={0}
                     label
@@ -231,13 +323,19 @@ export default class FilterData extends React.Component {
                     onChange={this.handleSlider.bind(this, 'smokingImport')}
                     value={this.props.smokingImport}
                   />
-                  <Checkbox inline type="checkbox" checked={this.props.smokingImportRequired} onChange={this.handleChbox.bind(this, 'smokingImportRequired')}>Required?</Checkbox>
+                  <Checkbox inline type="checkbox"
+                    checked={this.props.smokingImportRequired}
+                    onChange={this.handleChbox.bind(this, 'smokingImportRequired')}>Required?</Checkbox>
                 </ListGroupItem>
-                <ListGroupItem  style={{padding: '4px 10px'}}>
+                <ListGroupItem
+                  style={{padding: '4px 10px'}}>
                   {this.props.wheelchair_types.map((type, idx) => {
-                    return <Checkbox type="checkbox" key={idx} checked={this.props[type]} onChange={this.handleChbox.bind(this, type)}>{humanize(type)}</Checkbox>
+                    return <Checkbox type="checkbox"
+                      key={idx} checked={this.props[type]}
+                      onChange={this.handleChbox.bind(this, type)}>{humanize(type)}</Checkbox>
                   })}
-                  <ReactSimpleRange style={{padding: '4px 10px'}}
+                  <ReactSimpleRange
+                    style={{padding: '4px 10px'}}
                     max={10}
                     min={0}
                     label
@@ -245,28 +343,39 @@ export default class FilterData extends React.Component {
                     onChange={this.handleSlider.bind(this, 'wheelchairImport')}
                     value={this.props.wheelchairImport}
                   />
-                <Checkbox inline type="checkbox" checked={this.props.wheelchairImportRequired} onChange={this.handleChbox.bind(this, 'wheelchairImportRequired')}>Required?</Checkbox>
+                <Checkbox inline type="checkbox"
+                  checked={this.props.wheelchairImportRequired}
+                  onChange={this.handleChbox.bind(this, 'wheelchairImportRequired')}>Required?</Checkbox>
                 </ListGroupItem>
               </ListGroup>
             </Panel>
           </Col>
         </Row>
         <Row>
-          <div className={searchstyle.listDiv} style={{borderTop: '1px #eee solid'}}>
-            <div style={{height: '20px', backgroundColor: 'white'}}>
+          <div
+            className={dataviews.listDiv}
+            style={{borderTop: '1px #eee solid'}}>
+            <div
+              style={{height: '20px', backgroundColor: 'white'}}>
             </div>
-            <div className={searchstyle.saveSettings}>
-              <MdBackup style={{alignSelf: 'flex-end', margin: '0px 5px', padding: '0px 0px 12px 0px'}} width="48" fill="hsl(200, 50%, 50%)" height="48"
+            <div
+              className={dataviews.saveSettings}>
+              <MdBackup
+                style={{alignSelf: 'flex-end', margin: '0px 5px', padding: '0px 0px 12px 0px'}} width="48" fill="hsl(200, 50%, 50%)" height="48"
               />
-              <div style={{display: 'inline-block', margin: '10px 0px 0px 2px', color: 'hsl(200, 50%, 50%)'}}>
-                <p style={{fontWeight: '500'}}>Save settings</p>
+              <div
+                style={{display: 'inline-block', margin: '10px 0px 0px 2px', color: 'hsl(200, 50%, 50%)'}}>
+                <p
+                  style={{fontWeight: '500'}}>Save settings</p>
               </div>
             </div>
-            <div style={{height: '20px', backgroundColor: 'white'}}>
+            <div
+              style={{height: '20px', backgroundColor: 'white'}}>
             </div>
           </div>
         </Row>
       </Grid>
+    </div>
     )
   }
 }

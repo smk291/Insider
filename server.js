@@ -2,50 +2,18 @@
 'use strict';
 
 const express = require('express');
-const app = express();
-const knex = require('knex');
+const morgan = require('morgan');
 const path = require('path');
 const webpack = require('webpack');
 const config = require('./webpack.config.dev');
 const compiler = webpack(config);
-const morgan = require('morgan');
-const cheerio = require('cheerio');
-const request = require('request');
+
+const app = express();
 
 app.disable('x-powered-by');
 
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-
-const users = require('./routes/users');
-const token = require('./routes/token');
-const listings = require('./routes/listings');
-const housing_searches = require('./routes/housing_searches');
-const users_housing_searches = require('./routes/users_housing_searches');
-const scrape = require('./routes/scrape');
-
-const CerealScraper = {
-  Blueprint: require('cerealscraper/lib/Blueprint'),
-  Dispatcher: require('cerealscraper/lib/Dispatcher'),
-  Page: require('cerealscraper/lib/Page'),
-  PageItem: require('cerealscraper/lib/PageItem')
-};
-
-module.exports = CerealScraper;
-
-
-app.use(bodyParser.json());
-app.use(cookieParser());
-app.use(users);
-app.use(token);
-app.use(listings);
-app.use(housing_searches);
-app.use(users_housing_searches);
-app.use(scrape);
-
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config();
-}
 
 switch (app.get('env')) {
   case 'development':
@@ -59,9 +27,6 @@ switch (app.get('env')) {
   default:
 }
 
-const port = process.env.PORT || 3000;
-
-
 app.use(require('webpack-dev-middleware')(compiler, {
   // noInfo: true,
   publicPath: config.output.publicPath
@@ -71,6 +36,19 @@ app.use(require('webpack-hot-middleware')(compiler));
 
 app.use('/dist', express.static('dist'));
 
+// var allowCrossDomain = function(req, res, next) {
+// res.header('Access-Control-Allow-Origin', '*');
+// res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+// res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+// // intercept OPTIONS method
+// if ('OPTIONS' == req.method) {
+// res.sendStatus(200);
+// } else {
+// next();
+// }
+// };
+//
+// app.use(allowCrossDomain);
 
 // CSRF Protection
 // app.use((req, res, next) => {
@@ -81,9 +59,19 @@ app.use('/dist', express.static('dist'));
 //   res.sendStatus(406);
 // });
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
+const users = require('./routes/users');
+const token = require('./routes/token');
+const listings = require('./routes/listings');
+const scrape = require('./routes/scrape');
+const users_listings = require('./routes/users_listings');
+
+app.use(bodyParser.json());
+app.use(cookieParser());
+app.use(users);
+app.use(token);
+app.use(listings);
+app.use(scrape);
+app.use(users_listings);
 
 app.use((err, _req, res, _next) => {
   if (err.output && err.output.statusCode) {
@@ -108,6 +96,16 @@ app.use((err, _req, res, _next) => {
   res.sendStatus(500);
 });
 
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
+
+const port = process.env.PORT || 3000;
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 app.listen(port, err => {
   if (err) {
     console.log(err);
@@ -117,5 +115,4 @@ app.listen(port, err => {
   console.log('Listening on port: ' + port);
 });
 
-
-// module.exports = app;
+module.exports = app;

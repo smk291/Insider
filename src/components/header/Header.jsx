@@ -1,6 +1,7 @@
+// <editor-fold> import
 import {Link} from 'react-router'
 import React from 'react'
-import {Nav, NavItem, NavDropdown, MenuItem, Grid, Row, Navbar, Tooltip, OverlayTrigger} from 'react-bootstrap'
+import {Nav, Navbar, Tooltip, OverlayTrigger} from 'react-bootstrap'
 import Login from '../body/auth/Login'
 import header from './header.css'
 import InlineSVG from 'svg-inline-react'
@@ -10,8 +11,10 @@ import MdSearch from 'react-icons/lib/md/search'
 import MdViewList from 'react-icons/lib/md/view-list'
 import MdMap from 'react-icons/lib/md/map'
 import MdCompare from 'react-icons/lib/md/compare'
+// </editor-fold>
 
 export default class Header extends React.Component {
+  // <editor-fold> constructor/props and functions
   constructor(props){
     super(props);
     this.open = this.open.bind(this);
@@ -36,6 +39,7 @@ export default class Header extends React.Component {
   showTips(e) {
     this.props.showTips(e)
   }
+  // </editor-fold>
 
   render() {
     const tooltip = (
@@ -44,7 +48,7 @@ export default class Header extends React.Component {
 
     return (
       <header>
-        <Navbar className={header.navbar} fluid style={{height: '50px'}}>
+        <Navbar className={header.navbar} fluid style={{height: '50px', borderRadius: '0px'}}>
           <Nav pullLeft>
             <Link activeOnlyWhenExact className={header.navButton} activeClassName={header.active} to='/'><MdHome /></Link>
             <Link className={header.navButton} activeClassName={header.active} to='/search'><MdSearch /> View and filter housing data</Link>

@@ -1,11 +1,9 @@
 // <editor-fold
 import React from 'react'
-import {Button, Grid, Row, Col, Tooltip, Accordion, Panel, ListGroup, ListGroupItem, Table, Pager} from 'react-bootstrap'
+import { Button, Grid, Row, Col, Tooltip, Accordion, Panel, ListGroup, ListGroupItem, Table, Pager } from 'react-bootstrap'
 import primary from '../primary.css'
-import ListingHeader from './ListingHeader'
 import humanize from 'underscore.string/humanize'
-import titleize from 'underscore.string/titleize'
-import { BootstrapTable, TableHeaderColumn, TableBody, TableHeader } from 'react-bootstrap-table'
+import { BootstrapTable, TableHeaderColumn, TableBody, TableHeader, PaginationList } from 'react-bootstrap-table'
 import dataviews from '../dataviews.css'
 import InlineSVG from 'svg-inline-react'
 import MdDateRange from 'react-icons/lib/md/date-range'
@@ -13,23 +11,20 @@ import FaBed from 'react-icons/lib/fa/bed'
 import MdInsertLink from 'react-icons/lib/md/insert-link'
 import MdAttachMoney from 'react-icons/lib/md/attach-money'
 import MdLocationCity from 'react-icons/lib/md/location-city'
-import axios from 'axios'
-import DisplayedAd from './DisplayedAd'
 import MdSave from 'react-icons/lib/md/save'
+import MdStar from 'react-icons/lib/md/star'
+import browseListingsStyles from '../viewlistings/browseListingsStyles'
+
 // </editor-fold>
 
-export default class DisplayAd extends React.Component {
+
+export default class Listing2 extends React.Component {
   constructor(props){
     super(props)
-    this.saveToFavorites = this.saveToFavorites.bind(this);
-  }
-
-  saveToFavorites(e){
-    this.props.saveToFavorites(e);
   }
 
   render(){
-    const el = this.props.displayAd;
+    const listing2 = this.props.listing2;
 
     class DescrStreetAndWheelchairAcc extends React.Component {
       constructor(props) {
@@ -43,15 +38,15 @@ export default class DisplayAd extends React.Component {
               <tbody>
                 <tr>
                   <td>Description:</td>
-                  <td>{humanize(el.descr)}</td>
+                  <td>{humanize(listing2.descr)}</td>
                 </tr>
                 <tr>
                   <td>Street address?</td>
-                  <td>{el.street_address? humanize(el.street_address): <span className={dataviews.blank}>Blank</span>}</td>
+                  <td>{listing2.street_address? humanize(listing2.street_address): <span className={dataviews.blank}>Blank</span>}</td>
                 </tr>
                 <tr>
                   <td>Wheelchair accessible?</td>
-                  <td>{el.wheelchair_accessible ? humanize(el.wheelchair_accessible): <span className={dataviews.blank}>Blank</span>}</td>
+                  <td>{listing2.wheelchair_accessible ? humanize(listing2.wheelchair_accessible): <span className={dataviews.blank}>Blank</span>}</td>
                 </tr>
               </tbody>
             </Table>
@@ -71,44 +66,44 @@ export default class DisplayAd extends React.Component {
             <tbody>
               <tr>
                 <td>Type of housing:</td>
-                <td>{el.housing_types
-                    ? humanize(el.housing_types)
+                <td>{listing2.housing_types
+                    ? humanize(listing2.housing_types)
                     : <span className={dataviews.blank}>Blank</span>}</td>
               </tr>
               <tr>
                 <td>Square feet:</td>
-                <td>{el.sqft
-                    ? <span>{humanize(el.sqft)}ft<sup>2</sup></span>
+                <td>{listing2.sqft
+                    ? <span>{humanize(listing2.sqft)}ft<sup>2</sup></span>
                     : <span className={dataviews.blank}>Blank</span>}</td>
               </tr>
               <tr>
                 <td>Private room?</td>
-                <td>{el.private_room_types
-                    ? humanize(el.private_room_types)
+                <td>{listing2.private_room_types
+                    ? humanize(listing2.private_room_types)
                     : <span className={dataviews.blank}>Blank</span>}</td>
               </tr>
               <tr>
                 <td>Private bath?</td>
-                <td>{el.bath_types
-                    ? humanize(el.bath_types)
+                <td>{listing2.bath_types
+                    ? humanize(listing2.bath_types)
                     : <span className={dataviews.blank}>Blank</span>}</td>
               </tr>
               <tr>
                 <td>Furnished?</td>
-                <td>{el.furnished_type
-                    ? humanize(el.furnished_type)
+                <td>{listing2.furnished_type
+                    ? humanize(listing2.furnished_type)
                     : <span className={dataviews.blank}>Blank</span>}</td>
               </tr>
               <tr>
                 <td>Laundry?</td>
-                <td>{el.laundry_types
-                    ? humanize(el.laundry_types)
+                <td>{listing2.laundry_types
+                    ? humanize(listing2.laundry_types)
                     : <span className={dataviews.blank}>Blank</span>}</td>
               </tr>
               <tr>
                 <td>Parking?</td>
-                <td>{el.parking_types
-                    ? humanize(el.parking_types)
+                <td>{listing2.parking_types
+                    ? humanize(listing2.parking_types)
                     : <span className={dataviews.blank}>Blank</span>}</td>
               </tr>
             </tbody>
@@ -128,8 +123,8 @@ export default class DisplayAd extends React.Component {
             <tbody>
               <tr>
                 <td>How many photos?</td>
-                <td>{el.photos && Object.keys(el.photos).length > 0
-                    ? Object.keys(el.photos.photos).length
+                <td>{listing2.photos && Object.keys(listing2.photos).length > 0
+                    ? Object.keys(listing2.photos.photos).length
                     : <span className={dataviews.blank}>None</span>}</td>
               </tr>
             </tbody>
@@ -146,16 +141,16 @@ export default class DisplayAd extends React.Component {
       render(){
         return(
           <div>
-            <p>{el.cat_types
-                ? humanize(el.cat_types)
+            <p>{listing2.cat_types
+                ? humanize(listing2.cat_types)
                 : ''}</p>
-            <p>{el.dog_types
-                ? humanize(el.dog_types)
+            <p>{listing2.dog_types
+                ? humanize(listing2.dog_types)
                 : ''}</p>
-            <p>{el.smoking_types
-                ? humanize(el.smoking_types)
+            <p>{listing2.smoking_types
+                ? humanize(listing2.smoking_types)
                 : ''}</p>
-            <p>{!el.cat_types && !el.dog_types ? 'No information about whether cats or dogs are allowed' : ''}</p>
+            <p>{!listing2.cat_types && !listing2.dog_types ? 'No information about whether cats or dogs are allowed' : ''}</p>
           </div>
         )
       }
@@ -165,25 +160,25 @@ export default class DisplayAd extends React.Component {
       <div>
         <div style={{height: '722px'}} className = 'panel panel-default'>
           <div style={{border: '1px solid black', margin: '0px 20px', padding: '20px 20px', height: '640px', overflowY: 'scroll'}} className='panel-body'>
-            <h2 style={{margin: '20px', height: '2em'}}>{titleize(el.title)}</h2>
+            <h2 style={{margin: '20px', height: '2em'}}>{titleize(listing2.title)}</h2>
             <Grid fluid>
               <Row>
                 <Col md={5} sm={5}>
                   <TableDetails
-                    el = {el}
+                    listing2 = {listing2}
                   />
                 </Col>
                 <div style={{position: 'relative', bottom: '0'}} >
                 <Col md={7} sm={7}>
                   <DogsCatsAndSmoking
-                    el = {el}
+                    listing2 = {listing2}
                   />
                 </Col>
                 </div>
                 <div>
                   <Col md={7} sm={7}>
                     <TablePhotos
-                      el = {el}
+                      listing2 = {listing2}
                     />
                   </Col>
                 </div>
@@ -193,17 +188,14 @@ export default class DisplayAd extends React.Component {
               <Row>
                 <Col>
                   <DescrStreetAndWheelchairAcc
-                    el={el}
+                    listing2 = {listing2}
                   />
                 </Col>
               </Row>
             </Grid>
         </div>
-        <div style={{textAlign: 'left', float: 'left', bottom: '0px'}}>
-          <div style={{margin: '20px'}}><Button bsStyle='primary' style={{position: 'relative', zIndex: '10000'}} onClick={this.saveToFavorites}>Save this listing to your account <MdSave style={{}} width="24" fill="hsl(200, 50%, 50%)" height="24"/></Button></div>
-        </div>
         <div style={{textAlign: 'right', bottom: '0px', margin: '20px', position: 'relative'}}>
-          <a style={{fontWeight: '400', fontSize: '20px'}} href={`http://seattle.craigslist.org${el.url}`} target="_blank" >Open the ad on craigslist <MdInsertLink style={{}} width="42" fill="hsl(200, 50%, 50%)" height="48"/></a>
+          <a style={{fontWeight: '400', fontSize: '20px'}} href={`http://seattle.craigslist.org${listing2.url}`} target="_blank" >Open the ad on craigslist <MdInsertLink style={{}} width="42" fill="hsl(200, 50%, 50%)" height="48"/></a>
         </div>
       </div>
     </div>

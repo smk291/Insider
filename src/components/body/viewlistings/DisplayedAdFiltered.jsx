@@ -21,15 +21,15 @@ import MdSave from 'react-icons/lib/md/save'
 export default class DisplayAd extends React.Component {
   constructor(props){
     super(props)
-    this.saveToFavorites = this.saveToFavorites.bind(this);
+    this.saveToFavoritesFiltered = this.saveToFavoritesFiltered.bind(this);
   }
 
-  saveToFavorites(e){
-    this.props.saveToFavorites(e);
+  saveToFavoritesFiltered(e){
+    this.props.saveToFavoritesFiltered(e);
   }
 
   render(){
-    const el = this.props.displayAd;
+    const el = this.props.displayAdFromFiltered;
 
     class DescrStreetAndWheelchairAcc extends React.Component {
       constructor(props) {
@@ -200,7 +200,7 @@ export default class DisplayAd extends React.Component {
             </Grid>
         </div>
         <div style={{textAlign: 'left', float: 'left', bottom: '0px'}}>
-          <div style={{margin: '20px'}}><Button bsStyle='primary' style={{position: 'relative', zIndex: '10000'}} onClick={this.saveToFavorites}>Save this listing to your account <MdSave style={{}} width="24" fill="hsl(200, 50%, 50%)" height="24"/></Button></div>
+          <div style={{margin: '20px'}}><Button bsStyle='primary' style={{position: 'relative', zIndex: '10000'}} onClick={this.saveToFavoritesFiltered}>Save this listing to your account <MdSave style={{}} width="24" fill="hsl(200, 50%, 50%)" height="24"/></Button></div>
         </div>
         <div style={{textAlign: 'right', bottom: '0px', margin: '20px', position: 'relative'}}>
           <a style={{fontWeight: '400', fontSize: '20px'}} href={`http://seattle.craigslist.org${el.url}`} target="_blank" >Open the ad on craigslist <MdInsertLink style={{}} width="42" fill="hsl(200, 50%, 50%)" height="48"/></a>

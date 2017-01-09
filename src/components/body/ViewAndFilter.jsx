@@ -16,6 +16,16 @@ import MdRemoveRedEye                from 'react-icons/lib/md/remove-red-eye'
 export default class ViewAndFilter extends React.Component {
   constructor(props){
     super(props)
+    this.saveToFavorites = this.saveToFavorites.bind(this)
+    this.saveToFavoritesFiltered = this.saveToFavoritesFiltered.bind(this)
+  }
+
+  saveToFavorites(e){
+    this.props.saveToFavorites(e);
+  }
+
+  saveToFavoritesFiltered(e){
+    this.props.saveToFavoritesFiltered(e);
   }
 
   render() {
@@ -29,10 +39,20 @@ export default class ViewAndFilter extends React.Component {
             <FilterData {...this.props}/>
           </Tab>
           <Tab className={dataviews.subheadertab} animation eventKey={3} title='Browse all listings'>
-            <ListingsView {...this.props} />
+            <ListingsView
+              changeView={this.props.changeView}
+              displayAd={this.props.displayAd}
+              listingsToDisplay={this.props.listingsToDisplay}
+              saveToFavorites={this.saveToFavorites}
+            />
           </Tab>
           <Tab className={dataviews.subheadertab} animation eventKey={4} disabled={!this.props.loggedIn} title='Browse filtered / sorted listings'>
-            <ListingsViewFiltered {...this.props} />
+            <ListingsViewFiltered
+              changeViewFiltered={this.props.changeViewFiltered}
+              displayAdFromFiltered={this.props.displayAdFromFiltered}
+              filteredListingsToDisplay={this.props.filteredListingsToDisplay}
+              saveToFavoritesFiltered={this.saveToFavoritesFiltered}
+            />
           </Tab>
         </Tabs>
       </div>

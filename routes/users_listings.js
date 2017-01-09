@@ -102,8 +102,9 @@ router.get('/users_listings_complete', authorize, (req, res, next) => {
   const { userId } = req.token;
 
   knex('users_listings')
-    .where('users.id', userId)
-    .join('listings', 'listings.id', 'users_listings.listings_id')
+    .where('user_id', userId)
+    // .join('listings', 'listings.id', 'users_listings.listings_id')
+
     .then((rows) => {
       res.send(camelizeKeys(rows));
     })
@@ -125,7 +126,6 @@ router.delete('/users_listings/:id/:userId', authorize, (req, res, next) => {
       if (!row) {
         throw boom.create(400, `No entry for user ${userId} at ${housingSearchId}`);
       }
-      console.log(`hi`);
 
       deleted.fromUsersListings = camelizeKeys(row);
 

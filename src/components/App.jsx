@@ -192,7 +192,14 @@ export default class App extends Component {
       ],
       // </editor-fold>
       displayAd: {},
-      userId: 0
+      displayAdFromFiltered: {},
+      userId: 0,
+      // <editor-fold> Comparison
+      comparison1: {},
+      comparison2: {},
+      userFavoritesRaw: [],
+      userFavoritesForDisplay: []
+      // </editor-fold>
     }
     //<editor-fold> Unused
     // Unused -- modal controls
@@ -227,8 +234,10 @@ export default class App extends Component {
     // </editor-fold>
   // </editor-fold>
     this.changeView = this.changeView.bind(this);
+    this.changeViewFiltered = this.changeViewFiltered.bind(this);
     this.isInFavorites = this.isInFavorites.bind(this)
     this.saveToFavorites = this.saveToFavorites.bind(this)
+    this.saveToFavoritesFiltered = this.saveToFavoritesFiltered.bind(this)
   }
 
   // <editor-fold> Unused
@@ -345,11 +354,21 @@ export default class App extends Component {
       });
       this.changeState();
       this.setState({userId: res.data.id})
+
       // notify.show('Logged In!', 'success', 3000);
+      axios({
+        method: 'get',
+        url: '/users_listings_complete',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then((res) => {
+        this.setState({userFavoritesRaw: res.data})
+      }).catch((err) => {
+        console.log(err);
+      });
 
       let listings = this.state.listings;
-
-      console.log(listings);
 
       // let isInFavorites = this.isInFavorites.bind(this);
 
@@ -379,19 +398,34 @@ export default class App extends Component {
           el.neighborhood = el.neighborhood.slice(0, 14) + '…';
         }
 
-        el.inFavorites = this.isInFavorites(el)
-        console.log(el.inFavorites);
+        // el.inFavorites = this.isInFavorites(el) //-----------------------------------------------------FIX THIS
+        // console.log(el.inFavorites);
 
         return el;
       });
 
       // listingsToDisplay = this.state.listings
 
-      console.log(listingsToDisplay);
-
       this.setState({listingsToDisplay})
     }).then(() => {
+      let ids                     = [],
+          userFavoritesForDisplay = [],
+          ld                      = this.state.listingsToDisplay,
+          rawFavorites            = this.state.userFavoritesRaw;
 
+      ids = rawFavorites.filter((el, idx) => {
+        return el.listingsId;
+      });
+
+      console.log(ids);
+
+      userFavoritesForDisplay = ld.filter((el) => {
+        return ids.indexOf(el.id);
+      })
+
+      console.log(userFavoritesForDisplay);
+
+      this.setState({userFavoritesForDisplay});
     }).catch((err) => {
       // notify.show(err.response.data, 'error', 3000);
     });
@@ -503,12 +537,37 @@ export default class App extends Component {
     });
   }
 
-  saveToFavorites(id){
+  changeViewFiltered(row) {
+    axios({
+      method: 'get',
+      url: `/listings/${row.id}`
+    }).then((res) => {
+      this.setState({displayAdFromFiltered: res.data})
+    }).catch((err) => {
+      //
+    });
+  }
+
+  saveToFavorites(){
     axios({
       method: 'post',
       url: `/users_listings/`,
       data: {
-        listingsId: id
+        listingsId: this.state.displayAd.id
+      }
+    }).then((res) => {
+      console.log(res);
+    }).catch((err) => {
+      console.log(err);
+    })
+  }
+
+  saveToFavoritesFiltered(){
+    axios({
+      method: 'post',
+      url: `/users_listings/`,
+      data: {
+        listingsId: this.state.displayAdFromFiltered.id
       }
     }).then((res) => {
       console.log(res);
@@ -521,13 +580,13 @@ export default class App extends Component {
   // <editor-fold> Listing functions
   filterListings(){
     let maxScore = 0;
+    let filteredOptions = [];
+    let filteredList = [];
+    let filteredListingsToDisplay = [];
 
     maxScore = this.state.importTypes.reduce((acc, pref, idx) => {
       return acc + this.props[pref];
     }, 0);
-
-    this.setState({maxScore})
-    let filteredOptions = [];
 
     filteredOptions = this.state.optionArrays.map((type) => {
       return type.filter((option) => {
@@ -535,8 +594,8 @@ export default class App extends Component {
       })
     });
 
+    this.setState({maxScore})
     this.setState({filteredOptions})
-    let filteredList = [];
 
     filteredList = this.state.listings.filter((el, idx) => {
       el.score = 0;
@@ -554,8 +613,6 @@ export default class App extends Component {
       } else if (this.state.bedroomsImportRequired) {
         return false;
       }
-
-      console.log(el.price);
 
       if (el.price){
         let minRent = Number(this.state.minRent);
@@ -593,7 +650,6 @@ export default class App extends Component {
 
     this.setState({filteredList})
 
-    let filteredListingsToDisplay = [];
 
     filteredListingsToDisplay = filteredList.map((el) => {
       if (el.title.length > 55 && !el.title.indexOf('…')) {
@@ -619,8 +675,7 @@ export default class App extends Component {
         el.neighborhood = el.neighborhood.slice(0, 14) + '…';
       }
 
-      el.inFavorites = this.isInFavorites(el)
-      console.log(el.inFavorites);
+      // el.inFavorites = this.isInFavorites(el) ----------------------------------------------------------FIX
 
       return el;
     });
@@ -635,10 +690,8 @@ export default class App extends Component {
       url: `/users_listings/${row.id}`
     }).then((res) => {
       if (res.data.length > 0){
-        console.log(true);
         return true
       } else {
-        console.log(false);
         return false
       }
     }).catch((err) => {

@@ -27,12 +27,12 @@ import browseListingsStyles from './browseListingsStyles'
 export default class BrowseListings extends React.Component {
   constructor(props){
     super(props)
-    this.changeView = this.changeView.bind(this)
+    this.changeViewFiltered = this.changeViewFiltered.bind(this)
     // this.isInFavorites = this.isInFavorites.bind(this)
   }
 
-  changeView(row) {
-    this.props.changeView(row);
+  changeViewFiltered(row) {
+    this.props.changeViewFiltered(row);
   }
   //
   // isInFavorites(row){
@@ -49,7 +49,7 @@ export default class BrowseListings extends React.Component {
     const options = {
       paginationShowsTotal: true,
       onRowClick: (row) => {
-        this.changeView(row);
+        this.changeViewFiltered(row);
       }
     }
 
@@ -69,7 +69,7 @@ export default class BrowseListings extends React.Component {
         pagination
         style={{overflowY: 'scroll'}}
         striped
-        data={this.props.displayThese}>
+        data={this.props.displayTheseFiltered}>
           <TableHeaderColumn
             width='64'
             headerAlign='center'

@@ -53,14 +53,15 @@ export default class ListingsView extends React.Component {
             <Col sm={12} md={6}>
               <BrowseListings
                 displayThese={this.props.listingsToDisplay}
-                {...this.props}
+                changeView={this.props.changeView}
               />
             </Col>
             <Col sm={12} md={6}>
               <div>
                 <div>
                   {this.props.displayAd.id ? <DisplayedAd
-                    {...this.props}
+                    displayAd={this.props.displayAd}
+                    saveToFavorites={this.props.saveToFavorites}
                   /> :
                   <ClickHere />}
                 </div>

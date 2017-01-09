@@ -14,8 +14,8 @@ import MdInsertLink from 'react-icons/lib/md/insert-link'
 import MdAttachMoney from 'react-icons/lib/md/attach-money'
 import MdLocationCity from 'react-icons/lib/md/location-city'
 import axios from 'axios'
-import DisplayedAd from './DisplayedAd'
-import BrowseListings from './BrowseListings'
+import DisplayedAdFiltered from './DisplayedAdFiltered'
+import BrowseListingsFiltered from './BrowseListingsFiltered'
 
 // </editor-fold>
 
@@ -25,6 +25,7 @@ export default class ListingsView extends React.Component {
   constructor(props) {
     super(props);
   }
+
 
   render() {
     // const shadow = {
@@ -51,18 +52,17 @@ export default class ListingsView extends React.Component {
         <Grid style={{width: '100%'}} fluid>
           <Row>
             <Col sm={12} md={6}>
-              <BrowseListings
-                listings={this.props.filteredList}
-                displayThese={this.props.filteredListingsToDisplay}
-                {...this.props}
+              <BrowseListingsFiltered
+                displayTheseFiltered={this.props.filteredListingsToDisplay}
+                changeViewFiltered={this.props.changeViewFiltered}
               />
             </Col>
             <Col sm={12} md={6}>
               <div>
                 <div>
-                  {this.props.displayAd.id ? <DisplayedAd
-                    {...this.props}
-                    listings={this.props.filteredList}
+                  {this.props.displayAdFromFiltered.id ? <DisplayedAdFiltered
+                    displayAdFromFiltered={this.props.displayAdFromFiltered}
+                    saveToFavoritesFiltered={this.props.saveToFavoritesFiltered}
                   /> :
                   <ClickHere />}
                 </div>

@@ -15,6 +15,7 @@ export default class Home extends React.Component {
     this.scrapeRows = this.scrapeRows.bind(this);
     this.scrapeNull = this.scrapeNull.bind(this);
     this.filterListings = this.filterListings.bind(this)
+    this.createFavoritesForDisplay = this.createFavoritesForDisplay.bind(this);
   }
 
   //<editor-fold HTTP and list
@@ -35,6 +36,10 @@ export default class Home extends React.Component {
   }
   // </editor-fold>
 
+  createFavoritesForDisplay(e){
+    this.props.createFavoritesForDisplay(e)
+  }
+
   render() {
     return (
       <div>
@@ -53,6 +58,7 @@ export default class Home extends React.Component {
               <Button onClick={this.scrapeRows}>get row scrapes</Button>
               <Button onClick={this.getListings}>get listings</Button>
               <Button onClick={this.filterListings}>filter listings</Button>
+              <Button onClick={this.createFavoritesForDisplay}>Favorites for listing</Button>
               {/* <Button onClick={console.log(this.props.filteredList)}>filter listings</Button> */}
               {this.props.loggedIn ? <p>Logged in!</p> : <p> Not logged in </p>}
               {/* <Button onClick={console.log(this.state.list)}>log list</Button> */}

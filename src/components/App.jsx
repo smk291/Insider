@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import {BrowserRouter, Route, browserHistory} from 'react-router';
 import {Button, Grid, Jumbotron, Row, Col, Popover, Tooltip, Modal} from 'react-bootstrap';
 import Footer from './footer/Footer';
-import Main from './body/Routing';
+import Routing from './body/Routing';
 import 'bootstrap/less/bootstrap.less'
 import axios from 'axios';
 import Header from './header/Header';
@@ -238,6 +238,7 @@ export default class App extends Component {
     this.isInFavorites = this.isInFavorites.bind(this)
     this.saveToFavorites = this.saveToFavorites.bind(this)
     this.saveToFavoritesFiltered = this.saveToFavoritesFiltered.bind(this)
+    this.createFavoritesForDisplay = this.createFavoritesForDisplay.bind(this)
   }
 
   // <editor-fold> Unused
@@ -407,27 +408,6 @@ export default class App extends Component {
       // listingsToDisplay = this.state.listings
 
       this.setState({listingsToDisplay})
-    }).then(() => {
-      let ids                     = [],
-          userFavoritesForDisplay = [],
-          ld                      = this.state.listingsToDisplay,
-          rawFavorites            = this.state.userFavoritesRaw;
-
-      console.log(rawFavorites);
-
-      ids = rawFavorites.map((el, idx) => {
-        return el.listingsId;
-      });
-
-      console.log(ids);
-
-      userFavoritesForDisplay = ld.filter((el) => {
-        return ids.indexOf(el.id);
-      })
-
-      console.log(userFavoritesForDisplay);
-
-      this.setState({userFavoritesForDisplay});
     }).catch((err) => {
       console.log(err);
       // notify.show(err.response.data, 'error', 3000);
@@ -702,6 +682,29 @@ export default class App extends Component {
     })
   }
 
+  createFavoritesForDisplay(){
+    let ids                     = [],
+        userFavoritesForDisplay = [],
+        ld                      = this.state.listingsToDisplay,
+        rawFavorites            = this.state.userFavoritesRaw;
+
+    console.log(rawFavorites);
+
+    ids = rawFavorites.map((el, idx) => {
+      return el.listingsId;
+    });
+
+    console.log(ids);
+
+    userFavoritesForDisplay = ld.filter((el) => {
+      return ids.indexOf(el.id) !== -1;
+    })
+
+    console.log(userFavoritesForDisplay);
+
+    this.setState({userFavoritesForDisplay});
+  }
+
   componentWillMount(){
     this.getListings();
   }
@@ -722,7 +725,8 @@ export default class App extends Component {
             </Row>
             <Row style={{minWidth: '1000px'}}>
               <Col>
-                <Main
+                <Routing
+                  createFavoritesForDisplay={this.createFavoritesForDisplay}
                   getListings={this.getListings}
                   {...this.props}
                   {...this.state}

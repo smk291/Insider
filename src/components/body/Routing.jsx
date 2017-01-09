@@ -19,6 +19,7 @@ export default class Main extends Component {
           {...this.props}
         />} />
         <Match pattern="/" exactly render={() => <Home
+          createFavoritesForDisplay={this.props.createFavoritesForDisplay}
           {...this.props}
         />} />
         <Match pattern="/search" render={() => <ViewAndFilter

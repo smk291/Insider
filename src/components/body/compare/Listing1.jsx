@@ -182,40 +182,30 @@ export default class Listing1 extends React.Component {
       <div>
         <div className = 'panel panel-default'>
           <div style={{border: '1px solid black', margin: '0px 20px', padding: '20px 20px', overflowY: 'scroll'}} className='panel-body'>
-            <h2 style={{margin: '20px', height: '2em'}}>{titleize(listing1.title)}</h2>
-            <Grid fluid>
-              <Row>
-                <Col md={5} sm={5}>
+            <Table striped bordered condensed hover fluid>
+              <thead>
+                <tr>
+                  <th>
+                    <h2 style={{margin: '20px', height: '2em'}}>{titleize(listing1.title)}</h2>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+
+              </tbody>
+            </Table>
                   <TableDetails
                     listing1 = {listing1}
                   />
-                </Col>
-                <div style={{position: 'relative', bottom: '0'}} >
-                <Col md={7} sm={7}>
                   <DogsCatsAndSmoking
                     listing1 = {listing1}
                   />
-                </Col>
-                </div>
-                <div>
-                  <Col md={7} sm={7}>
                     <TablePhotos
                       listing1 = {listing1}
                     />
-                  </Col>
-                </div>
-              </Row>
-            </Grid>
-            <Grid fluid style={{margin: '14px'}}>
-              <Row>
-                <Col>
                   <DescrStreetAndWheelchairAcc
                     listing1 = {listing1}
                   />
-                </Col>
-              </Row>
-            </Grid>
-        </div>
         <div style={{textAlign: 'right', bottom: '0px', margin: '20px', position: 'relative'}}>
           <a style={{fontWeight: '400', fontSize: '20px'}} href={`http://seattle.craigslist.org${listing1.url}`} target="_blank" >Open the ad on craigslist <MdInsertLink style={{}} width="42" fill="hsl(200, 50%, 50%)" height="48"/></a>
           <Pager style={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
@@ -226,6 +216,7 @@ export default class Listing1 extends React.Component {
         </div>
       </div>
     </div>
+  </div>
     )
   }
 }

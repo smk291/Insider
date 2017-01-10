@@ -7,6 +7,7 @@ import MdCompare from 'react-icons/lib/md/compare'
 import MdMap from 'react-icons/lib/md/map'
 import Listing1 from './compare/Listing1'
 import Listing2 from './compare/Listing2'
+import ContentTable from './compare/ContentTable'
 
 export default class Compare extends React.Component {
   constructor(props) {
@@ -55,8 +56,8 @@ export default class Compare extends React.Component {
     }
 
     return (
-      <div style={{height: '100vh'}}>
-        <Grid style={{height: '722px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}} fluid>
+      <div>
+        <Grid fluid style={{minWidth: '1000px'}}>
           <Row>
             <Col>
             {/* Header */}
@@ -64,10 +65,10 @@ export default class Compare extends React.Component {
           </Row>
           <Row>
             <Col>
-              {/* Subeader */}
+              {/* Subheader */}
             </Col>
           </Row>
-          <Row>
+          <Row style={{display: 'flex', justifyContent: 'center'}}>
             <Col md={5}>
               {this.props.userFavoritesForDisplay.length > 0 ? <Listing1
                 comparison1={this.props.comparison1}
@@ -76,6 +77,9 @@ export default class Compare extends React.Component {
                 pageChange={this.props.pageChange}
               /> :
               <AddFavorites />}
+            </Col>
+            <Col md={2}>
+              {this.props.userFavoritesForDisplay.length > 0 ?<ContentTable />: <p>''</p> }
             </Col>
             <Col md={5}>
               {this.props.userFavoritesForDisplay.length > 0 ? <Listing2

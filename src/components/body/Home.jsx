@@ -51,17 +51,14 @@ export default class Home extends React.Component {
             <p className={primary.points}>It's also awful.</p>
             <p>I mean, it's awful in a lot of ways, but the website itself is particularly bad. It's ugly, dated and user-hostile. The search is limited and can sort by just two parameters (recency and price). The mapping is helpful only when there's one marker: unless you already know exactly what listings the map is displaying and where they are, you have no way of knowing what each marker represents until you click on it. </p>
             <p className={primary.points}>It doesn't need to be this way.</p>
-            <p>Insider shows just how easy it would be to make craigslist more functional, useful and usable.</p>
+            <p>Insider shows how easy it would be to make craigslist more functional, useful and usable.</p>
             <div>
-              <Button onClick={this.scrapeNull}>get null</Button>
-              <Button onClick={this.scrapeList}>get list</Button>
-              <Button onClick={this.scrapeRows}>get row scrapes</Button>
-              <Button onClick={this.getListings}>get listings</Button>
-              <Button onClick={this.filterListings}>filter listings</Button>
-              <Button onClick={this.createFavoritesForDisplay}>Favorites for listing</Button>
-              {/* <Button onClick={console.log(this.props.filteredList)}>filter listings</Button> */}
-              {this.props.loggedIn ? <p>Logged in!</p> : <p> Not logged in </p>}
-              {/* <Button onClick={console.log(this.state.list)}>log list</Button> */}
+              {/* <Button onClick={this.scrapeNull}>get null</Button> */}
+              {/* <Button onClick={this.scrapeList}>get list</Button> */}
+              {/* <Button onClick={this.scrapeRows}>get row scrapes</Button> */}
+              {/* <Button onClick={this.getListings}>get listings</Button> */}
+              {/* <Button onClick={this.filterListings}>filter listings</Button> */}
+              {/* <Button onClick={this.createFavoritesForDisplay}>Favorites for listing</Button> */}
             </div>
           </Grid>
 

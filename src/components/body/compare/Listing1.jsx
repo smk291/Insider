@@ -181,7 +181,7 @@ export default class Listing1 extends React.Component {
     return(
       <div>
         <div className = 'panel panel-default'>
-          <div style={{border: '1px solid black', margin: '0px 20px', padding: '20px 20px', overflowY: 'scroll'}} className='panel-body'>
+          <div style={{border: '1px solid black', margin: '0px 20px', padding: '20px 20px'}} className='panel-body'>
             <Table striped bordered condensed hover fluid>
               <thead>
                 <tr>

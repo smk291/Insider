@@ -9,7 +9,7 @@ import humanize from 'underscore.string/humanize'
 import dataviews from '../dataviews'
 import InlineSVG from 'svg-inline-react'
 import MdBackup from 'react-icons/lib/md/backup'
-import {Chart} from 'react-google-charts'
+
 // </editor-fold>
 
 export default class FilterData extends React.Component {
@@ -39,11 +39,34 @@ export default class FilterData extends React.Component {
   }
   // </editor-fold>
 
+  lineGraphData (){
+    let accums = {};
+
+    this.props.listings.map((el) => {
+      let rent = el.price
+      let roundedValue = 0;
+
+      if (rent){
+        roundedValue = Math.round(Number(rent.slice(1)) / 100) * 100;
+      }
+
+      if (rent && !accums[roundedValue]){
+        accums[roundedValue] = 1;
+      } else {
+        accums[roundedValue]++;
+      }
+    })
+
+    console.log(accums);
+  }
+
+
   render(){
     // <editor-fold> composables
     const DropdownGroup = ({header, name, onChange, value, items, propsRequired, required}) => {
       return(
         <Panel
+          collapsible
           className={dataviews.listDiv} header={header}>
           <ListGroup fill>
             <Checkbox inline type="checkbox"
@@ -78,9 +101,8 @@ export default class FilterData extends React.Component {
     // </editor-fold>
 
     return(
-      <div>
-        <h1>Set options below</h1>
-        <p> Hi there </p>
+      <div style={{height: '88vh', overflowY: 'scroll'}}>
+        <h3>Set options below</h3>
         <Grid fluid>
         <Row>
           <Col
@@ -99,9 +121,9 @@ export default class FilterData extends React.Component {
               value={this.props.housingImport}/>
             <Panel
               style={{marginRight: '10px'}}
-
               className={dataviews.listDiv}
-              collapsible defaultExpanded={false}
+              collapsible
+              defaultExpanded={false}
               header='Rent ▾'>
               <Checkbox
                 inline
@@ -143,7 +165,10 @@ export default class FilterData extends React.Component {
             </Panel>
             <Panel
               style={{marginRight: '10px'}}
-              className={dataviews.listDiv} collapsible defaultExpanded={false} header='Bedrooms ▾'>
+              className={dataviews.listDiv}
+              collapsible
+              defaultExpanded={false}
+              header='Bedrooms ▾'>
               <Checkbox inline type="checkbox"
                 checked={this.props.bedroomsImportRequired} onChange={this.handleChbox.bind(this, 'bedroomsImportRequired')}>Required?</Checkbox>
               <ListGroup fill>
@@ -182,6 +207,8 @@ export default class FilterData extends React.Component {
               items={this.props.private_room_types}
               propsRequired={this.props.roomImportRequired}
               required='roomImportRequired'
+              collapsible
+              defaultExpanded={false}
             />
             <ReactSimpleRange
               style={{padding: '4px 10px'}}
@@ -190,12 +217,16 @@ export default class FilterData extends React.Component {
               name='housingImport'
               onChange={this.handleSlider.bind(this, 'housingImport')}
               value={this.props.roomImport}
+              collapsible
+              defaultExpanded={false}
             />
             <DropdownGroup
               header='Private bath ▾'
               items={this.props.bath_types}
               propsRequired={this.props.bathImportRequired}
               required='bathImportRequired'
+              collapsible
+              defaultExpanded={false}
             />
             <ReactSimpleRange
               style={{padding: '4px 10px'}}
@@ -211,6 +242,8 @@ export default class FilterData extends React.Component {
               items={this.props.parking_types}
               propsRequired={this.props.parkingImportRequired}
               required='parkingImportRequired'
+              collapsible
+              defaultExpanded={false}
             />
             <ReactSimpleRange
               style={{padding: '4px 10px'}}
@@ -226,6 +259,8 @@ export default class FilterData extends React.Component {
               items={this.props.laundry_types}
               propsRequired={this.props.laundryImportRequired}
               required='laundryImportRequired'
+              collapsible
+              defaultExpanded={false}
             />
             <ReactSimpleRange
               style={{padding: '4px 10px'}}
@@ -358,17 +393,14 @@ export default class FilterData extends React.Component {
             <div
               style={{height: '20px', backgroundColor: 'white'}}>
             </div>
-            <div
-              className={dataviews.saveSettings}>
+            {/* <div className={dataviews.saveSettings}>
               <MdBackup
                 style={{alignSelf: 'flex-end', margin: '0px 5px', padding: '0px 0px 12px 0px'}} width="48" fill="hsl(200, 50%, 50%)" height="48"
               />
-              <div
-                style={{display: 'inline-block', margin: '10px 0px 0px 2px', color: 'hsl(200, 50%, 50%)'}}>
-                <p
-                  style={{fontWeight: '500'}}>Save settings</p>
+              <div style={{display: 'inline-block', margin: '10px 0px 0px 2px', color: 'hsl(200, 50%, 50%)'}}>
+                <p style={{fontWeight: '500'}}>Save settings</p>
               </div>
-            </div>
+            </div> */}
             <div
               style={{height: '20px', backgroundColor: 'white'}}>
             </div>

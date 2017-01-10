@@ -1,6 +1,6 @@
 //<editor-fold import
 import React                from 'react'
-import {Tooltip, Tab, Tabs} from 'react-bootstrap'
+import {Tooltip, Tab, Tabs, Grid, Col, Row} from 'react-bootstrap'
 import dataviews            from './dataviews'
 import ViewAd               from './viewlistings/ViewAd'
 import ListingsView         from './viewlistings/ListingsView'
@@ -31,29 +31,47 @@ export default class ViewAndFilter extends React.Component {
   render() {
     return (
       <div className={dataviews.tabs}>
-        <Tabs animation defaultActiveKey={1} id="placeholder1">
-          <Tab className={dataviews.subheadertab} animation eventKey={1} title='Housing data at a glance'>
+        <Tabs animation defaultActiveKey={3} id="placeholder1">
+          {/* <Tab className={dataviews.subheadertab} animation eventKey={1} title='Housing data at a glance'>
             <DataSummary {...this.props}/>
-          </Tab>
-          <Tab className={dataviews.subheadertab} animation eventKey={2} title='Filter data'>
-            <FilterData {...this.props}/>
-          </Tab>
+          </Tab> */}
+          {/* <Tab className={dataviews.subheadertab} animation eventKey={2} title='Filter data'>
+
+          </Tab> */}
           <Tab className={dataviews.subheadertab} animation eventKey={3} title='Browse all listings'>
-            <ListingsView
-              changeView={this.props.changeView}
-              displayAd={this.props.displayAd}
-              listingsToDisplay={this.props.listingsToDisplay}
-              saveToFavorites={this.saveToFavorites}
-            />
+            <Grid fluid>
+              <Row>
+                <Col md={2}>
+                  <FilterData {...this.props}/>
+                </Col>
+                <Col md={10}>
+                  <ListingsView
+                    changeView={this.props.changeView}
+                    displayAd={this.props.displayAd}
+                    listingsToDisplay={this.props.listingsToDisplay}
+                    saveToFavorites={this.saveToFavorites}
+                  />
+                </Col>
+              </Row>
+            </Grid>
           </Tab>
           <Tab className={dataviews.subheadertab} animation eventKey={4} disabled={!this.props.loggedIn} title='Browse filtered / sorted listings'>
-            <ListingsViewFiltered
-              changeViewFiltered={this.props.changeViewFiltered}
-              displayAdFromFiltered={this.props.displayAdFromFiltered}
-              filteredListingsToDisplay={this.props.filteredListingsToDisplay}
-              saveToFavoritesFiltered={this.saveToFavoritesFiltered}
-              pageChange={this.props.pageChange}
-            />
+            <Grid fluid>
+              <Row>
+                <Col md={2}>
+                  <FilterData {...this.props}/>
+                </Col>
+                <Col md={10}>
+                  <ListingsViewFiltered
+                    changeViewFiltered={this.props.changeViewFiltered}
+                    displayAdFromFiltered={this.props.displayAdFromFiltered}
+                    filteredListingsToDisplay={this.props.filteredListingsToDisplay}
+                    saveToFavoritesFiltered={this.saveToFavoritesFiltered}
+                    pageChange={this.props.pageChange}
+                  />
+                </Col>
+              </Row>
+            </Grid>
           </Tab>
         </Tabs>
       </div>

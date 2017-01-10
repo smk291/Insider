@@ -11,6 +11,8 @@ import notify from 'react-notify-toast';
 import globalCSS from '../../globalCSS.css'
 import request from 'request'
 import titleize from 'underscore.string/titleize'
+import ReactToastr from 'react-toastr'
+import ToastContainer from 'react-toastr'
 
 //</editor-fold>
 
@@ -279,7 +281,6 @@ export default class App extends Component {
       }
     }).then((res) => {
       this.changeState();
-      console.log(res);
 
       let userFavoritesRaw = []
 
@@ -332,23 +333,14 @@ export default class App extends Component {
             userFavoritesForDisplay = [],
             rawFavorites            = userFavoritesRaw;
 
-        console.log(rawFavorites);
-
         ids = rawFavorites.map((el, idx) => {
           return el.listingsId;
         });
-
-        console.log(ids);
 
         userFavoritesForDisplay = listingsToDisplay.filter((el) => {
           return ids.indexOf(el.id) !== -1;
         })
 
-        console.log(userFavoritesForDisplay);
-        console.log(listingsToDisplay);
-        console.log(userFavoritesRaw);
-        console.log(userFavoritesForDisplay[0]);
-        console.log(userFavoritesForDisplay[0]);
         this.setState({listingsToDisplay, userFavoritesRaw, userFavoritesForDisplay, comparison1: userFavoritesForDisplay[0], comparison2: userFavoritesForDisplay[0]});
       }).catch((err) => {
         console.log(err);

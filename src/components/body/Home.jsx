@@ -44,7 +44,7 @@ export default class Home extends React.Component {
     return (
       <div>
         <Jumbotron style={{backgroundColor: '#DCE1DE'}}>
-          <Grid fluid>
+          <Grid>
             <h1 style={{color: '#216869', fontWeight: '300'}}>Welcome to <span className={primary.insider}>Insider</span></h1>
             <p className={primary.points}>craigslist is indispensable.</p>
             <p>Where else would you look if you were on a budget and needed a sublet or an apartment in a major US city?</p>
@@ -70,25 +70,26 @@ export default class Home extends React.Component {
           <Row style={{display: 'flex'}}>
             <Col className={primary.thirds} md={4}>
               <h2><MdSearch />   Search better.</h2>
-              <p className={primary.thirdsP}>Click below to set your priorities -- not just with booleans but by weighting and ranking parameters. Insider will take these into consideration and rank listings accordingly.</p>
-              <p>
-                <Button>Create and save search parameters »</Button>
-              </p>
+              <p className={primary.thirdsP}>Set priorities and rank listings accordingly.</p>
+
+            </Col>
+            <Col className={primary.thirds} md={4}>
+              {/* <h2><MdCompare />   Compare.</h2>
+              <p className={primary.thirdsP}>Comparing listings side-by-side is ridiculously easy to implement, but no housing-search website or web app that I've used offers it. </p> */}
+
             </Col>
             <Col className={primary.thirds} md={4}>
               <h2><MdCompare />   Compare.</h2>
-              <p className={primary.thirdsP}>Comparing listings side-by-side is ridiculously easy to implement, but no housing-search website or web app that I've used offers it. </p>
-              <p>
-                <Button>Compare saved listings »</Button>
-              </p>
+              <p className={primary.thirdsP}>Comparing listings side-by-side. </p>
+
             </Col>
-            <Col className={primary.thirds} md={4}>
+            {/* <Col className={primary.thirds} md={4}>
               <h2><MdMap />   Use maps.</h2>
               <p className={primary.thirdsP}>Did you know that it's possible to style map markers? Did you know that it's possible to display information about a listing visually via its map marker? Amazing, right?</p>
               <p>
                 <Button>Make mapping useful»</Button>
               </p>
-            </Col>
+            </Col> */}
           </Row>
         </Grid>
       </div>

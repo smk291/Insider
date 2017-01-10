@@ -15,6 +15,8 @@ export default class Compare extends React.Component {
     this.scrapeRows = this.scrapeRows.bind(this);
     this.scrapeNull = this.scrapeNull.bind(this);
     this.filterListings = this.filterListings.bind(this)
+    this.handleSelect2 = this.handleSelect2.bind(this)
+    this.handleSelect1 = this.handleSelect1.bind(this)
   }
 
   scrapeList(e){
@@ -33,10 +35,28 @@ export default class Compare extends React.Component {
     this.props.filterListings();
   }
 
+  handleSelect1(eventkey){
+    this.props.handleSelect1(eventkey);
+  }
+
+  handleSelect2(eventkey){
+    this.props.handleSelect2(eventkey);
+  }
+
   render() {
+    const AddFavorites = () => {
+      return(
+        <div className = 'panel panel-default' style={{height: '722px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+          <div>
+            <h1>Save Favorites to compare them side-by-side</h1>
+          </div>
+        </div>
+      )
+    }
+
     return (
-      <div>
-        <Grid fluid>
+      <div style={{height: '100vh'}}>
+        <Grid style={{height: '722px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}} fluid>
           <Row>
             <Col>
             {/* Header */}
@@ -48,11 +68,23 @@ export default class Compare extends React.Component {
             </Col>
           </Row>
           <Row>
-            <Col>
-              {/* Listing 1 */}
+            <Col md={5}>
+              {this.props.userFavoritesForDisplay.length > 0 ? <Listing1
+                comparison1={this.props.comparison1}
+                activePage1={this.props.activePage1}
+                userFavoritesForDisplay={this.props.userFavoritesForDisplay}
+                pageChange={this.props.pageChange}
+              /> :
+              <AddFavorites />}
             </Col>
-            <Col>
-              {/* Listing 2 */}
+            <Col md={5}>
+              {this.props.userFavoritesForDisplay.length > 0 ? <Listing2
+                comparison2={this.props.comparison2}
+                activePage2={this.props.activePage2}
+                userFavoritesForDisplay={this.props.userFavoritesForDisplay}
+                pageChange={this.props.pageChange}
+              /> :
+              <AddFavorites />}
             </Col>
           </Row>
         </Grid>

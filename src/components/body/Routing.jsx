@@ -22,13 +22,15 @@ export default class Main extends Component {
           createFavoritesForDisplay={this.props.createFavoritesForDisplay}
           {...this.props}
         />} />
-        <Match pattern="/search" render={() => <ViewAndFilter
+        <Match pattern="/data" render={() => <ViewAndFilter
           {...this.props}
         />} />
         <Match pattern="/map" render={() => <MapPage
           {...this.props}
         />} />
-        <Match pattern="/tables" render={() => <Compare
+        <Match pattern="/compare" render={() => <Compare
+          handleSelect1={this.props.handleSelect1}
+          handleSelect2={this.props.handleSelect2}
           {...this.props}
         />} />
         <Miss component={NotFound} />

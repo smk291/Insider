@@ -198,7 +198,9 @@ export default class App extends Component {
       comparison1: {},
       comparison2: {},
       userFavoritesRaw: [],
-      userFavoritesForDisplay: []
+      userFavoritesForDisplay: [],
+      activePage1: 0,
+      activePage2: 0,
       // </editor-fold>
     }
     //<editor-fold> Unused
@@ -224,7 +226,7 @@ export default class App extends Component {
     this.filterListings = this.filterListings.bind(this)
     //</editor-fold>
     //<editor-fold> Handle changes
-    // Handle changes, set state {
+    // Handle changes, set state
     this.setState = this.setState.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.changeState = this.changeState.bind(this);
@@ -239,6 +241,9 @@ export default class App extends Component {
     this.saveToFavorites = this.saveToFavorites.bind(this)
     this.saveToFavoritesFiltered = this.saveToFavoritesFiltered.bind(this)
     this.createFavoritesForDisplay = this.createFavoritesForDisplay.bind(this)
+    this.changeComparisonView = this.changeComparisonView.bind(this)
+    this.pageChange = this.pageChange.bind(this)
+    this.getLoggedIn = this.getLoggedIn.bind(this)
   }
 
   // <editor-fold> Unused
@@ -264,6 +269,23 @@ export default class App extends Component {
   //</editor-fold>
 
   // <editor-fold> Auth
+  getLoggedIn(){
+    axios({
+      method: 'get',
+      url: '/token',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then((res) => {
+      this.changeState();
+      console.log(res);
+      // notify.show('Logged Out!', 'success', 3000);
+    }).catch(err => {
+      console.log(err);
+      // notify.show(err.response.data, 'error', 3000);
+    });
+
+  }
   logOut (e) {
     e.preventDefault();
 
@@ -702,18 +724,44 @@ export default class App extends Component {
 
     console.log(userFavoritesForDisplay);
 
-    this.setState({userFavoritesForDisplay});
+    this.setState({userFavoritesForDisplay, comparison1: userFavoritesForDisplay[0], comparison2: userFavoritesForDisplay[0]});
+  }
+
+  changeComparisonView(element){
+    this.setState(element);
+  }
+
+  // handleSelect1(eventKey){
+  //   this.setState({activePage1: eventKey, comparison1: this.state.userFavoritesForDisplay[eventKey]});
+  // }
+  //
+  // handleSelect2(eventKey){
+  //   this.setState({activePage2: eventKey, comparison2: this.state.userFavoritesForDisplay[eventKey]});
+  // }
+
+  pageChange(activePageName, activePageNumber, comparisonPageName){
+    let change = {}
+    let change1 = {}
+    change[activePageName] = activePageNumber;
+
+    change1[comparisonPageName] = this.state.userFavoritesForDisplay[activePageNumber]
+
+    console.log(change);
+    console.log(change1);
+    this.setState(change);
+    this.setState(change1);
   }
 
   componentWillMount(){
     this.getListings();
+    this.getLoggedIn();
   }
 
   render() {
     return (
       <BrowserRouter>
         <div>
-          <Grid fluid style={{height: '90vh', minWidth: '1000px'}}>
+          <Grid fluid style={{minWidth: '1000px'}}>
             <Row style={{minWidth: '1000px'}}>
               <Col>
                 <Header style={{height: '50px'}}
@@ -735,7 +783,6 @@ export default class App extends Component {
               </Col>
             </Row>
           </Grid>
-          <Footer style={{minWidth: '1000px', padding: '0px', margin: '0px'}}/>
         </div>
       </BrowserRouter>
     )

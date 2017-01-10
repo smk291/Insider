@@ -3,7 +3,8 @@ import React from 'react'
 import { Button, Grid, Row, Col, Tooltip, Accordion, Panel, ListGroup, ListGroupItem, Table, Pager } from 'react-bootstrap'
 import primary from '../primary.css'
 import humanize from 'underscore.string/humanize'
-import { BootstrapTable, TableHeaderColumn, TableBody, TableHeader, PaginationList } from 'react-bootstrap-table'
+import titleize from 'underscore.string/titleize'
+import { BootstrapTable, TableHeaderColumn, TableBody, TableHeader, PaginationList, Pagination } from 'react-bootstrap-table'
 import dataviews from '../dataviews.css'
 import InlineSVG from 'svg-inline-react'
 import MdDateRange from 'react-icons/lib/md/date-range'
@@ -17,14 +18,35 @@ import browseListingsStyles from '../viewlistings/browseListingsStyles'
 
 // </editor-fold>
 
-
 export default class Listing2 extends React.Component {
   constructor(props){
     super(props)
+    this.pageBack = this.pageBack.bind(this)
+    this.pageForward = this.pageForward.bind(this)
+  }
+
+  pageForward(){
+    console.log(this.pageForward);
+    console.log(this.props.userFavoritesForDisplay.length);
+    console.log(this.props.activePage2);
+    console.log(this.props.comparison2);
+    if (this.props.activePage2 < this.props.userFavoritesForDisplay.length - 1){
+      this.props.pageChange('activePage2', this.props.activePage2 + 1, 'comparison2');
+    }
+  }
+
+  pageBack(){
+    console.log(this.pageBack);
+    console.log(this.props.userFavoritesForDisplay.length);
+    console.log(this.props.activePage2);
+    console.log(this.props.comparison2);
+    if (this.props.activePage2 >= 0){
+      this.props.pageChange('activePage2', this.props.activePage2 - 1, 'comparison2');
+    }
   }
 
   render(){
-    const listing2 = this.props.listing2;
+    const listing2 = this.props.comparison2;
 
     class DescrStreetAndWheelchairAcc extends React.Component {
       constructor(props) {
@@ -158,8 +180,8 @@ export default class Listing2 extends React.Component {
 
     return(
       <div>
-        <div style={{height: '722px'}} className = 'panel panel-default'>
-          <div style={{border: '1px solid black', margin: '0px 20px', padding: '20px 20px', height: '640px', overflowY: 'scroll'}} className='panel-body'>
+        <div className = 'panel panel-default'>
+          <div style={{border: '1px solid black', margin: '0px 20px', padding: '20px 20px', overflowY: 'scroll'}} className='panel-body'>
             <h2 style={{margin: '20px', height: '2em'}}>{titleize(listing2.title)}</h2>
             <Grid fluid>
               <Row>
@@ -196,6 +218,11 @@ export default class Listing2 extends React.Component {
         </div>
         <div style={{textAlign: 'right', bottom: '0px', margin: '20px', position: 'relative'}}>
           <a style={{fontWeight: '400', fontSize: '20px'}} href={`http://seattle.craigslist.org${listing2.url}`} target="_blank" >Open the ad on craigslist <MdInsertLink style={{}} width="42" fill="hsl(200, 50%, 50%)" height="48"/></a>
+          <Pager style={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
+            <Pager.Item previous href="#" onSelect={this.pageBack} disabled={this.props.activePage2 === 0}>&larr; Previous Page</Pager.Item>
+            <p>Viewing {this.props.activePage2 + 1} out of {this.props.userFavoritesForDisplay.length}</p>
+            <Pager.Item next onSelect={this.pageForward} disabled={this.props.activePage2 === this.props.userFavoritesForDisplay.length} href="#">Next Page &rarr;</Pager.Item>
+          </Pager>
         </div>
       </div>
     </div>

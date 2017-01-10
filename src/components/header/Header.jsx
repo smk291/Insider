@@ -51,9 +51,9 @@ export default class Header extends React.Component {
         <Navbar className={header.navbar} fluid style={{height: '50px', borderRadius: '0px'}}>
           <Nav pullLeft>
             <Link activeOnlyWhenExact className={header.navButton} activeClassName={header.active} to='/'><MdHome /></Link>
-            <Link className={header.navButton} activeClassName={header.active} to='/search'><MdSearch /> View and filter housing data</Link>
+            <Link className={header.navButton} activeClassName={header.active} to='/data'><MdSearch /> View and filter housing data</Link>
             <Link className={header.navButton} activeClassName={header.active} to='/map'><MdMap /> Use map</Link>
-            <Link className={header.navButton} activeClassName={header.active} to='/tables'><MdCompare /> compare saved listings</Link>
+            <Link className={header.navButton} activeClassName={header.active} to='/compare'><MdCompare /> compare saved listings</Link>
           </Nav>
           <Nav pullRight>
             {!this.props.loggedIn ? (

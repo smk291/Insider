@@ -52,6 +52,7 @@ export default class ViewAndFilter extends React.Component {
               displayAdFromFiltered={this.props.displayAdFromFiltered}
               filteredListingsToDisplay={this.props.filteredListingsToDisplay}
               saveToFavoritesFiltered={this.saveToFavoritesFiltered}
+              pageChange={this.props.pageChange}
             />
           </Tab>
         </Tabs>

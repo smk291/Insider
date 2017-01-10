@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {Link} from 'react-router'
-import { FormGroup, FormControl, controlId, ControlLabel, FieldGroup, Button, Row, Col } from 'react-bootstrap';
+import { FormGroup, FormControl, controlId, ControlLabel, FieldGroup, Button, Row, Col, Grid } from 'react-bootstrap';
 import login from './login.css'
 
 export default class Login extends React.Component {
@@ -25,7 +25,7 @@ export default class Login extends React.Component {
 
   render() {
     return (
-      <section>
+      <Grid>
         <Row className="show-grid">
           <Col md={3} sm={2}/>
           <Col md={3} sm={4}>
@@ -37,7 +37,7 @@ export default class Login extends React.Component {
               </div>
               <div>
                 <p>Password:</p>
-                <FormControl id="password" type="password" placeholder="youreawizard" name="password" onChange={this.props.handleChange} value={this.props.password}/>
+                <FormControl id="password" type="password" placeholder="password" name="password" onChange={this.props.handleChange} value={this.props.password}/>
               </div>
               <div>
                 {/* <Link to="/">Back to Home</Link> */}
@@ -63,7 +63,7 @@ export default class Login extends React.Component {
               </div>
               <div>
                 <p>Password:</p>
-                <FormControl id="password" type="password" placeholder="youreawizard" name="signUpPassword" onChange={this.props.handleChange} value={this.props.value}/>
+                <FormControl id="password" type="password" placeholder="password" name="signUpPassword" onChange={this.props.handleChange} value={this.props.value}/>
               </div>
               <div>
                 {/* <Link to="/">Back to Home</Link> */}
@@ -73,7 +73,7 @@ export default class Login extends React.Component {
           </Col>
           <Col md={3} sm={2}/>
         </Row>
-      </section>
+      </Grid>
     );
   }
 }

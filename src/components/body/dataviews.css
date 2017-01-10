@@ -58,7 +58,7 @@ customSort {
 
 .tableBodyCustomTable {
   overflow-y: scroll;
-  /*height: 580px;*/
+  height: 580px !important;
 }
 
 .saveListing {

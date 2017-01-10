@@ -67,7 +67,7 @@ export default class Home extends React.Component {
 
         </Jumbotron>
         <Grid className={primary.thirdsGrid}>
-          <Row>
+          <Row style={{display: 'flex'}}>
             <Col className={primary.thirds} md={4}>
               <h2><MdSearch />   Search better.</h2>
               <p className={primary.thirdsP}>Click below to set your priorities -- not just with booleans but by weighting and ranking parameters. Insider will take these into consideration and rank listings accordingly.</p>

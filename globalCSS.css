@@ -9,7 +9,6 @@ html, body {
 
 main {
   position: relative;
-  overflow: scroll;
 }
 h1, h2, h3 {
   font-weight: 100;

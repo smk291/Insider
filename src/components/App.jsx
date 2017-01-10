@@ -244,6 +244,7 @@ export default class App extends Component {
     this.changeComparisonView = this.changeComparisonView.bind(this)
     this.pageChange = this.pageChange.bind(this)
     this.getLoggedIn = this.getLoggedIn.bind(this)
+    this.fetchAndFormatFavorites = this.fetchAndFormatFavorites.bind(this)
   }
 
   // <editor-fold> Unused
@@ -279,13 +280,87 @@ export default class App extends Component {
     }).then((res) => {
       this.changeState();
       console.log(res);
-      // notify.show('Logged Out!', 'success', 3000);
+
+      let userFavoritesRaw = []
+
+      axios({
+        method: 'get',
+        url: '/users_listings_complete',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then((res) => {
+        userFavoritesRaw = res.data
+
+        let listings = this.state.listings;
+
+        // let isInFavorites = this.isInFavorites.bind(this);
+
+        let listingsToDisplay = [];
+
+        listingsToDisplay = listings.map((el) => {
+          if (el.title.length > 55 && !el.title.indexOf('…')) {
+            el.title = humanize(el.title.slice(0, 55) + '…');
+          }
+
+          if (el.price && el.price[0] !== '$'){
+            el.price = '$' + el.price;
+          }
+
+          if (el.title.indexOf(' ') === -1 || (el.title.split(' ').length < 1  && el.title.length > 30)) {
+            el.title = el.title.slice(0, 40);
+          }
+
+          if (el.neighborhood[0] === '(' && el.neighborhood[el.neighborhood.length - 1] === ')'){
+            el.neighborhood = el.neighborhood.slice(1)
+            el.neighborhood = el.neighborhood.slice(0, -1)
+          }
+
+          el.neighborhood = el.neighborhood.toLowerCase();
+          el.neighborhood = titleize(el.neighborhood)
+          if (el.neighborhood.length > 14){
+            el.neighborhood = el.neighborhood.slice(0, 14) + '…';
+          }
+
+          // el.inFavorites = this.isInFavorites(el) //-----------------------------------------------------FIX THIS
+          // console.log(el.inFavorites);
+
+          return el;
+        });
+
+        let ids                     = [],
+            userFavoritesForDisplay = [],
+            rawFavorites            = userFavoritesRaw;
+
+        console.log(rawFavorites);
+
+        ids = rawFavorites.map((el, idx) => {
+          return el.listingsId;
+        });
+
+        console.log(ids);
+
+        userFavoritesForDisplay = listingsToDisplay.filter((el) => {
+          return ids.indexOf(el.id) !== -1;
+        })
+
+        console.log(userFavoritesForDisplay);
+        console.log(listingsToDisplay);
+        console.log(userFavoritesRaw);
+        console.log(userFavoritesForDisplay[0]);
+        console.log(userFavoritesForDisplay[0]);
+        this.setState({listingsToDisplay, userFavoritesRaw, userFavoritesForDisplay, comparison1: userFavoritesForDisplay[0], comparison2: userFavoritesForDisplay[0]});
+      }).catch((err) => {
+        console.log(err);
+      });
+
     }).catch(err => {
       console.log(err);
       // notify.show(err.response.data, 'error', 3000);
     });
 
   }
+
   logOut (e) {
     e.preventDefault();
 
@@ -360,6 +435,8 @@ export default class App extends Component {
   logIn(e) {
     e.preventDefault();
 
+    let userFavoritesRaw = [];
+
     axios({
       method: 'post',
       url: '/token',
@@ -371,14 +448,8 @@ export default class App extends Component {
         password: this.state.password
       }
     }).then((res) => {
-      this.setState({
-        email: '',
-        password: ''
-      });
       this.changeState();
-      this.setState({userId: res.data.id})
 
-      // notify.show('Logged In!', 'success', 3000);
       axios({
         method: 'get',
         url: '/users_listings_complete',
@@ -386,50 +457,66 @@ export default class App extends Component {
           'Content-Type': 'application/json'
         }
       }).then((res) => {
-        this.setState({userFavoritesRaw: res.data})
+        userFavoritesRaw = res.data
+
+        let listings = this.state.listings;
+
+        // let isInFavorites = this.isInFavorites.bind(this);
+
+        let listingsToDisplay = [];
+
+        listingsToDisplay = listings.map((el) => {
+          if (el.title.length > 55 && !el.title.indexOf('…')) {
+            el.title = humanize(el.title.slice(0, 55) + '…');
+          }
+
+          if (el.price && el.price[0] !== '$'){
+            el.price = '$' + el.price;
+          }
+
+          if (el.title.indexOf(' ') === -1 || (el.title.split(' ').length < 1  && el.title.length > 30)) {
+            el.title = el.title.slice(0, 40);
+          }
+
+          if (el.neighborhood[0] === '(' && el.neighborhood[el.neighborhood.length - 1] === ')'){
+            el.neighborhood = el.neighborhood.slice(1)
+            el.neighborhood = el.neighborhood.slice(0, -1)
+          }
+
+          el.neighborhood = el.neighborhood.toLowerCase();
+          el.neighborhood = titleize(el.neighborhood)
+          if (el.neighborhood.length > 14){
+            el.neighborhood = el.neighborhood.slice(0, 14) + '…';
+          }
+
+          return el;
+        });
+
+        let ids                     = [],
+            userFavoritesForDisplay = [],
+            rawFavorites            = userFavoritesRaw;
+
+        console.log(rawFavorites);
+
+        ids = rawFavorites.map((el, idx) => {
+          return el.listingsId;
+        });
+
+        console.log(ids);
+
+        userFavoritesForDisplay = listingsToDisplay.filter((el) => {
+          return ids.indexOf(el.id) !== -1;
+        })
+
+        console.log(userFavoritesForDisplay);
+        console.log(listingsToDisplay);
+        console.log(userFavoritesRaw);
+        console.log(userFavoritesForDisplay[0]);
+        console.log(userFavoritesForDisplay[0]);
+        this.setState({listingsToDisplay, userFavoritesRaw, userFavoritesForDisplay, comparison1: userFavoritesForDisplay[0], comparison2: userFavoritesForDisplay[0], email: '', password: ''});
       }).catch((err) => {
         console.log(err);
       });
-
-      let listings = this.state.listings;
-
-      // let isInFavorites = this.isInFavorites.bind(this);
-
-      let listingsToDisplay = [];
-
-      listingsToDisplay = listings.map((el) => {
-        if (el.title.length > 55 && !el.title.indexOf('…')) {
-          el.title = humanize(el.title.slice(0, 55) + '…');
-        }
-
-        if (el.price && el.price[0] !== '$'){
-          el.price = '$' + el.price;
-        }
-
-        if (el.title.indexOf(' ') === -1 || (el.title.split(' ').length < 1  && el.title.length > 30)) {
-          el.title = el.title.slice(0, 40);
-        }
-
-        if (el.neighborhood[0] === '(' && el.neighborhood[el.neighborhood.length - 1] === ')'){
-          el.neighborhood = el.neighborhood.slice(1)
-          el.neighborhood = el.neighborhood.slice(0, -1)
-        }
-
-        el.neighborhood = el.neighborhood.toLowerCase();
-        el.neighborhood = titleize(el.neighborhood)
-        if (el.neighborhood.length > 14){
-          el.neighborhood = el.neighborhood.slice(0, 14) + '…';
-        }
-
-        // el.inFavorites = this.isInFavorites(el) //-----------------------------------------------------FIX THIS
-        // console.log(el.inFavorites);
-
-        return el;
-      });
-
-      // listingsToDisplay = this.state.listings
-
-      this.setState({listingsToDisplay})
     }).catch((err) => {
       console.log(err);
       // notify.show(err.response.data, 'error', 3000);
@@ -750,6 +837,76 @@ export default class App extends Component {
     console.log(change1);
     this.setState(change);
     this.setState(change1);
+  }
+
+  fetchAndFormatFavorites(){
+    axios({
+      method: 'get',
+      url: '/users_listings_complete',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then((res) => {
+      userFavoritesRaw = res.data
+
+      let listings = this.props.listings;
+
+      // let isInFavorites = this.isInFavorites.bind(this);
+
+      let listingsToDisplay = [];
+
+      listingsToDisplay = listings.map((el) => {
+        if (el.title.length > 55 && !el.title.indexOf('…')) {
+          el.title = humanize(el.title.slice(0, 55) + '…');
+        }
+
+        if (el.price && el.price[0] !== '$'){
+          el.price = '$' + el.price;
+        }
+
+        if (el.title.indexOf(' ') === -1 || (el.title.split(' ').length < 1  && el.title.length > 30)) {
+          el.title = el.title.slice(0, 40);
+        }
+
+        if (el.neighborhood[0] === '(' && el.neighborhood[el.neighborhood.length - 1] === ')'){
+          el.neighborhood = el.neighborhood.slice(1)
+          el.neighborhood = el.neighborhood.slice(0, -1)
+        }
+
+        el.neighborhood = el.neighborhood.toLowerCase();
+        el.neighborhood = titleize(el.neighborhood)
+        if (el.neighborhood.length > 14){
+          el.neighborhood = el.neighborhood.slice(0, 14) + '…';
+        }
+
+        return el;
+      });
+
+      let userFavoritesForDisplay = [];
+      let ids                     = [],
+          rawFavorites            = userFavoritesRaw;
+
+      console.log(rawFavorites);
+
+      ids = rawFavorites.map((el, idx) => {
+        return el.listingsId;
+      });
+
+      console.log(ids);
+
+      userFavoritesForDisplay = listingsToDisplay.filter((el) => {
+        return ids.indexOf(el.id) !== -1;
+      })
+
+      console.log(userFavoritesForDisplay);
+      console.log(listingsToDisplay);
+      console.log(userFavoritesRaw);
+      console.log(userFavoritesForDisplay[0]);
+      console.log(userFavoritesForDisplay[0]);
+      this.setState({listingsToDisplay, userFavoritesRaw, userFavoritesForDisplay, comparison1: userFavoritesForDisplay[0], comparison2: userFavoritesForDisplay[0]});
+    }).catch((err) => {
+      console.log(err);
+    });
   }
 
   componentWillMount(){

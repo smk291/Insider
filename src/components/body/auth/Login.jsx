@@ -25,7 +25,7 @@ export default class Login extends React.Component {
 
   render() {
     return (
-      <Grid>
+      <Grid fluid>
         <Row className="show-grid">
           <Col md={3} sm={2}/>
           <Col md={3} sm={4}>
@@ -41,7 +41,7 @@ export default class Login extends React.Component {
               </div>
               <div>
                 {/* <Link to="/">Back to Home</Link> */}
-                <Button className={login.formButton} bsStyle="primary" placeholder="Submit" onClick={this.logIn}>Sign in</Button>
+                <Button className={login.formButton} bsStyle="primary" placeholder="Submit" onClick={this.logIn} bsStyle='primary' style={{position: 'relative', zIndex: '10000', width: '100px'}}>Sign in</Button>
               </div>
             </form>
           </Col>
@@ -67,7 +67,7 @@ export default class Login extends React.Component {
               </div>
               <div>
                 {/* <Link to="/">Back to Home</Link> */}
-                <Button className={login.formButton} bsStyle="primary" placeholder="Submit" onClick={this.signUp}>Sign in</Button>
+                <Button className={login.formButton} bsStyle="primary" bsStyle='primary' style={{position: 'relative', zIndex: '10000', width: '100px'}} placeholder="Submit" onClick={this.signUp}>Sign in</Button>
               </div>
             </form>
           </Col>

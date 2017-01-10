@@ -50,6 +50,7 @@ export default class ViewAndFilter extends React.Component {
                     displayAd={this.props.displayAd}
                     listingsToDisplay={this.props.listingsToDisplay}
                     saveToFavorites={this.saveToFavorites}
+                    filterListings={this.props.filterListings}
                   />
                 </Col>
               </Row>
@@ -68,6 +69,7 @@ export default class ViewAndFilter extends React.Component {
                     filteredListingsToDisplay={this.props.filteredListingsToDisplay}
                     saveToFavoritesFiltered={this.saveToFavoritesFiltered}
                     pageChange={this.props.pageChange}
+                    filterListings={this.props.filterListings}
                   />
                 </Col>
               </Row>

@@ -19,6 +19,7 @@ export default class FilterData extends React.Component {
     this.handleCheckbox = this.handleCheckbox.bind(this)
     this.handleChbox = this.handleChbox.bind(this)
     this.handleSlider = this.handleSlider.bind(this)
+    this.filterListings = this.filterListings.bind(this)
   }
 
   //<editor-fold> handle changes
@@ -60,13 +61,15 @@ export default class FilterData extends React.Component {
     console.log(accums);
   }
 
+  filterListings() {
+    this.props.filterListings();
+  }
 
   render(){
     // <editor-fold> composables
     const DropdownGroup = ({header, name, onChange, value, items, propsRequired, required}) => {
       return(
         <Panel
-          collapsible
           className={dataviews.listDiv} header={header}>
           <ListGroup fill>
             <Checkbox inline type="checkbox"
@@ -122,7 +125,7 @@ export default class FilterData extends React.Component {
             <Panel
               style={{marginRight: '10px'}}
               className={dataviews.listDiv}
-              collapsible
+
               defaultExpanded={false}
               header='Rent ▾'>
               <Checkbox
@@ -166,7 +169,7 @@ export default class FilterData extends React.Component {
             <Panel
               style={{marginRight: '10px'}}
               className={dataviews.listDiv}
-              collapsible
+
               defaultExpanded={false}
               header='Bedrooms ▾'>
               <Checkbox inline type="checkbox"
@@ -207,17 +210,17 @@ export default class FilterData extends React.Component {
               items={this.props.private_room_types}
               propsRequired={this.props.roomImportRequired}
               required='roomImportRequired'
-              collapsible
+
               defaultExpanded={false}
             />
             <ReactSimpleRange
               style={{padding: '4px 10px'}}
               max={10}
               min={0}
-              name='housingImport'
-              onChange={this.handleSlider.bind(this, 'housingImport')}
+              name='roomImport'
+              onChange={this.handleSlider.bind(this, 'roomImport')}
               value={this.props.roomImport}
-              collapsible
+
               defaultExpanded={false}
             />
             <DropdownGroup
@@ -225,7 +228,7 @@ export default class FilterData extends React.Component {
               items={this.props.bath_types}
               propsRequired={this.props.bathImportRequired}
               required='bathImportRequired'
-              collapsible
+
               defaultExpanded={false}
             />
             <ReactSimpleRange
@@ -242,7 +245,7 @@ export default class FilterData extends React.Component {
               items={this.props.parking_types}
               propsRequired={this.props.parkingImportRequired}
               required='parkingImportRequired'
-              collapsible
+
               defaultExpanded={false}
             />
             <ReactSimpleRange
@@ -259,7 +262,7 @@ export default class FilterData extends React.Component {
               items={this.props.laundry_types}
               propsRequired={this.props.laundryImportRequired}
               required='laundryImportRequired'
-              collapsible
+
               defaultExpanded={false}
             />
             <ReactSimpleRange
@@ -274,7 +277,7 @@ export default class FilterData extends React.Component {
             <Panel
               style={{marginRight: '10px'}}
               className={dataviews.listDiv}
-              collapsible
+
               defaultExpanded={false}
               header='Misc ▾'>
               <ListGroup fill>
@@ -392,6 +395,8 @@ export default class FilterData extends React.Component {
             style={{borderTop: '1px #eee solid'}}>
             <div
               style={{height: '20px', backgroundColor: 'white'}}>
+            <Button onClick={this.filterListings}>filter listings</Button>
+
             </div>
             {/* <div className={dataviews.saveSettings}>
               <MdBackup

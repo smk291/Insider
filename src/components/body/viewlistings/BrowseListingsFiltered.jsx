@@ -56,13 +56,12 @@ export default class BrowseListings extends React.Component {
     return (
       <div className='panel panel-default'>
         <div
-          style={{border: '1px solid black'}}
           className='panel-body'
         >
       <BootstrapTable
-        maxHeight='600'
+        maxHeight='520'
         bodyContainerClass={dataviews.tableBodyCustomTable}
-        height='550'
+        height='600'
         scrollTop={ 'Bottom' }
         search options={options}
         hover

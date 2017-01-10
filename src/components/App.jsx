@@ -76,18 +76,18 @@ export default class App extends Component {
       'wheelchair accessible': true,
       // </editor-fold>
       // <editor-fold> State for weighting
-      bedroomsImport: 5,
-      rentImport: 5,
-      housingImport: 5,
-      laundryImport: 5,
-      parkingImport: 5,
-      bathImport: 5,
-      roomImport: 5,
-      catImport: 5,
-      dogImport: 5,
-      furnishedImport: 5,
-      smokingImport: 5,
-      wheelchairImport: 5,
+      bedroomsImport: 0,
+      rentImport: 0,
+      housingImport: 0,
+      laundryImport: 0,
+      parkingImport: 0,
+      bathImport: 0,
+      roomImport: 0,
+      catImport: 0,
+      dogImport: 0,
+      furnishedImport: 0,
+      smokingImport: 0,
+      wheelchairImport: 0,
       // </editor-fold>
       // <editor-fold> State for removing null values if user specifies strict mode
       bedroomsImportRequired: false,
@@ -203,6 +203,7 @@ export default class App extends Component {
       userFavoritesForDisplay: [],
       activePage1: 0,
       activePage2: 0,
+      score: ''
       // </editor-fold>
     }
     //<editor-fold> Unused
@@ -626,7 +627,9 @@ export default class App extends Component {
       method: 'get',
       url: `/listings/${row.id}`
     }).then((res) => {
-      this.setState({displayAdFromFiltered: res.data})
+      let displayAdFromFiltered = res.data;
+      displayAdFromFiltered.score = row.score;
+      this.setState({displayAdFromFiltered})
     }).catch((err) => {
       //
     });
@@ -764,6 +767,10 @@ export default class App extends Component {
       return el;
     });
 
+    filteredListingsToDisplay = filteredListingsToDisplay.sort((a,b) => {
+      return b['score'] - a['score']
+    })
+
     this.setState({filteredListingsToDisplay});
   }
   // </editor-fold>
@@ -899,6 +906,10 @@ export default class App extends Component {
     }).catch((err) => {
       console.log(err);
     });
+  }
+
+  setPrice(price){
+    this.setState({price});
   }
 
   componentWillMount(){

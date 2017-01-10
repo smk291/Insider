@@ -124,6 +124,8 @@ export default class DisplayAd extends React.Component {
 
       render(){
         return (
+          <div>
+
           <Table striped bordered condensed hover>
             <tbody>
               <tr>
@@ -132,8 +134,15 @@ export default class DisplayAd extends React.Component {
                     ? Object.keys(el.photos.photos).length
                     : <span className={dataviews.blank}>None</span>}</td>
               </tr>
+
+              <tr>
+                <td><h2>Score:</h2></td>
+                <td><h2>{el.score}</h2></td>
+              </tr>
+
             </tbody>
           </Table>
+        </div>
         )
       }
     }
@@ -200,7 +209,7 @@ export default class DisplayAd extends React.Component {
             </Grid>
         </div>
         <div style={{textAlign: 'left', float: 'left', bottom: '0px'}}>
-          <div style={{margin: '20px'}}><Button bsStyle='primary' style={{position: 'relative', zIndex: '10000'}} onClick={this.saveToFavoritesFiltered}>Save this listing to your account <MdSave style={{}} width="24" fill="hsl(200, 50%, 50%)" height="24"/></Button></div>
+          <div style={{margin: '20px'}}><Button bsStyle='primary' style={{position: 'relative', zIndex: '10000'}} onClick={this.saveToFavoritesFiltered}>Save this listing to your account <MdSave width="24" fill="hsl(200, 50%, 50%)" height="24"/></Button></div>
         </div>
         <div style={{textAlign: 'right', bottom: '0px', margin: '20px', position: 'relative'}}>
           <a style={{fontWeight: '400', fontSize: '20px'}} href={`http://seattle.craigslist.org${el.url}`} target="_blank" >Open the ad on craigslist <MdInsertLink style={{}} width="42" fill="hsl(200, 50%, 50%)" height="48"/></a>

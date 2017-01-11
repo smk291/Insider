@@ -22,6 +22,7 @@ exports.up = (knex) => {
     table.string('lat').defaultTo('');
     table.string('lon').defaultTo('');
     table.string('cross_streets').defaultTo('');
+    table.boolean('void');
     table.boolean('checked');
     table.enu('housing_type', ['apartment', 'condo', 'house', 'townhouse', 'duplex', 'land', 'in-law', 'cottage/cabin']);
     table.enu('laundry_types', ['laundry on site', 'w/d in unit', 'laundry in bldg', null]).defaultTo(null);

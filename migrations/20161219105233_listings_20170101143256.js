@@ -41,6 +41,6 @@ exports.up = (knex) => {
 
 
 exports.down = (knex) => {
-  return knex.schema.dropTable('listings');
+  return knex.schema.dropTableIfExists('listings');
 };
 

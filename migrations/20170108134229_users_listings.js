@@ -20,5 +20,5 @@ exports.up = (knex) => {
 };
 
 exports.down = (knex) => {
-  return knex.schema.dropTable('users_listings');
+  return knex.schema.dropTableIfExists('users_listings');
 };

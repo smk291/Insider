@@ -53,8 +53,8 @@ export default class Home extends React.Component {
             <p className={primary.points}>It doesn't need to be this way.</p>
             <p>Insider shows how easy it would be to make craigslist more functional, useful and usable.</p>
             <div>
-              {/* <Button onClick={this.scrapeNull}>get null</Button> */}
-              {/* <Button onClick={this.scrapeList}>get list</Button> */}
+              <Button onClick={this.scrapeNull}>get null</Button>
+              <Button onClick={this.scrapeList}>get list</Button>
               {/* <Button onClick={this.scrapeRows}>get row scrapes</Button> */}
               {/* <Button onClick={this.getListings}>get listings</Button> */}
               {/* <Button onClick={this.filterListings}>filter listings</Button> */}

@@ -173,7 +173,7 @@ export default class DisplayAd extends React.Component {
     return(
       <div>
         <div style={{height: '722px'}} className = 'panel panel-default'>
-          <div style={{border: '1px solid black', margin: '0px 20px', padding: '20px 20px', height: '640px', overflowY: 'scroll'}} className='panel-body'>
+          <div style={{margin: '0px 20px', padding: '20px 20px', height: '640px', overflowY: 'scroll'}} className='panel-body'>
             <h2 style={{margin: '20px', height: '2em'}}>{titleize(el.title)}</h2>
             <Grid fluid>
               <Row>

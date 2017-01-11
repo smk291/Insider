@@ -7,12 +7,9 @@ import Routing from './body/Routing';
 import 'bootstrap/less/bootstrap.less'
 import axios from 'axios';
 import Header from './header/Header';
-import notify from 'react-notify-toast';
 import globalCSS from '../../globalCSS.css'
 import request from 'request'
 import titleize from 'underscore.string/titleize'
-import ReactToastr from 'react-toastr'
-import ToastContainer from 'react-toastr'
 
 //</editor-fold>
 
@@ -281,7 +278,9 @@ export default class App extends Component {
         'Content-Type': 'application/json'
       }
     }).then((res) => {
-      this.changeState();
+      let loggedIn = res.data
+
+      this.setState({loggedIn});
 
       let userFavoritesRaw = []
 

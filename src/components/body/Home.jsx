@@ -67,7 +67,7 @@ export default class Home extends React.Component {
           <Row style={{display: 'flex'}}>
             <Col className={primary.thirds} md={4}>
               <h2><MdSearch />   Search better.</h2>
-              <p className={primary.thirdsP}>Set priorities and rank listings accordingly.</p>
+              <p className={primary.thirdsP}>Set priorities and Insider will rank listings accordingly.</p>
 
             </Col>
             <Col className={primary.thirds} md={4}>

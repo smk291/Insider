@@ -55,10 +55,10 @@ export default class Home extends React.Component {
             <div>
               <Button onClick={this.scrapeNull}>get null</Button>
               <Button onClick={this.scrapeList}>get list</Button>
-              {/* <Button onClick={this.scrapeRows}>get row scrapes</Button> */}
-              {/* <Button onClick={this.getListings}>get listings</Button> */}
-              {/* <Button onClick={this.filterListings}>filter listings</Button> */}
-              {/* <Button onClick={this.createFavoritesForDisplay}>Favorites for listing</Button> */}
+              <Button onClick={this.scrapeRows}>get row scrapes</Button>
+              <Button onClick={this.getListings}>get listings</Button>
+              <Button onClick={this.filterListings}>filter listings</Button>
+              <Button onClick={this.createFavoritesForDisplay}>Favorites for listing</Button>
             </div>
           </Grid>
 
@@ -71,8 +71,8 @@ export default class Home extends React.Component {
 
             </Col>
             <Col className={primary.thirds} md={4}>
-              {/* <h2><MdCompare />   Compare.</h2>
-              <p className={primary.thirdsP}>Comparing listings side-by-side is ridiculously easy to implement, but no housing-search website or web app that I've used offers it. </p> */}
+              <h2><MdCompare />   Compare.</h2>
+              <p className={primary.thirdsP}>Comparing listings side-by-side is ridiculously easy to implement, but no housing-search website or web app that I've used offers it. </p>
 
             </Col>
             <Col className={primary.thirds} md={4}>

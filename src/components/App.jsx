@@ -119,20 +119,6 @@ export default class App extends Component {
       filteredListingsToDisplay: [],
       // </editor-fold>
       // <editor-fold> State for filtering listings
-      types : [
-        'bedroomsRange',
-        'rentRange',
-        'housing_type',
-        'laundry_types',
-        'parking_types',
-        'bath_types',
-        'private_room_types',
-        'cat_types',
-        'dog_types',
-        'furnished_types',
-        'smoking_types',
-        'wheelchair_types'
-      ],
       importTypes : [
         'bedroomsImport',
         'rentImport',
@@ -714,7 +700,7 @@ export default class App extends Component {
         return false;
       }
 
-      for (let i = 2; i < this.state.types.length; i++){
+      for (let i = 2; i < this.state.typesAndPrefs[0].length; i++){
         let value = el[this.state.types[i]];
         let filteredTypeOptions = filteredOptions[i];
         let importance = this.state[this.state.importTypes[i]]

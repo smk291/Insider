@@ -244,7 +244,8 @@ router.get('/scrape_details/:urlnum', (req, res) => {
               lat:                pageItem.latLong.latitude,
               lon:                pageItem.latLong.longitude,
               street_address:     pageItem.address,
-              sub_or_apt:         pageItem.subOrApt
+              sub_or_apt:         pageItem.subOrApt,
+              checked:            true
             };
 
             knex('listings')
@@ -319,14 +320,14 @@ router.get('/scrape_null/', (req, res) => {
     .first()
     .then((row) => {
       if (!row){
-        throw boom.create(400, `No bedrooms-null, void-null rows found`);
+        throw boom.create(400, `No checked-null, void-null rows found`);
       }
       url = row.url;
 
       request(`http://seattle.craigslist.org${url}`, function (error, response, body) {
-        if (!error && response.statusCode == 404) {
+        if (!error && response.statusCode === 404) {
           knex('listings')
-            .whereNull('bedrooms')
+            .whereNull('checked')
             .whereNull('void')
             .first()
             .update({void: true, checked: true}, '*')
@@ -586,7 +587,8 @@ router.get('/scrape_list/:city', (req, res) => {
           .first()
           .then((row) => {
             if (row){
-              throw boom.create(400, `Entry for url ${pageItem.url} already exists`)
+              return false;
+              res.send(`Entry for url ${pageItem.url} already exists`);
             }
 
             let {subOrApt, url, urlnum, post_date, title, photos, bedrooms, sqft, place, neighborhood, price} = pageItem;
@@ -638,15 +640,6 @@ router.get('/scrape_list/:city', (req, res) => {
   var dispatcher = new CerealScraper.Dispatcher(cereallist);
 
   dispatcher.start().then(function() {
-    // console.log(`list.length is ${list.length}`);
-    // console.log(`details.length is ${details.length}`);
-    // details = list.map((el) => {
-    //   request.get(`http://localhost:3000/scrape_details/${el.url}`)
-    // });
-    //
-    // list = list.map ((el) => {
-    //   el.details =
-    // })
     res.send(list);
   });
 })

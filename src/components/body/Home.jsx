@@ -55,7 +55,7 @@ export default class Home extends React.Component {
             <div>
               <Button onClick={this.scrapeNull}>get null</Button>
               <Button onClick={this.scrapeList}>get list</Button>
-              {/* <Button onClick={this.scrapeRows}>get row scrapes</Button> */}
+              <Button onClick={this.scrapeRows}>get row scrapes</Button>
               {/* <Button onClick={this.getListings}>get listings</Button> */}
               {/* <Button onClick={this.filterListings}>filter listings</Button> */}
               {/* <Button onClick={this.createFavoritesForDisplay}>Favorites for listing</Button> */}

@@ -71,8 +71,8 @@ export default class Home extends React.Component {
 
             </Col>
             <Col className={primary.thirds} md={4}>
-              {/* <h2><MdCompare />   Compare.</h2>
-              <p className={primary.thirdsP}>Comparing listings side-by-side is ridiculously easy to implement, but no housing-search website or web app that I've used offers it. </p> */}
+              <h2><MdCompare />   Compare.</h2>
+              <p className={primary.thirdsP}>Comparing listings side-by-side is ridiculously easy to implement, but no housing-search website or web app that I've used offers it. </p>
 
             </Col>
             <Col className={primary.thirds} md={4}>

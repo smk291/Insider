@@ -35,6 +35,7 @@ exports.up = (knex) => {
     table.enu('smoking_types', ['no smoking', null]).defaultTo(null);
     table.enu('wheelchair_types', ['wheelchair accessible', null]).defaultTo(null);
     table.enu('sub_or_apt', ['sub', 'apt']);
+    table.boolean('void'); // NEW
     table.timestamp('last_checked').defaultTo(knex.fn.now());
     table.timestamps(true, true);
   });

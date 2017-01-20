@@ -1,7 +1,16 @@
 //<editor-fold import
 import React, {Component} from 'react';
 import {BrowserRouter, Route, browserHistory} from 'react-router';
-import {Button, Grid, Jumbotron, Row, Col, Popover, Tooltip, Modal} from 'react-bootstrap';
+import {
+  Button,
+  Grid,
+  Jumbotron,
+  Row,
+  Col,
+  Popover,
+  Tooltip,
+  Modal
+} from 'react-bootstrap';
 import Footer from './footer/Footer';
 import Routing from './body/Routing';
 import 'bootstrap/less/bootstrap.less'
@@ -33,7 +42,17 @@ export default class App extends Component {
       maxRent: '',
       minBedrooms: '',
       maxBedrooms: '',
-      housing_types: ['apartment', 'condo', 'house', 'townhouse', 'duplex', 'land', 'in-law', 'cottage', 'cabin'],
+      housing_types: [
+        'apartment',
+        'condo',
+        'house',
+        'townhouse',
+        'duplex',
+        'land',
+        'in-law',
+        'cottage',
+        'cabin'
+      ],
       apartment: true,
       condo: true,
       house: true,
@@ -43,11 +62,21 @@ export default class App extends Component {
       'in-law': true,
       cottage: true,
       cabin: true,
-      laundry_types: ['laundry on site', 'w/d in unit', 'laundry in bldg'],
+      laundry_types: [
+        'laundry on site', 'w/d in unit', 'laundry in bldg'
+      ],
       'laundry on site': true,
       'w/d in unit': true,
       'laundry in bldg': true,
-      parking_types: ['off-street parking', 'detached garage', 'attached garage', 'valet parking', 'street parking', 'carport', 'no parking'],
+      parking_types: [
+        'off-street parking',
+        'detached garage',
+        'attached garage',
+        'valet parking',
+        'street parking',
+        'carport',
+        'no parking'
+      ],
       'off-street parking': true,
       'detached garage': true,
       'attached garage': true,
@@ -55,10 +84,14 @@ export default class App extends Component {
       'street parking': true,
       'carport': true,
       'no parking': true,
-      'bath_types': ['private bath', 'no private bath'],
+      'bath_types': [
+        'private bath', 'no private bath'
+      ],
       'private bath': true,
       'no private bath': true,
-      'private_room_types': ['private room', 'room not private'],
+      'private_room_types': [
+        'private room', 'room not private'
+      ],
       'private room': true,
       'room not private': false,
       'cat_types': ['cats are OK - purrr'],
@@ -133,7 +166,7 @@ export default class App extends Component {
         'smoking_types',
         'wheelchair_types'
       ],
-      importTypes : [
+      importTypes: [
         'bedroomsImport',
         'rentImport',
         'housingImport',
@@ -148,13 +181,41 @@ export default class App extends Component {
         'wheelchairImport'
       ],
       optionArrays: [
-        ['minBedrooms', 'maxBedrooms'],
-        ['minRent', 'maxRent'],
-        ['apartment', 'condo', 'house', 'townhouse', 'duplex', 'land', 'in-law', 'cottage', 'cabin'],
-        ['laundry on site', 'w/d in unit', 'laundry in bldg'],
-        ['off-street parking', 'detached garage', 'attached garage', 'valet parking', 'street parking', 'carport', 'no parking'],
-        ['private bath', 'no private bath'],
-        ['private room', 'room not private'],
+        [
+          'minBedrooms', 'maxBedrooms'
+        ],
+        [
+          'minRent', 'maxRent'
+        ],
+        [
+          'apartment',
+          'condo',
+          'house',
+          'townhouse',
+          'duplex',
+          'land',
+          'in-law',
+          'cottage',
+          'cabin'
+        ],
+        [
+          'laundry on site', 'w/d in unit', 'laundry in bldg'
+        ],
+        [
+          'off-street parking',
+          'detached garage',
+          'attached garage',
+          'valet parking',
+          'street parking',
+          'carport',
+          'no parking'
+        ],
+        [
+          'private bath', 'no private bath'
+        ],
+        [
+          'private room', 'room not private'
+        ],
         ['cats are OK - purrr'],
         ['dogs are OK - wooof'],
         ['furnished'],
@@ -176,18 +237,69 @@ export default class App extends Component {
         'wheelchairImportRequired'
       ],
       typesAndPrefs: [
-        ['bedroomsRange', 'bedroomsImport', ['minBedrooms', 'maxBedrooms']],
-        ['rentRange', 'rentImport', ['minRent', 'maxRent']],
-        ['housing_type', 'housingImport', ['apartment', 'condo', 'house', 'townhouse', 'duplex', 'land', 'in-law', 'cottage', 'cabin']],
-        ['laundry_types', 'laundryImport', ['laundry on site', 'w/d in unit', 'laundry in bldg']],
-        ['parking_types', 'parkingImport', ['off-street parking', 'detached garage', 'attached garage', 'valet parking', 'street parking', 'carport', 'no parking']],
-        ['bath_types', 'bathImport', ['private bath', 'no private bath']],
-        ['private_room_types', 'roomImport', ['private room', 'room not private']],
-        ['cat_types', 'catImport', ['cats are OK - purrr']],
-        ['dog_types', 'dogImport', ['dogs are OK - wooof']],
-        ['furnished_types', 'furnishedImport', ['furnished']],
-        ['smoking_types', 'smokingImport', ['no smoking']],
-        ['wheelchair_types', 'wheelchairImport', ['wheelchair accessible']],
+        [
+          'bedroomsRange',
+          'bedroomsImport',
+          ['minBedrooms', 'maxBedrooms']
+        ],
+        [
+          'rentRange',
+          'rentImport',
+          ['minRent', 'maxRent']
+        ],
+        [
+          'housing_type',
+          'housingImport',
+          [
+            'apartment',
+            'condo',
+            'house',
+            'townhouse',
+            'duplex',
+            'land',
+            'in-law',
+            'cottage',
+            'cabin'
+          ]
+        ],
+        [
+          'laundry_types',
+          'laundryImport',
+          ['laundry on site', 'w/d in unit', 'laundry in bldg']
+        ],
+        [
+          'parking_types',
+          'parkingImport',
+          [
+            'off-street parking',
+            'detached garage',
+            'attached garage',
+            'valet parking',
+            'street parking',
+            'carport',
+            'no parking'
+          ]
+        ],
+        [
+          'bath_types',
+          'bathImport',
+          ['private bath', 'no private bath']
+        ],
+        [
+          'private_room_types',
+          'roomImport',
+          ['private room', 'room not private']
+        ],
+        ['cat_types', 'catImport', ['cats are OK - purrr']
+        ],
+        ['dog_types', 'dogImport', ['dogs are OK - wooof']
+        ],
+        ['furnished_types', 'furnishedImport', ['furnished']
+        ],
+        ['smoking_types', 'smokingImport', ['no smoking']
+        ],
+        ['wheelchair_types', 'wheelchairImport', ['wheelchair accessible']
+        ]
       ],
       // </editor-fold>
       displayAd: {},
@@ -205,71 +317,71 @@ export default class App extends Component {
     }
     //<editor-fold> Unused
     // Unused -- modal controls
-    this.open                      = this.open.bind(this);
-    this.close                     = this.close.bind(this);
-    this.showTips                  = this.showTips.bind(this);
+    this.open = this.open.bind(this);
+    this.close = this.close.bind(this);
+    this.showTips = this.showTips.bind(this);
     //</editor-fold>
     //<editor-fold> Auth
-    this.logOut                    = this.logOut.bind(this);
-    this.logIn                     = this.logIn.bind(this);
-    this.signUp                    = this.signUp.bind(this);
-    this.getLoggedIn               = this.getLoggedIn.bind(this)
+    this.logOut = this.logOut.bind(this);
+    this.logIn = this.logIn.bind(this);
+    this.signUp = this.signUp.bind(this);
+    this.getLoggedIn = this.getLoggedIn.bind(this)
     //</editor-fold>
     //<editor-fold> HTTP
-    this.scrapeList                = this.scrapeList.bind(this);
-    this.scrapeRows                = this.scrapeRows.bind(this);
-    this.scrapeNull                = this.scrapeNull.bind(this);
-    this.getListings               = this.getListings.bind(this);
-    this.checkFor404               = this.checkFor404.bind(this)
-    this.fetchAndFormatFavorites   = this.fetchAndFormatFavorites.bind(this)
-    this.pageChange                = this.pageChange.bind(this)
-    this.saveToFavorites           = this.saveToFavorites.bind(this)
-    this.saveToFavoritesFiltered   = this.saveToFavoritesFiltered.bind(this)
-    this.changeView                = this.changeView.bind(this);
-    this.changeViewFiltered        = this.changeViewFiltered.bind(this);
-    this.isInFavorites             = this.isInFavorites.bind(this)
+    this.scrapeList = this.scrapeList.bind(this);
+    this.scrapeRows = this.scrapeRows.bind(this);
+    this.scrapeNull = this.scrapeNull.bind(this);
+    this.getListings = this.getListings.bind(this);
+    this.checkFor404 = this.checkFor404.bind(this)
+    this.fetchAndFormatFavorites = this.fetchAndFormatFavorites.bind(this)
+    this.pageChange = this.pageChange.bind(this)
+    this.saveToFavorites = this.saveToFavorites.bind(this)
+    this.saveToFavoritesFiltered = this.saveToFavoritesFiltered.bind(this)
+    this.changeView = this.changeView.bind(this);
+    this.changeViewFiltered = this.changeViewFiltered.bind(this);
+    this.isInFavorites = this.isInFavorites.bind(this)
     //</editor-fold>
     //<editor-fold> Listing functions
-    this.filterListings            = this.filterListings.bind(this)
-    this.convertListings           = this.convertListings.bind(this);
-    this.formatListing             = this.formatListing.bind(this);
+    this.filterListings = this.filterListings.bind(this)
+    this.convertListings = this.convertListings.bind(this);
+    this.formatListing = this.formatListing.bind(this);
     this.createFavoritesForDisplay = this.createFavoritesForDisplay.bind(this)
     //</editor-fold>
     //<editor-fold> Handle changes
     // Handle changes, set state
-    this.setState                  = this.setState.bind(this);
-    this.handleChange              = this.handleChange.bind(this);
-    this.changeState               = this.changeState.bind(this);
-    this.handleCheckbox            = this.handleCheckbox.bind(this);
-    this.handleChbox               = this.handleChbox.bind(this);
-    this.handleSlider              = this.handleSlider.bind(this);
-    this.changeComparisonView      = this.changeComparisonView.bind(this)
+    this.setState = this.setState.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.changeState = this.changeState.bind(this);
+    this.handleCheckbox = this.handleCheckbox.bind(this);
+    this.handleChbox = this.handleChbox.bind(this);
+    this.handleSlider = this.handleSlider.bind(this);
+    this.changeComparisonView = this.changeComparisonView.bind(this)
     // </editor-fold>
   }
 
   // <editor-fold> Unused
-  close(){
-    this.setState({ showModal: false });
+  close() {
+    this.setState({showModal: false});
   }
 
-  open(){
-    this.setState({ showModal: true });
+  open() {
+    this.setState({showModal: true});
   }
 
-  showTips(e){
+  showTips(e) {
     e.preventDefault();
 
     const bool = this.state.activeTips;
     if (bool) {
-      this.setState({ loggedIn: true });
+      this.setState({loggedIn: true});
     } else {
-      this.setState({ loggedIn: false });
+      this.setState({loggedIn: false});
     }
   }
 
   //</editor-fold>
 
-  formatListing(rawListing){
+  formatListing(rawListing) {
     if (rawListing.title.length > 50) {
       rawListing.title = humanize(rawListing.title.slice(0, 50) + '…');
     } else {
@@ -291,6 +403,7 @@ export default class App extends Component {
 
     rawListing.neighborhood = rawListing.neighborhood.toLowerCase();
     rawListing.neighborhood = titleize(rawListing.neighborhood)
+
     if (rawListing.neighborhood.length > 14) {
       rawListing.neighborhood = rawListing.neighborhood.slice(0, 14) + '…';
     }
@@ -298,7 +411,7 @@ export default class App extends Component {
     return rawListing
   }
 
-  convertListings(){
+  convertListings() {
     axios({
       method: 'get',
       url: '/users_listings_complete',
@@ -306,7 +419,6 @@ export default class App extends Component {
         'Content-Type': 'application/json'
       }
     }).then((res) => {
-
       let userFavoritesRaw = res.data;
       let listings = this.state.listings;
 
@@ -356,36 +468,19 @@ export default class App extends Component {
         });
 
         this.setState({listings, markers});
-
       }).then(() => {
         this.setState({loggedIn});
-
-        // let userFavoritesRaw = []
-        //
-        // axios({
-        //   method: 'get',
-        //   url: '/users_listings_complete',
-        //   headers: {
-        //     'Content-Type': 'application/json'
-        //   }
-        // }).then((res) => {
-          // this.convertListings(res.data);
-          this.convertListings();
-        // }).catch((err) => {
-        //   console.log(err);
-        // });
-
+        this.convertListings();
       }).catch(err => {
         console.log(err);
         // notify.show(err.response.data, 'error', 3000);
       });
-
     }).catch((err) => {
       // console.log(err);
     })
   }
 
-  logOut (e) {
+  logOut(e) {
     e.preventDefault();
 
     axios({
@@ -407,9 +502,9 @@ export default class App extends Component {
   changeState() {
     const bool = this.state.loggedIn;
     if (bool) {
-      this.setState({ loggedIn: false });
+      this.setState({loggedIn: false});
     } else {
-      this.setState({ loggedIn: true });
+      this.setState({loggedIn: true});
     }
   }
 
@@ -426,11 +521,7 @@ export default class App extends Component {
         password: this.state.signUpPassword
       }
     }).then((res) => {
-      console.log(res);
-      this.setState({
-        firstName: '',
-        lastName: '',
-      });
+      this.setState({firstName: '', lastName: ''});
 
       axios({
         method: 'post',
@@ -445,12 +536,9 @@ export default class App extends Component {
       }).then((res) => {
         this.setState({signUpEmail: '', signUpPassword: ''});
         this.changeState();
-        console.log('Logged In!', 'success', 3000);
       }).catch((err) => {
         console.log(err);
       });
-      console.log('Logged In!', 'success', 3000);
-      console.log(`success!`);
     }).catch((err) => {
       console.log(err);
     });
@@ -473,13 +561,8 @@ export default class App extends Component {
       }
     }).then((res) => {
       this.changeState();
-
-        // this.convertListings(res.data);
-        this.convertListings();
-        this.setState({email: '', password: ''});
-      // }).catch((err) => {
-      //   console.log(err);
-      // });
+      this.convertListings();
+      this.setState({email: '', password: ''});
     }).catch((err) => {
       console.log(err);
       // notify.show(err.response.data, 'error', 3000);
@@ -488,7 +571,7 @@ export default class App extends Component {
   //</editor-fold>
 
   // <editor-fold> handle changes
-  handleSlider (field, e) {
+  handleSlider(field, e) {
     var nextState = {}
     nextState[field] = e.value
     this.setState(nextState)
@@ -500,7 +583,7 @@ export default class App extends Component {
     this.setState({change})
   }
 
-  handleChbox (field, e) {
+  handleChbox(field, e) {
     var nextState = {}
     nextState[field] = e.target.checked
     this.setState(nextState)
@@ -516,23 +599,15 @@ export default class App extends Component {
 
   // <editor-fold> HTTP
   scrapeNull(e) {
-      e.preventDefault();
+    e.preventDefault();
 
-      axios({
-        method: 'get',
-        url: '/scrape_null'
-      }).then((res) => {
-      }).catch((err) => {
-      });
+    axios({method: 'get', url: '/scrape_null'}).then((res) => {}).catch((err) => {});
   }
 
   scrapeList(e) {
     e.preventDefault();
 
-    axios({
-      method: 'get',
-      url: '/scrape_list/seattle'
-    }).then((res) => {
+    axios({method: 'get', url: '/scrape_list/seattle'}).then((res) => {
       this.setState({list: res.data});
     }).catch((err) => {
       // notify.show(err.response.data.errors[0].messages[0], 'error', 3000);
@@ -543,11 +618,8 @@ export default class App extends Component {
     let details = [];
 
     this.state.list.map((el) => {
-      if (el.urlnum){
-        axios({
-          method: 'get',
-          url: `/scrape_details/${el.urlnum}`
-        }).then((res) => {
+      if (el.urlnum) {
+        axios({method: 'get', url: `/scrape_details/${el.urlnum}`}).then((res) => {
           details.push(res.data);
           this.setState({details});
         }).catch((err) => {
@@ -561,23 +633,10 @@ export default class App extends Component {
     })
   }
 
-  checkFor404 () {
-    axios({
-      method: 'get',
-      url: `/listings`
-    }).then((res) => {
+  checkFor404(){
+    axios({method: 'get', url: `/listings_check_for_404`}).then((res) => {
       // console.log(res.data);
-      let listings = res.data;
-
-      listings = listings.filter((el) => {
-        return el.void === null
-      });
-
-      listings = listings.map((el) => {
-        return el.urlnum;
-      })
-
-      console.log(listings);
+      let listings = res.data
 
       axios({
         method: 'post',
@@ -587,22 +646,17 @@ export default class App extends Component {
         },
         'Content-Type': 'applicaton/json'
       }).then((res) => {
-        console.log(res);
+        // console.log(res);
       }).catch((err) => {
         console.log(`Err here: ${err}`);
       });
-    }).then(() => {
-      console.log('HIIIIIII');
     }).catch((err) => {
       console.log(err);
     })
   }
 
-  getListings(){
-    axios({
-      method: 'get',
-      url: `/listings`
-    }).then((res) => {
+  getListings() {
+    axios({method: 'get', url: `/listings`}).then((res) => {
       let listings = res.data;
       let markers = [];
 
@@ -610,19 +664,14 @@ export default class App extends Component {
         return el.lat && el.lon;
       });
 
-
       this.setState({listings, markers});
-    }).then(() => {
-    }).catch((err) => {
+    }).then(() => {}).catch((err) => {
       // console.log(err);
     })
   }
 
   changeView(row) {
-    axios({
-      method: 'get',
-      url: `/listings/${row.id}`
-    }).then((res) => {
+    axios({method: 'get', url: `/listings/${row.id}`}).then((res) => {
       this.setState({displayAd: res.data})
     }).catch((err) => {
       //
@@ -630,10 +679,7 @@ export default class App extends Component {
   }
 
   changeViewFiltered(row) {
-    axios({
-      method: 'get',
-      url: `/listings/${row.id}`
-    }).then((res) => {
+    axios({method: 'get', url: `/listings/${row.id}`}).then((res) => {
       let displayAdFromFiltered = res.data;
       displayAdFromFiltered.score = row.score;
       this.setState({displayAdFromFiltered})
@@ -642,7 +688,7 @@ export default class App extends Component {
     });
   }
 
-  saveToFavorites(){
+  saveToFavorites() {
     axios({
       method: 'post',
       url: `/users_listings/`,
@@ -656,7 +702,7 @@ export default class App extends Component {
     })
   }
 
-  saveToFavoritesFiltered(){
+  saveToFavoritesFiltered() {
     axios({
       method: 'post',
       url: `/users_listings/`,
@@ -673,7 +719,7 @@ export default class App extends Component {
 
   // <editor-fold> Listing functions
 
-  filterListings(){
+  filterListings() {
     let maxScore = 0;
     let filteredOptions = [];
     let filteredList = [];
@@ -695,47 +741,47 @@ export default class App extends Component {
     filteredList = this.state.listings.filter((el, idx) => {
       el.score = 0;
 
-      if(el.bedrooms){
+      if (el.bedrooms) {
         let minBed = Number(this.state.minBedrooms);
         let maxBed = Number(this.state.maxBedrooms);
         let brs = Number(el.bedrooms.slice(0, el.bedrooms.indexOf('BR')));
 
-        if (brs >= minBed && brs <= maxBed){
+        if (brs >= minBed && brs <= maxBed) {
           el.score += Number(this.state.bedroomsImport);
-        } else if (this.state.bedroomsImportRequired){
+        } else if (this.state.bedroomsImportRequired) {
           return false;
         }
       } else if (this.state.bedroomsImportRequired) {
         return false;
       }
 
-      if (el.price){
+      if (el.price) {
         let minRent = Number(this.state.minRent);
         let maxRent = Number(this.state.maxRent);
         let rent = el.price.slice(1);
 
-        if (rent >= minRent && rent <= maxRent){
+        if (rent >= minRent && rent <= maxRent) {
           el.score += Number(this.state.rentImport);
-        } else if (this.state.rentImportRequired){
+        } else if (this.state.rentImportRequired) {
           return false;
         }
       } else if (this.state.rentImportRequired) {
         return false;
       }
 
-      for (let i = 2; i < this.state.typesAndPrefs[0].length; i++){
+      for (let i = 2; i < this.state.typesAndPrefs[0].length; i++) {
         let value = el[this.state.types[i]];
         let filteredTypeOptions = filteredOptions[i];
         let importance = this.state[this.state.importTypes[i]]
         let requiredBool = this.state[this.state.requiredTypes[i]]
 
-        if (value !== null){
-          if (filteredTypeOptions.indexOf(value) !== -1){
+        if (value !== null) {
+          if (filteredTypeOptions.indexOf(value) !== -1) {
             el.score += Number(importance);
-          } else if (requiredBool){
+          } else if (requiredBool) {
             return false
           }
-        } else if (requiredBool){
+        } else if (requiredBool) {
           return false
         }
       }
@@ -745,16 +791,15 @@ export default class App extends Component {
 
     this.setState({filteredList})
 
-
     filteredListingsToDisplay = filteredList.map((el) => {
       return this.formatListing(el);
     });
 
-    filteredListingsToDisplay = filteredListingsToDisplay.sort((a,b) => {
+    filteredListingsToDisplay = filteredListingsToDisplay.sort((a, b) => {
       return b['urlnum'] - a['urlnum'];
     })
 
-    filteredListingsToDisplay = filteredListingsToDisplay.sort((a,b) => {
+    filteredListingsToDisplay = filteredListingsToDisplay.sort((a, b) => {
       return b['score'] - a['score'];
     })
 
@@ -762,12 +807,9 @@ export default class App extends Component {
   }
   // </editor-fold>
 
-  isInFavorites(row){
-    axios({
-      method: 'get',
-      url: `/users_listings/${row.id}`
-    }).then((res) => {
-      if (res.data.length > 0){
+  isInFavorites(row) {
+    axios({method: 'get', url: `/users_listings/${row.id}`}).then((res) => {
+      if (res.data.length > 0) {
         return true
       } else {
         return false
@@ -777,11 +819,11 @@ export default class App extends Component {
     })
   }
 
-  createFavoritesForDisplay(){
-    let ids                     = [],
-        userFavoritesForDisplay = [],
-        ld                      = this.state.listingsToDisplay,
-        rawFavorites            = this.state.userFavoritesRaw;
+  createFavoritesForDisplay() {
+    let ids = [],
+      userFavoritesForDisplay = [],
+      ld = this.state.listingsToDisplay,
+      rawFavorites = this.state.userFavoritesRaw;
 
     ids = rawFavorites.map((el, idx) => {
       return el.listingsId;
@@ -791,15 +833,14 @@ export default class App extends Component {
       return ids.indexOf(el.id) !== -1;
     })
 
-
     this.setState({userFavoritesForDisplay, comparison1: userFavoritesForDisplay[0], comparison2: userFavoritesForDisplay[0]});
   }
 
-  changeComparisonView(element){
+  changeComparisonView(element) {
     this.setState(element);
   }
 
-  pageChange(activePageName, activePageNumber, comparisonPageName){
+  pageChange(activePageName, activePageNumber, comparisonPageName) {
     let change = {}
     let change1 = {}
     change[activePageName] = activePageNumber;
@@ -810,22 +851,11 @@ export default class App extends Component {
     this.setState(change1);
   }
 
-  fetchAndFormatFavorites(){
-    // axios({
-    //   method: 'get',
-    //   url: '/users_listings_complete',
-    //   headers: {
-    //     'Content-Type': 'application/json'
-    //   }
-    // }).then((res) => {
-      // this.convertListings(res.data);
-      this.convertListings();
-    // }).catch((err) => {
-    //   console.log(err);
-    // });
+  fetchAndFormatFavorites() {
+    this.convertListings();
   }
 
-  componentWillMount(){
+  componentWillMount() {
     this.getLoggedIn();
   }
 
@@ -833,25 +863,23 @@ export default class App extends Component {
     return (
       <BrowserRouter>
         <div>
-          <Grid fluid style={{minWidth: '1000px'}}>
-            <Row style={{minWidth: '1000px'}}>
+          <Grid fluid style={{
+            minWidth: '1000px'
+          }}>
+            <Row style={{
+              minWidth: '1000px'
+            }}>
               <Col>
-                <Header style={{height: '50px'}}
-                  {...this.props}
-                  {...this.state}
-                  {...this}
-                />
+                <Header style={{
+                  height: '50px'
+                }} {...this.props} {...this.state} {...this}/>
               </Col>
             </Row>
-            <Row style={{minWidth: '1000px'}}>
+            <Row style={{
+              minWidth: '1000px'
+            }}>
               <Col>
-                <Routing
-                  createFavoritesForDisplay={this.createFavoritesForDisplay}
-                  getListings={this.getListings}
-                  {...this.props}
-                  {...this.state}
-                  {...this}
-                />
+                <Routing createFavoritesForDisplay={this.createFavoritesForDisplay} getListings={this.getListings} {...this.props} {...this.state} {...this}/>
               </Col>
             </Row>
           </Grid>

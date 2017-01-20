@@ -57,6 +57,34 @@ router.get('/listings', (req, res, next) => {
     });
 });
 
+router.get('/listings_check_for_404', (req, res, next) => {
+  knex('listings')
+    .whereNull('void')
+    .whereNull('checked')
+    .orderBy('id', 'asc')
+    .then((rows) => {
+      let listings = rows;
+
+      listings = listings.filter((el) => {
+        return el.void === null;
+      })
+
+      listings = listings.map((el) => {
+        return el.urlnum;
+      });
+
+      // if (listings === [] || !listings) {
+      //   throw boom.create(400, `No listings found`);
+      // }
+      // console.log(listings);
+
+      res.send(listings);
+      res.end();
+    }).catch((err) => {
+      next(err);
+    });
+});
+
 router.patch('/listings/:id', authorize, /*ev(validations.post),*/ (req, res, next) => {
   let patchContents = {};
   const { id } = req.params;

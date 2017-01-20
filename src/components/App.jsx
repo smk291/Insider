@@ -463,6 +463,10 @@ export default class App extends Component {
         let listings = res.data;
         let markers = [];
 
+        listings = listings.filter((listing) => {
+          return listing.void !== true;
+        })
+
         markers = listings.filter((el) => {
           return el.lat && el.lon;
         });
@@ -659,6 +663,12 @@ export default class App extends Component {
     axios({method: 'get', url: `/listings`}).then((res) => {
       let listings = res.data;
       let markers = [];
+
+      listings = listings.filter((listing) => {
+        return listing.void !== true;
+      })
+
+      console.log(listings);
 
       markers = listings.filter((el) => {
         return el.lat && el.lon;

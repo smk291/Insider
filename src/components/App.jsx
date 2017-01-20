@@ -599,6 +599,9 @@ export default class App extends Component {
     this.setState(change);
   }
 
+  changeComparisonView(element) {
+    this.setState(element);
+  }
   //</editor-fold>
 
   // <editor-fold> HTTP
@@ -727,7 +730,7 @@ export default class App extends Component {
   }
   // </editor-fold>
 
-  // <editor-fold> Listing functions
+  // <editor-fold> Listing and filtering functions
 
   filterListings() {
     let maxScore = 0;
@@ -815,7 +818,6 @@ export default class App extends Component {
 
     this.setState({filteredListingsToDisplay});
   }
-  // </editor-fold>
 
   isInFavorites(row) {
     axios({method: 'get', url: `/users_listings/${row.id}`}).then((res) => {
@@ -831,9 +833,9 @@ export default class App extends Component {
 
   createFavoritesForDisplay() {
     let ids = [],
-      userFavoritesForDisplay = [],
-      ld = this.state.listingsToDisplay,
-      rawFavorites = this.state.userFavoritesRaw;
+    userFavoritesForDisplay = [],
+    ld = this.state.listingsToDisplay,
+    rawFavorites = this.state.userFavoritesRaw;
 
     ids = rawFavorites.map((el, idx) => {
       return el.listingsId;
@@ -844,10 +846,6 @@ export default class App extends Component {
     })
 
     this.setState({userFavoritesForDisplay, comparison1: userFavoritesForDisplay[0], comparison2: userFavoritesForDisplay[0]});
-  }
-
-  changeComparisonView(element) {
-    this.setState(element);
   }
 
   pageChange(activePageName, activePageNumber, comparisonPageName) {
@@ -864,6 +862,8 @@ export default class App extends Component {
   fetchAndFormatFavorites() {
     this.convertListings();
   }
+
+  // </editor-fold>
 
   componentWillMount() {
     this.getLoggedIn();

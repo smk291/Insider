@@ -119,6 +119,20 @@ export default class App extends Component {
       filteredListingsToDisplay: [],
       // </editor-fold>
       // <editor-fold> State for filtering listings
+      types: [
+        'bedroomsRange',
+        'rentRange',
+        'housing_type',
+        'laundry_types',
+        'parking_types',
+        'bath_types',
+        'private_room_types',
+        'cat_types',
+        'dog_types',
+        'furnished_types',
+        'smoking_types',
+        'wheelchair_types'
+      ],
       importTypes : [
         'bedroomsImport',
         'rentImport',
@@ -231,6 +245,7 @@ export default class App extends Component {
     this.pageChange = this.pageChange.bind(this)
     this.getLoggedIn = this.getLoggedIn.bind(this)
     this.fetchAndFormatFavorites = this.fetchAndFormatFavorites.bind(this)
+    this.checkFor404 = this.checkFor404.bind(this)
   }
 
   // <editor-fold> Unused
@@ -576,6 +591,43 @@ export default class App extends Component {
     })
   }
 
+  checkFor404 () {
+    axios({
+      method: 'get',
+      url: `/listings`
+    }).then((res) => {
+      // console.log(res.data);
+      let listings = res.data;
+
+      listings = listings.filter((el) => {
+        return el.void === null
+      });
+
+      listings = listings.map((el) => {
+        return el.urlnum;
+      })
+
+      console.log(listings);
+
+      axios({
+        method: 'post',
+        url: `/scrape_check_for_404`,
+        data: {
+          listings: listings
+        },
+        'Content-Type': 'applicaton/json'
+      }).then((res) => {
+        console.log(res);
+      }).catch((err) => {
+        console.log(`Err here: ${err}`);
+      });
+    }).then(() => {
+      console.log('HIIIIIII');
+    }).catch((err) => {
+      console.log(err);
+    })
+  }
+
   getListings(){
     axios({
       method: 'get',
@@ -781,19 +833,14 @@ export default class App extends Component {
         ld                      = this.state.listingsToDisplay,
         rawFavorites            = this.state.userFavoritesRaw;
 
-    console.log(rawFavorites);
-
     ids = rawFavorites.map((el, idx) => {
       return el.listingsId;
     });
-
-    console.log(ids);
 
     userFavoritesForDisplay = ld.filter((el) => {
       return ids.indexOf(el.id) !== -1;
     })
 
-    console.log(userFavoritesForDisplay);
 
     this.setState({userFavoritesForDisplay, comparison1: userFavoritesForDisplay[0], comparison2: userFavoritesForDisplay[0]});
   }
@@ -802,14 +849,6 @@ export default class App extends Component {
     this.setState(element);
   }
 
-  // handleSelect1(eventKey){
-  //   this.setState({activePage1: eventKey, comparison1: this.state.userFavoritesForDisplay[eventKey]});
-  // }
-  //
-  // handleSelect2(eventKey){
-  //   this.setState({activePage2: eventKey, comparison2: this.state.userFavoritesForDisplay[eventKey]});
-  // }
-
   pageChange(activePageName, activePageNumber, comparisonPageName){
     let change = {}
     let change1 = {}
@@ -817,8 +856,6 @@ export default class App extends Component {
 
     change1[comparisonPageName] = this.state.userFavoritesForDisplay[activePageNumber]
 
-    console.log(change);
-    console.log(change1);
     this.setState(change);
     this.setState(change1);
   }
@@ -870,23 +907,14 @@ export default class App extends Component {
       let ids                     = [],
           rawFavorites            = userFavoritesRaw;
 
-      console.log(rawFavorites);
-
       ids = rawFavorites.map((el, idx) => {
         return el.listingsId;
       });
-
-      console.log(ids);
 
       userFavoritesForDisplay = listingsToDisplay.filter((el) => {
         return ids.indexOf(el.id) !== -1;
       })
 
-      console.log(userFavoritesForDisplay);
-      console.log(listingsToDisplay);
-      console.log(userFavoritesRaw);
-      console.log(userFavoritesForDisplay[0]);
-      console.log(userFavoritesForDisplay[0]);
       this.setState({listingsToDisplay, userFavoritesRaw, userFavoritesForDisplay, comparison1: userFavoritesForDisplay[0], comparison2: userFavoritesForDisplay[0]});
     }).catch((err) => {
       console.log(err);

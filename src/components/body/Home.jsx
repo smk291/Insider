@@ -16,6 +16,7 @@ export default class Home extends React.Component {
     this.scrapeNull = this.scrapeNull.bind(this);
     this.filterListings = this.filterListings.bind(this)
     this.createFavoritesForDisplay = this.createFavoritesForDisplay.bind(this);
+    this.checkFor404 = this.checkFor404.bind(this);
   }
 
   //<editor-fold HTTP and list
@@ -40,6 +41,10 @@ export default class Home extends React.Component {
     this.props.createFavoritesForDisplay(e)
   }
 
+  checkFor404(){
+    this.props.checkFor404();
+  }
+
   render() {
     return (
       <div>
@@ -56,6 +61,7 @@ export default class Home extends React.Component {
               <Button onClick={this.scrapeNull}>get null</Button>
               <Button onClick={this.scrapeList}>get list</Button>
               <Button onClick={this.scrapeRows}>get row scrapes</Button>
+              <Button onClick={this.checkFor404}>check for 404</Button>
               {/* <Button onClick={this.getListings}>get listings</Button> */}
               {/* <Button onClick={this.filterListings}>filter listings</Button> */}
               {/* <Button onClick={this.createFavoritesForDisplay}>Favorites for listing</Button> */}
@@ -71,9 +77,6 @@ export default class Home extends React.Component {
 
             </Col>
             <Col className={primary.thirds} md={4}>
-              <h2><MdCompare />   Compare.</h2>
-              <p className={primary.thirdsP}>Comparing listings side-by-side is ridiculously easy to implement, but no housing-search website or web app that I've used offers it. </p>
-
             </Col>
             <Col className={primary.thirds} md={4}>
               <h2><MdCompare />   Compare.</h2>

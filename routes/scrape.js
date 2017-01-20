@@ -1,3 +1,4 @@
+// <editor-fold>
 // eslint-disable-next-line new-cap
 'use strict';
 
@@ -24,19 +25,57 @@ var CerealScraper   = require('cerealscraper'),
   TransformSelector = CerealScraper.Blueprint.TransformSelector,
   Promise           = require('bluebird');
 
-// function authorize(req, res, next) {
-//   jwt.verify(req.cookies.token, process.env.JWT_SECRET, (err) => {
-//     if (err) {
-//       req.verify = false;
-//     } else {
-//       req.verify = true;
-//     }
-//
-//     next();
-//   });
-// }
+function authorize(req, res, next) {
+  jwt.verify(req.cookies.token, process.env.JWT_SECRET, (err) => {
+    if (err) {
+      req.verify = false;
+    } else {
+      req.verify = true;
+    }
 
-router.get('/scrape_details/:urlnum', (req, res) => {
+    next();
+  });
+}
+// </editor-fold>
+
+router.post('/scrape_check_for_404/', authorize, (req, res) => {
+  let urlnums = req.body.listings;
+  let url = '';
+
+  urlnums.map((el) => {
+    console.log(el);
+
+    knex('listings')
+    .where('urlnum', el)
+    .first()
+    .then((row) => {
+      if (!row){
+        throw boom.create(400, `No row found for urlnum ${urlnum}`);
+      }
+
+      url = row.url;
+
+      request(`http://seattle.craigslist.org${url}`, function (error, response, body) {
+        if (!error && response.statusCode === 404) {
+          knex('listings')
+          .where('urlnum', el)
+          .first()
+          .update({void: true, checked: true}, '*')
+          .then((row) => {
+            console.log(`Page at ${el} no longer exists. New row is ${row}`)
+          }).catch((err) => {
+            throw boom.create(400, err);
+          })
+        }
+      })
+
+    }).catch((err) => {
+      throw boom.create(err)
+    });
+  })
+})
+
+router.get('/scrape_details/:urlnum', authorize, (req, res) => {
   let storage     = [],
       url         = '',
       details     = [],
@@ -271,7 +310,7 @@ router.get('/scrape_details/:urlnum', (req, res) => {
     });
 })
 
-router.get('/scrape_null/', (req, res) => {
+router.get('/scrape_null/', authorize, (req, res) => {
   let storage     = [],
       url         = '',
       details     = [],
@@ -538,7 +577,7 @@ router.get('/scrape_null/', (req, res) => {
     });
 })
 
-router.get('/scrape_list/:city', (req, res) => {
+router.get('/scrape_list/:city', authorize, (req, res) => {
   let {city} = req.params;
   let details = [];
   let list = [];

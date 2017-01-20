@@ -161,11 +161,17 @@ export default class DisplayAd extends React.Component {
       }
     }
 
+    let title = titleize(el.title);
+
+    if (el.title.length > 55){
+      title = titleize(el.title.slice(0,55) + `…`)
+    };
+
     return(
       <div>
         <div style={{height: '722px'}} className = 'panel panel-default'>
           <div style={{margin: '0px 20px', padding: '20px 20px', height: '640px', overflowY: 'auto'}} className='panel-body'>
-            <h2 style={{margin: '20px', height: '2em'}}>{titleize(el.title)} (${el.price}, {el.bedrooms})</h2>
+            <h2 style={{margin: '20px', height: '2em'}}>{title} (${el.price}, {el.bedrooms})</h2>
             <Grid fluid>
               <Row>
                 <Col md={5} sm={5}>

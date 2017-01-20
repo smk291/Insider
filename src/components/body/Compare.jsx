@@ -17,8 +17,6 @@ export default class Compare extends React.Component {
     this.scrapeRows = this.scrapeRows.bind(this);
     this.scrapeNull = this.scrapeNull.bind(this);
     this.filterListings = this.filterListings.bind(this)
-    this.handleSelect2 = this.handleSelect2.bind(this)
-    this.handleSelect1 = this.handleSelect1.bind(this)
   }
 
   scrapeList(e){
@@ -35,14 +33,6 @@ export default class Compare extends React.Component {
 
   filterListings(){
     this.props.filterListings();
-  }
-
-  handleSelect1(eventkey){
-    this.props.handleSelect1(eventkey);
-  }
-
-  handleSelect2(eventkey){
-    this.props.handleSelect2(eventkey);
   }
 
   render() {

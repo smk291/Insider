@@ -10,11 +10,11 @@ import Header from './header/Header';
 import globalCSS from '../../globalCSS.css'
 import request from 'request'
 import titleize from 'underscore.string/titleize'
+import humanize from 'underscore.string/humanize'
 
 //</editor-fold>
 
 export default class App extends Component {
-  // <editor-fold> props and state used
   constructor(props) {
     super(props);
     this.state = {
@@ -205,47 +205,46 @@ export default class App extends Component {
     }
     //<editor-fold> Unused
     // Unused -- modal controls
-    this.open = this.open.bind(this);
-    this.close = this.close.bind(this);
-    this.showTips = this.showTips.bind(this);
+    this.open                      = this.open.bind(this);
+    this.close                     = this.close.bind(this);
+    this.showTips                  = this.showTips.bind(this);
     //</editor-fold>
     //<editor-fold> Auth
-    // Authentication
-    this.logOut = this.logOut.bind(this);
-    this.logIn = this.logIn.bind(this);
-    this.signUp = this.signUp.bind(this);
+    this.logOut                    = this.logOut.bind(this);
+    this.logIn                     = this.logIn.bind(this);
+    this.signUp                    = this.signUp.bind(this);
+    this.getLoggedIn               = this.getLoggedIn.bind(this)
     //</editor-fold>
     //<editor-fold> HTTP
-    // HTTP requests
-    this.scrapeList = this.scrapeList.bind(this);
-    this.scrapeRows = this.scrapeRows.bind(this);
-    this.scrapeNull = this.scrapeNull.bind(this);
-    this.getListings = this.getListings.bind(this);
+    this.scrapeList                = this.scrapeList.bind(this);
+    this.scrapeRows                = this.scrapeRows.bind(this);
+    this.scrapeNull                = this.scrapeNull.bind(this);
+    this.getListings               = this.getListings.bind(this);
+    this.checkFor404               = this.checkFor404.bind(this)
+    this.fetchAndFormatFavorites   = this.fetchAndFormatFavorites.bind(this)
+    this.pageChange                = this.pageChange.bind(this)
+    this.saveToFavorites           = this.saveToFavorites.bind(this)
+    this.saveToFavoritesFiltered   = this.saveToFavoritesFiltered.bind(this)
+    this.changeView                = this.changeView.bind(this);
+    this.changeViewFiltered        = this.changeViewFiltered.bind(this);
+    this.isInFavorites             = this.isInFavorites.bind(this)
     //</editor-fold>
     //<editor-fold> Listing functions
-    this.filterListings = this.filterListings.bind(this)
+    this.filterListings            = this.filterListings.bind(this)
+    this.convertListings           = this.convertListings.bind(this);
+    this.formatListing             = this.formatListing.bind(this);
+    this.createFavoritesForDisplay = this.createFavoritesForDisplay.bind(this)
     //</editor-fold>
     //<editor-fold> Handle changes
     // Handle changes, set state
-    this.setState = this.setState.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.changeState = this.changeState.bind(this);
-    this.handleCheckbox = this.handleCheckbox.bind(this);
-    this.handleChbox = this.handleChbox.bind(this);
-    this.handleSlider = this.handleSlider.bind(this);
+    this.setState                  = this.setState.bind(this);
+    this.handleChange              = this.handleChange.bind(this);
+    this.changeState               = this.changeState.bind(this);
+    this.handleCheckbox            = this.handleCheckbox.bind(this);
+    this.handleChbox               = this.handleChbox.bind(this);
+    this.handleSlider              = this.handleSlider.bind(this);
+    this.changeComparisonView      = this.changeComparisonView.bind(this)
     // </editor-fold>
-  // </editor-fold>
-    this.changeView = this.changeView.bind(this);
-    this.changeViewFiltered = this.changeViewFiltered.bind(this);
-    this.isInFavorites = this.isInFavorites.bind(this)
-    this.saveToFavorites = this.saveToFavorites.bind(this)
-    this.saveToFavoritesFiltered = this.saveToFavoritesFiltered.bind(this)
-    this.createFavoritesForDisplay = this.createFavoritesForDisplay.bind(this)
-    this.changeComparisonView = this.changeComparisonView.bind(this)
-    this.pageChange = this.pageChange.bind(this)
-    this.getLoggedIn = this.getLoggedIn.bind(this)
-    this.fetchAndFormatFavorites = this.fetchAndFormatFavorites.bind(this)
-    this.checkFor404 = this.checkFor404.bind(this)
   }
 
   // <editor-fold> Unused
@@ -270,8 +269,75 @@ export default class App extends Component {
 
   //</editor-fold>
 
+  formatListing(rawListing){
+    if (rawListing.title.length > 50) {
+      rawListing.title = humanize(rawListing.title.slice(0, 50) + '…');
+    } else {
+      rawListing.title = humanize(rawListing.title);
+    }
+
+    if (rawListing.price && rawListing.price[0] !== '$') {
+      rawListing.price = '$' + rawListing.price;
+    }
+
+    if (rawListing.title.indexOf(' ') === -1 || (rawListing.title.split(' ').length < 4 && rawListing.title.length > 30)) {
+      rawListing.title = rawListing.title.slice(0, 40);
+    }
+
+    if (rawListing.neighborhood[0] === '(' && rawListing.neighborhood[rawListing.neighborhood.length - 1] === ')') {
+      rawListing.neighborhood = rawListing.neighborhood.slice(1)
+      rawListing.neighborhood = rawListing.neighborhood.slice(0, -1)
+    }
+
+    rawListing.neighborhood = rawListing.neighborhood.toLowerCase();
+    rawListing.neighborhood = titleize(rawListing.neighborhood)
+    if (rawListing.neighborhood.length > 14) {
+      rawListing.neighborhood = rawListing.neighborhood.slice(0, 14) + '…';
+    }
+
+    return rawListing
+  }
+
+  convertListings(){
+    axios({
+      method: 'get',
+      url: '/users_listings_complete',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then((res) => {
+
+      let userFavoritesRaw = res.data;
+      let listings = this.state.listings;
+
+      // let isInFavorites = this.isInFavorites.bind(this);
+
+      let listingsToDisplay = [];
+
+      listingsToDisplay = listings.map((el) => {
+        return this.formatListing(el);
+      });
+
+      let ids = [],
+        userFavoritesForDisplay = [],
+        rawFavorites = userFavoritesRaw;
+
+      ids = rawFavorites.map((el, idx) => {
+        return el.listingsId;
+      });
+
+      userFavoritesForDisplay = listingsToDisplay.filter((el) => {
+        return ids.indexOf(el.id) !== -1;
+      })
+
+      this.setState({listingsToDisplay, userFavoritesRaw, userFavoritesForDisplay, comparison1: userFavoritesForDisplay[0], comparison2: userFavoritesForDisplay[0]});
+    }).catch((err) => {
+      console.log(err);
+    });
+  }
+
   // <editor-fold> Auth
-  getLoggedIn(){
+  getLoggedIn() {
     axios({
       method: 'get',
       url: '/token',
@@ -281,77 +347,42 @@ export default class App extends Component {
     }).then((res) => {
       let loggedIn = res.data
 
-      this.setState({loggedIn});
+      axios({method: 'get', url: `/listings`}).then((res) => {
+        let listings = res.data;
+        let markers = [];
 
-      let userFavoritesRaw = []
-
-      axios({
-        method: 'get',
-        url: '/users_listings_complete',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }).then((res) => {
-        userFavoritesRaw = res.data
-
-        let listings = this.state.listings;
-
-        // let isInFavorites = this.isInFavorites.bind(this);
-
-        let listingsToDisplay = [];
-
-        listingsToDisplay = listings.map((el) => {
-          if (el.title.length > 55 && !el.title.indexOf('…')) {
-            el.title = humanize(el.title.slice(0, 55) + '…');
-          }
-
-          if (el.price && el.price[0] !== '$'){
-            el.price = '$' + el.price;
-          }
-
-          if (el.title.indexOf(' ') === -1 || (el.title.split(' ').length < 1  && el.title.length > 30)) {
-            el.title = el.title.slice(0, 40);
-          }
-
-          if (el.neighborhood[0] === '(' && el.neighborhood[el.neighborhood.length - 1] === ')'){
-            el.neighborhood = el.neighborhood.slice(1)
-            el.neighborhood = el.neighborhood.slice(0, -1)
-          }
-
-          el.neighborhood = el.neighborhood.toLowerCase();
-          el.neighborhood = titleize(el.neighborhood)
-          if (el.neighborhood.length > 14){
-            el.neighborhood = el.neighborhood.slice(0, 14) + '…';
-          }
-
-          // el.inFavorites = this.isInFavorites(el) //-----------------------------------------------------FIX THIS
-          // console.log(el.inFavorites);
-
-          return el;
+        markers = listings.filter((el) => {
+          return el.lat && el.lon;
         });
 
-        let ids                     = [],
-            userFavoritesForDisplay = [],
-            rawFavorites            = userFavoritesRaw;
+        this.setState({listings, markers});
 
-        ids = rawFavorites.map((el, idx) => {
-          return el.listingsId;
-        });
+      }).then(() => {
+        this.setState({loggedIn});
 
-        userFavoritesForDisplay = listingsToDisplay.filter((el) => {
-          return ids.indexOf(el.id) !== -1;
-        })
+        // let userFavoritesRaw = []
+        //
+        // axios({
+        //   method: 'get',
+        //   url: '/users_listings_complete',
+        //   headers: {
+        //     'Content-Type': 'application/json'
+        //   }
+        // }).then((res) => {
+          // this.convertListings(res.data);
+          this.convertListings();
+        // }).catch((err) => {
+        //   console.log(err);
+        // });
 
-        this.setState({listingsToDisplay, userFavoritesRaw, userFavoritesForDisplay, comparison1: userFavoritesForDisplay[0], comparison2: userFavoritesForDisplay[0]});
-      }).catch((err) => {
+      }).catch(err => {
         console.log(err);
+        // notify.show(err.response.data, 'error', 3000);
       });
 
-    }).catch(err => {
-      console.log(err);
-      // notify.show(err.response.data, 'error', 3000);
-    });
-
+    }).catch((err) => {
+      // console.log(err);
+    })
   }
 
   logOut (e) {
@@ -443,73 +474,12 @@ export default class App extends Component {
     }).then((res) => {
       this.changeState();
 
-      axios({
-        method: 'get',
-        url: '/users_listings_complete',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }).then((res) => {
-        userFavoritesRaw = res.data
-
-        let listings = this.state.listings;
-
-        // let isInFavorites = this.isInFavorites.bind(this);
-
-        let listingsToDisplay = [];
-
-        listingsToDisplay = listings.map((el) => {
-          if (el.title.length > 55 && !el.title.indexOf('…')) {
-            el.title = humanize(el.title.slice(0, 55) + '…');
-          }
-
-          if (el.price && el.price[0] !== '$'){
-            el.price = '$' + el.price;
-          }
-
-          if (el.title.indexOf(' ') === -1 || (el.title.split(' ').length < 1  && el.title.length > 30)) {
-            el.title = el.title.slice(0, 40);
-          }
-
-          if (el.neighborhood[0] === '(' && el.neighborhood[el.neighborhood.length - 1] === ')'){
-            el.neighborhood = el.neighborhood.slice(1)
-            el.neighborhood = el.neighborhood.slice(0, -1)
-          }
-
-          el.neighborhood = el.neighborhood.toLowerCase();
-          el.neighborhood = titleize(el.neighborhood)
-          if (el.neighborhood.length > 14){
-            el.neighborhood = el.neighborhood.slice(0, 14) + '…';
-          }
-
-          return el;
-        });
-
-        let ids                     = [],
-            userFavoritesForDisplay = [],
-            rawFavorites            = userFavoritesRaw;
-
-        console.log(rawFavorites);
-
-        ids = rawFavorites.map((el, idx) => {
-          return el.listingsId;
-        });
-
-        console.log(ids);
-
-        userFavoritesForDisplay = listingsToDisplay.filter((el) => {
-          return ids.indexOf(el.id) !== -1;
-        })
-
-        console.log(userFavoritesForDisplay);
-        console.log(listingsToDisplay);
-        console.log(userFavoritesRaw);
-        console.log(userFavoritesForDisplay[0]);
-        console.log(userFavoritesForDisplay[0]);
-        this.setState({listingsToDisplay, userFavoritesRaw, userFavoritesForDisplay, comparison1: userFavoritesForDisplay[0], comparison2: userFavoritesForDisplay[0], email: '', password: ''});
-      }).catch((err) => {
-        console.log(err);
-      });
+        // this.convertListings(res.data);
+        this.convertListings();
+        this.setState({email: '', password: ''});
+      // }).catch((err) => {
+      //   console.log(err);
+      // });
     }).catch((err) => {
       console.log(err);
       // notify.show(err.response.data, 'error', 3000);
@@ -702,6 +672,7 @@ export default class App extends Component {
   // </editor-fold>
 
   // <editor-fold> Listing functions
+
   filterListings(){
     let maxScore = 0;
     let filteredOptions = [];
@@ -776,36 +747,15 @@ export default class App extends Component {
 
 
     filteredListingsToDisplay = filteredList.map((el) => {
-      if (el.title.length > 55 && !el.title.indexOf('…')) {
-        el.title = humanize(el.title.slice(0, 55) + '…');
-      }
-
-      if (el.price && el.price[0] !== '$'){
-        el.price = '$' + el.price;
-      }
-
-      if (el.title.indexOf(' ') === -1 || (el.title.split(' ').length < 1  && el.title.length > 30)) {
-        el.title = el.title.slice(0, 40);
-      }
-
-      if (el.neighborhood[0] === '(' && el.neighborhood[el.neighborhood.length - 1] === ')'){
-        el.neighborhood = el.neighborhood.slice(1)
-        el.neighborhood = el.neighborhood.slice(0, -1)
-      }
-
-      el.neighborhood = el.neighborhood.toLowerCase();
-      el.neighborhood = titleize(el.neighborhood)
-      if (el.neighborhood.length > 14){
-        el.neighborhood = el.neighborhood.slice(0, 14) + '…';
-      }
-
-      // el.inFavorites = this.isInFavorites(el) ----------------------------------------------------------FIX
-
-      return el;
+      return this.formatListing(el);
     });
 
     filteredListingsToDisplay = filteredListingsToDisplay.sort((a,b) => {
-      return b['score'] - a['score']
+      return b['urlnum'] - a['urlnum'];
+    })
+
+    filteredListingsToDisplay = filteredListingsToDisplay.sort((a,b) => {
+      return b['score'] - a['score'];
     })
 
     this.setState({filteredListingsToDisplay});
@@ -861,72 +811,21 @@ export default class App extends Component {
   }
 
   fetchAndFormatFavorites(){
-    axios({
-      method: 'get',
-      url: '/users_listings_complete',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }).then((res) => {
-      userFavoritesRaw = res.data
-
-      let listings = this.props.listings;
-
-      // let isInFavorites = this.isInFavorites.bind(this);
-
-      let listingsToDisplay = [];
-
-      listingsToDisplay = listings.map((el) => {
-        if (el.title.length > 55 && !el.title.indexOf('…')) {
-          el.title = humanize(el.title.slice(0, 55) + '…');
-        }
-
-        if (el.price && el.price[0] !== '$'){
-          el.price = '$' + el.price;
-        }
-
-        if (el.title.indexOf(' ') === -1 || (el.title.split(' ').length < 1  && el.title.length > 30)) {
-          el.title = el.title.slice(0, 40);
-        }
-
-        if (el.neighborhood[0] === '(' && el.neighborhood[el.neighborhood.length - 1] === ')'){
-          el.neighborhood = el.neighborhood.slice(1)
-          el.neighborhood = el.neighborhood.slice(0, -1)
-        }
-
-        el.neighborhood = el.neighborhood.toLowerCase();
-        el.neighborhood = titleize(el.neighborhood)
-        if (el.neighborhood.length > 14){
-          el.neighborhood = el.neighborhood.slice(0, 14) + '…';
-        }
-
-        return el;
-      });
-
-      let userFavoritesForDisplay = [];
-      let ids                     = [],
-          rawFavorites            = userFavoritesRaw;
-
-      ids = rawFavorites.map((el, idx) => {
-        return el.listingsId;
-      });
-
-      userFavoritesForDisplay = listingsToDisplay.filter((el) => {
-        return ids.indexOf(el.id) !== -1;
-      })
-
-      this.setState({listingsToDisplay, userFavoritesRaw, userFavoritesForDisplay, comparison1: userFavoritesForDisplay[0], comparison2: userFavoritesForDisplay[0]});
-    }).catch((err) => {
-      console.log(err);
-    });
-  }
-
-  setPrice(price){
-    this.setState({price});
+    // axios({
+    //   method: 'get',
+    //   url: '/users_listings_complete',
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   }
+    // }).then((res) => {
+      // this.convertListings(res.data);
+      this.convertListings();
+    // }).catch((err) => {
+    //   console.log(err);
+    // });
   }
 
   componentWillMount(){
-    this.getListings();
     this.getLoggedIn();
   }
 

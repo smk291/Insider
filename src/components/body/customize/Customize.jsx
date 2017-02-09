@@ -12,7 +12,7 @@ import MdBackup from 'react-icons/lib/md/backup'
 
 // </editor-fold>
 
-export default class FilterData extends React.Component {
+export default class Customize extends React.Component {
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
@@ -69,13 +69,11 @@ export default class FilterData extends React.Component {
     // <editor-fold> composables
     const DropdownGroup = ({header, name, onChange, value, items, propsRequired, required}) => {
       return(
-        <Panel
-          className={dataviews.listDiv} header={header}>
+        <Panel className={dataviews.listDiv} header={header}>
           <ListGroup fill>
             <Checkbox inline type="checkbox"
               checked={propsRequired} onChange={this.handleChbox.bind(this, required)}>Required?</Checkbox>
-            <ListGroupItem
-              className={dataviews.listGroupItem}>
+            <ListGroupItem className={dataviews.listGroupItem}>
             </ListGroupItem>
             <MappedOptions items={items}/>
           </ListGroup>
@@ -87,8 +85,15 @@ export default class FilterData extends React.Component {
       return(
         <div>
           {items.map((type, idx) => {
-            return <ListGroupItem key={idx} style={{padding: '4px 10px'}}>
-              <Checkbox inline key={idx} type="checkbox" checked={this.props[type]} onChange={this.handleChbox.bind(this, type)}>{humanize(type)}</Checkbox>
+            return <ListGroupItem
+              key={idx}
+              style={{padding: '4px 10px'}}>
+              <Checkbox
+                inline
+                key={idx}
+                type="checkbox"
+                checked={this.props[type]}
+                onChange={this.handleChbox.bind(this, type)}>{humanize(type)}</Checkbox>
             </ListGroupItem>
           })}
         </div>
@@ -96,10 +101,151 @@ export default class FilterData extends React.Component {
     }
     // </editor-fold>
 
+    const bedrooms = this.props.bedrooms;
+    const rent = this.props.rent;
+    const housing = this.props.housing;
+    const laundry = this.props.laundry;
+    const parking = this.props.parking;
+    const bath = this.props.bath;
+    const privateRoom = this.props.privateRoom;
+    const cats = this.props.cats;
+    const dog = this.props.dog;
+    const furnished = this.props.furnished;
+    const smoking = this.props.smoking;
+    const wheelchair = this.props.wheelchair;
+
     return(
       <div style={{height: '88vh', overflowY: 'scroll'}}>
+        <div>
+          <div className={dataviews.scratch}>
+            <p>For numeric ranges, create sloping line graph</p>
+            <p>For categoric graphs, use bars</p>
+            <p>When user changes parameter, original graph should turn 'inactive' color</p>
+            <p>New graph will have active color</p>
+            <p>On numeric ranges, user should be able to click and drag to limit range</p>
+            <p>On categoric ranges, user should be able to click bars themselves</p>
+            <p> Tasks </p>
+            <p> Get data for each </p>
+          </div>
+          <div className={dataviews.scratch}>
+            <p>Graph</p>
+            <p>Bedrooms</p>
+            <p>bedroomsRange</p>
+            <p>minBedrooms</p> 
+            <p>maxBedrooms</p>
+            <p>importance</p>
+            <p>required</p>
+            <div className={dataviews.scratch}>
+              <p>Min bedrooms: {bedrooms.options.minBedrooms}</p>
+              <p>Max bedrooms: {bedrooms.options.maxBedrooms}</p>
+              <p>Importance: {bedrooms.prefs.importance}</p>
+              <p>Required: {JSON.stringify(bedrooms.prefs.required)}</p>
+              <p>Function to count bedrooms in listings</p>
+            </div>
+
+          </div>
+          <div className={dataviews.scratch}>
+            <p>Graph</p>
+            <p>rentRange</p>
+            <p>minRent </p>
+            <p>maxRent</p>
+            <p>importance</p>
+            <p>required</p>
+          </div>
+          <div className={dataviews.scratch}>
+            <p>Graph</p>
+            <p>'housing_type'</p>
+            <p>apartment: true, </p>
+            <p>condo: true, </p>
+            <p>house: true, </p>
+            <p>townhouse: true, </p>
+            <p>duplex: true, </p>
+            <p>land: true, </p>
+            <p>'in-law': true, </p>
+            <p>cottage: true, </p>
+            <p>cabin: true, </p>
+            <p>importance</p>
+            <p>required</p>
+          </div>
+          <div className={dataviews.scratch}>
+            <p>Graph</p>
+            <p>'laundry_types'</p>
+            <p>'laundry on site': true, </p>
+            <p>'w/d in unit': true, </p>
+            <p>'laundry in bldg': true,</p>
+            <p>importance</p>
+            <p>required</p>
+          </div>
+          <div className={dataviews.scratch}>
+            <p>Graph</p>
+            <p>'parking_types'</p>
+            <p>'off-street parking': true,</p>
+            <p>'detached garage': true,</p>
+            <p>'attached garage': true,</p>
+            <p>'valet parking': true,</p>
+            <p>'street parking': true,</p>
+            <p>'carport': true,</p>
+            <p>'no parking': true,</p>
+            <p>importance</p>
+            <p>required</p>
+          </div>
+          <div className={dataviews.scratch}>
+            <p>Graph</p>
+            <p>'bath_types'</p>
+            <p>'private bath': true,</p>
+            <p>'no private bath': true,</p>
+            <p>importance</p>
+            <p>required</p>
+          </div>
+          <div className={dataviews.scratch}>
+            <p>Graph</p>
+            <p>'private_room_types'</p>
+            <p>'private room': true,</p>
+            <p>'room not private': true,</p>
+            <p>importance</p>
+            <p>required</p>
+          </div>
+          <div className={dataviews.scratch}>
+            <p>Graph</p>
+            <p>'cat_types'</p>
+            <p>'cats are OK - purrr': true,</p>
+            <p>importance</p>
+            <p>required</p>
+          </div>
+          <div className={dataviews.scratch}>
+            <p>Graph</p>
+            <p>'dog_types'</p>
+            <p>'dogs are OK - wooof': true,</p>
+            <p>importance</p>
+            <p>required</p>
+          </div>
+          <div className={dataviews.scratch}>
+            <p>Graph</p>
+            <p>'furnished_types'</p>
+            <p>'furnished': true,</p>
+            <p>importance</p>
+            <p>required</p>
+          </div>
+          <div className={dataviews.scratch}>
+            <p>Graph</p>
+            <p>'smoking_types'</p>
+            <p>'no smoking': true,</p>
+            <p>importance</p>
+            <p>required</p>
+          </div>
+          <div className={dataviews.scratch}>
+            <p>Graph</p>
+            <p>'wheelchair_types'</p>
+            <p>'wheelchair accessible': true,</p>
+            <p>importance</p>
+            <p>required</p>
+          </div>
+          <div className={dataviews.scratch}>
+            {/*<p>{JSON.stringify(this.props.searchParams)}</p>*/}
+          </div>
+        </div>
         <h3>Set options below</h3>
-        <Grid fluid>
+        {/*<Grid fluid>
           <Row>
             <Col
               className={dataviews.dropdowns}>
@@ -398,13 +544,13 @@ export default class FilterData extends React.Component {
               <div style={{display: 'inline-block', margin: '10px 0px 0px 2px', color: 'hsl(200, 50%, 50%)'}}>
                 <p style={{fontWeight: '500'}}>Save settings</p>
               </div>
-            </div> */}
+            </div>
             <div
               style={{height: '20px', backgroundColor: 'white'}}>
             </div>
           </div>
         </Row>
-      </Grid>
+      </Grid>*/}
     </div>
     )
   }

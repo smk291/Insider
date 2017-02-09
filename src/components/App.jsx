@@ -11,8 +11,9 @@ import {
   Tooltip,
   Modal
 } from 'react-bootstrap';
-import Footer from './footer/Footer';
-import Routing from './body/Routing';
+// import Footer from './footer/Footer'
+import Routing from './body/Routing'
+import Login from './body/auth/Login'
 import 'bootstrap/less/bootstrap.less'
 import axios from 'axios';
 import Header from './header/Header';
@@ -20,7 +21,6 @@ import globalCSS from '../../globalCSS.css'
 import request from 'request'
 import titleize from 'underscore.string/titleize'
 import humanize from 'underscore.string/humanize'
-
 //</editor-fold>
 
 export default class App extends Component {
@@ -37,111 +37,150 @@ export default class App extends Component {
       signUpPassword: '',
       signUpEmail: '',
       // </editor-fold>
-      // <editor-fold> State for determining boolean preferences
-      minRent: '',
-      maxRent: '',
-      minBedrooms: '',
-      maxBedrooms: '',
-      housing_types: [
-        'apartment',
-        'condo',
-        'house',
-        'townhouse',
-        'duplex',
-        'land',
-        'in-law',
-        'cottage',
-        'cabin'
-      ],
-      apartment: true,
-      condo: true,
-      house: true,
-      townhouse: true,
-      duplex: true,
-      land: true,
-      'in-law': true,
-      cottage: true,
-      cabin: true,
-      laundry_types: [
-        'laundry on site', 'w/d in unit', 'laundry in bldg'
-      ],
-      'laundry on site': true,
-      'w/d in unit': true,
-      'laundry in bldg': true,
-      parking_types: [
-        'off-street parking',
-        'detached garage',
-        'attached garage',
-        'valet parking',
-        'street parking',
-        'carport',
-        'no parking'
-      ],
-      'off-street parking': true,
-      'detached garage': true,
-      'attached garage': true,
-      'valet parking': true,
-      'street parking': true,
-      'carport': true,
-      'no parking': true,
-      'bath_types': [
-        'private bath', 'no private bath'
-      ],
-      'private bath': true,
-      'no private bath': true,
-      'private_room_types': [
-        'private room', 'room not private'
-      ],
-      'private room': true,
-      'room not private': false,
-      'cat_types': ['cats are OK - purrr'],
-      'cats are OK - purrr': true,
-      'dog_types': ['dogs are OK - wooof'],
-      'dogs are OK - wooof': true,
-      'furnished_types': ['furnished'],
-      'furnished': true,
-      'smoking_types': ['no smoking'],
-      'no smoking': true,
-      'wheelchair_types': ['wheelchair accessible'],
-      'wheelchair accessible': true,
-      // </editor-fold>
-      // <editor-fold> State for weighting
-      bedroomsImport: 0,
-      rentImport: 0,
-      housingImport: 0,
-      laundryImport: 0,
-      parkingImport: 0,
-      bathImport: 0,
-      roomImport: 0,
-      catImport: 0,
-      dogImport: 0,
-      furnishedImport: 0,
-      smokingImport: 0,
-      wheelchairImport: 0,
-      // </editor-fold>
-      // <editor-fold> State for removing null values if user specifies strict mode
-      bedroomsImportRequired: false,
-      rentImportRequired: false,
-      housingImportRequired: false,
-      laundryImportRequired: false,
-      parkingImportRequired: false,
-      bathImportRequired: false,
-      roomImportRequired: false,
-      catImportRequired: false,
-      dogImportRequired: false,
-      furnishedImportRequired: false,
-      smokingImportRequired: false,
-      wheelchairImportRequired: false,
-      // </editor-fold>
-      // <editor-fold> unnecessarily stored data
-      rentAvg: '',
-      rent0brAvg: '',
-      rent1brAvg: '',
-      rent2brAvg: '',
-      rent3brAvg: '',
-      rent4brAvg: '',
-      strictMode: false,
-      maxScore: [],
+      searchParams: {
+        bedroomsRange: {
+          options: {
+            minBedrooms: '', 
+            maxBedrooms: '',
+          },
+          prefs: {
+            importance: '',
+            required: false,
+          }
+        },
+        rentRange: {
+          options: {
+            minRent: '', 
+            maxRent: '',
+          },
+          prefs: {
+            importance: '',
+            required: false,
+          },
+        },
+        'housing_type': {
+          options: {
+            apartment: true, 
+            condo: true, 
+            house: true, 
+            townhouse: true, 
+            duplex: true, 
+            land: true, 
+            'in-law': true, 
+            cottage: true, 
+            cabin: true, 
+          },
+          prefs: {
+            importance: '',
+            required: false,
+          },
+        },
+        'laundry_types': {
+          options: {
+            'laundry on site': true, 
+            'w/d in unit': true, 
+            'laundry in bldg': true,
+          },
+          prefs: {
+            importance: '',
+            required: false,
+          },
+        },
+        'parking_types': {
+          options: {
+            'off-street parking': true,
+            'detached garage': true,
+            'attached garage': true,
+            'valet parking': true,
+            'street parking': true,
+            'carport': true,
+            'no parking': true,
+          },
+          prefs: {
+            importance: '',
+            required: false,
+          },
+        },
+        'bath_types': {
+          options: {
+            'private bath': true,
+            'no private bath': true,
+          },
+          prefs: {
+            importance: '',
+            required: false,
+          },
+        },
+        'private_room_types': {
+          options: {
+            'private room': true,
+            'room not private': true,
+          },
+          prefs: {
+            importance: '',
+            required: false,
+          },
+        },
+        'cat_types': {
+          options: {
+            'cats are OK - purrr': true,
+          },
+          prefs: {
+            importance: '',
+            required: false,
+          },
+        },
+        'dog_types': {
+          options: {
+            'dogs are OK - wooof': true,
+          },
+          prefs: {
+            importance: '',
+            required: false,
+          },
+        },
+        'furnished_types': {
+          options: {
+            'furnished': true,
+          },
+          prefs: {
+            importance: '',
+            required: false,
+          },
+        },
+        'smoking_types': {
+          options: {
+            'no smoking': true,
+          },
+          prefs: {
+            importance: '',
+            required: false,
+          },
+        },
+        'wheelchair_types': {
+          options: {
+            'wheelchair accessible': true,
+          },
+          prefs: {
+            importance: '',
+            required: false,
+          },
+        },
+      },
+      stats: {
+        bedrooms: {}
+        rent: {}
+        housing: {}
+        laundry: {}
+        parking: {}
+        bath: {}
+        privateRoom: {}
+        cats: {}
+        dog: {}
+        furnished: {}
+        smoking: {}
+        wheelchair: {}
+      }
       // </editor-fold>
       // <editor-fold> State of listings
       listings: [],
@@ -150,161 +189,10 @@ export default class App extends Component {
       filteredOptions: [],
       listingsToDisplay: [],
       filteredListingsToDisplay: [],
-      // </editor-fold>
-      // <editor-fold> State for filtering listings
-      types: [
-        'bedroomsRange',
-        'rentRange',
-        'housing_type',
-        'laundry_types',
-        'parking_types',
-        'bath_types',
-        'private_room_types',
-        'cat_types',
-        'dog_types',
-        'furnished_types',
-        'smoking_types',
-        'wheelchair_types'
-      ],
-      importTypes: [
-        'bedroomsImport',
-        'rentImport',
-        'housingImport',
-        'laundryImport',
-        'parkingImport',
-        'bathImport',
-        'roomImport',
-        'catImport',
-        'dogImport',
-        'furnishedImport',
-        'smokingImport',
-        'wheelchairImport'
-      ],
-      optionArrays: [
-        [
-          'minBedrooms', 'maxBedrooms'
-        ],
-        [
-          'minRent', 'maxRent'
-        ],
-        [
-          'apartment',
-          'condo',
-          'house',
-          'townhouse',
-          'duplex',
-          'land',
-          'in-law',
-          'cottage',
-          'cabin'
-        ],
-        [
-          'laundry on site', 'w/d in unit', 'laundry in bldg'
-        ],
-        [
-          'off-street parking',
-          'detached garage',
-          'attached garage',
-          'valet parking',
-          'street parking',
-          'carport',
-          'no parking'
-        ],
-        [
-          'private bath', 'no private bath'
-        ],
-        [
-          'private room', 'room not private'
-        ],
-        ['cats are OK - purrr'],
-        ['dogs are OK - wooof'],
-        ['furnished'],
-        ['no smoking'],
-        ['wheelchair accessible']
-      ],
-      requiredTypes: [
-        'bedroomsImportRequired',
-        'rentImportRequired',
-        'housingImportRequired',
-        'laundryImportRequired',
-        'parkingImportRequired',
-        'bathImportRequired',
-        'roomImportRequired',
-        'catImportRequired',
-        'dogImportRequired',
-        'furnishedImportRequired',
-        'smokingImportRequired',
-        'wheelchairImportRequired'
-      ],
-      typesAndPrefs: [
-        [
-          'bedroomsRange',
-          'bedroomsImport',
-          ['minBedrooms', 'maxBedrooms']
-        ],
-        [
-          'rentRange',
-          'rentImport',
-          ['minRent', 'maxRent']
-        ],
-        [
-          'housing_type',
-          'housingImport',
-          [
-            'apartment',
-            'condo',
-            'house',
-            'townhouse',
-            'duplex',
-            'land',
-            'in-law',
-            'cottage',
-            'cabin'
-          ]
-        ],
-        [
-          'laundry_types',
-          'laundryImport',
-          ['laundry on site', 'w/d in unit', 'laundry in bldg']
-        ],
-        [
-          'parking_types',
-          'parkingImport',
-          [
-            'off-street parking',
-            'detached garage',
-            'attached garage',
-            'valet parking',
-            'street parking',
-            'carport',
-            'no parking'
-          ]
-        ],
-        [
-          'bath_types',
-          'bathImport',
-          ['private bath', 'no private bath']
-        ],
-        [
-          'private_room_types',
-          'roomImport',
-          ['private room', 'room not private']
-        ],
-        ['cat_types', 'catImport', ['cats are OK - purrr']
-        ],
-        ['dog_types', 'dogImport', ['dogs are OK - wooof']
-        ],
-        ['furnished_types', 'furnishedImport', ['furnished']
-        ],
-        ['smoking_types', 'smokingImport', ['no smoking']
-        ],
-        ['wheelchair_types', 'wheelchairImport', ['wheelchair accessible']
-        ]
-      ],
-      // </editor-fold>
       displayAd: {},
       displayAdFromFiltered: {},
       userId: 0,
+      // </editor-fold>
       // <editor-fold> Comparison
       comparison1: {},
       comparison2: {},
@@ -312,7 +200,15 @@ export default class App extends Component {
       userFavoritesForDisplay: [],
       activePage1: 0,
       activePage2: 0,
-      score: ''
+      score: '',
+      rentAvg: '',
+      rent0brAvg: '',
+      rent1brAvg: '',
+      rent2brAvg: '',
+      rent3brAvg: '',
+      rent4brAvg: '',
+      strictMode: false,
+      maxScore: [],
       // </editor-fold>
     }
     //<editor-fold> Unused
@@ -382,33 +278,35 @@ export default class App extends Component {
   //</editor-fold>
 
   formatListing(rawListing) {
-    if (rawListing.title.length > 50) {
-      rawListing.title = humanize(rawListing.title.slice(0, 50) + '…');
+    const fL = rawListing;
+
+    if (fL.title.length > 50) {
+      fL.title = humanize(fL.title.slice(0, 50) + '…');
     } else {
-      rawListing.title = humanize(rawListing.title);
+      fL.title = humanize(fL.title);
     }
 
-    if (rawListing.price && rawListing.price[0] !== '$') {
-      rawListing.price = '$' + rawListing.price;
+    if (fL.price && fL.price[0] !== '$') {
+      fL.price = '$' + fL.price;
     }
 
-    if (rawListing.title.indexOf(' ') === -1 || (rawListing.title.split(' ').length < 4 && rawListing.title.length > 30)) {
-      rawListing.title = rawListing.title.slice(0, 40);
+    if (fL.title.indexOf(' ') === -1 || (fL.title.split(' ').length < 4 && fL.title.length > 30)) {
+      fL.title = fL.title.slice(0, 40);
     }
 
-    if (rawListing.neighborhood[0] === '(' && rawListing.neighborhood[rawListing.neighborhood.length - 1] === ')') {
-      rawListing.neighborhood = rawListing.neighborhood.slice(1)
-      rawListing.neighborhood = rawListing.neighborhood.slice(0, -1)
+    if (fL.neighborhood[0] === '(' && fL.neighborhood[fL.neighborhood.length - 1] === ')') {
+      fL.neighborhood = fL.neighborhood.slice(1)
+      fL.neighborhood = fL.neighborhood.slice(0, -1)
     }
 
-    rawListing.neighborhood = rawListing.neighborhood.toLowerCase();
-    rawListing.neighborhood = titleize(rawListing.neighborhood)
+    fL.neighborhood = fL.neighborhood.toLowerCase();
+    fL.neighborhood = titleize(fL.neighborhood)
 
-    if (rawListing.neighborhood.length > 14) {
-      rawListing.neighborhood = rawListing.neighborhood.slice(0, 14) + '…';
+    if (fL.neighborhood.length > 14) {
+      fL.neighborhood = fL.neighborhood.slice(0, 14) + '…';
     }
 
-    return rawListing
+    return fL;
   }
 
   convertListings() {
@@ -863,6 +761,8 @@ export default class App extends Component {
     this.convertListings();
   }
 
+  graph
+
   // </editor-fold>
 
   componentWillMount() {
@@ -889,7 +789,24 @@ export default class App extends Component {
               minWidth: '1000px'
             }}>
               <Col>
-                <Routing createFavoritesForDisplay={this.createFavoritesForDisplay} getListings={this.getListings} {...this.props} {...this.state} {...this}/>
+                {!this.state.loggedIn ?
+                  <Login
+                    handleChange={this.handleChange}
+                    logIn={this.logIn}
+                    signUp={this.signUp}
+                    email={this.state.email}
+                    password={this.state.password}
+                    firstName={this.state.firstName}
+                    lastName={this.state.lastName}
+                    loggedIn={this.state.loggedIn}
+                    signUpPassword={this.state.signUpPassword}
+                    signUpEmail={this.state.signUpEmail}
+                  />:
+                  <Routing
+                    {...this.props}
+                    {...this.state}
+                    {...this}
+                  />}
               </Col>
             </Row>
           </Grid>

@@ -49,15 +49,15 @@ export default class Header extends React.Component {
     return (
       <header>
         <Navbar className={header.navbar} fluid style={{height: '50px', borderRadius: '0px'}}>
-          <Nav pullLeft>
-            <Link activeOnlyWhenExact className={header.navButton} activeClassName={header.active} to='/'><MdHome /></Link>
-            <Link className={header.navButton} activeClassName={header.active} to='/data'><MdSearch /> View and filter housing data</Link>
+          {this.props.loggedIn ? (<Nav pullLeft>
+            { <Link className={header.navButton} activeClassName={header.active} to='/home'><MdHome /></Link> }
+            <Link activeOnlyWhenExact className={header.navButton} activeClassName={header.active} to='/'><MdSearch /> View and filter housing data</Link>
             <Link className={header.navButton} activeClassName={header.active} to='/map'><MdMap /> Use map</Link>
             <Link className={header.navButton} activeClassName={header.active} to='/compare'><MdCompare /> compare saved listings</Link>
-          </Nav>
-          <Nav pullRight>
-            {!this.props.loggedIn ? (
-              <Link className={header.navButton} activeClassName={header.active} to='/login'>Sign Up / Log in</Link>) : (<Link className={header.navButton} to='/main' onClick={this.logOut}>Log out</Link>)}
+          </Nav>): ''}
+            <Nav pullRight>
+              {!this.props.loggedIn ? (
+                <Link className={header.navButton} activeClassName={header.active} to='/login'>Sign Up / Log in</Link>) : (<Link className={header.navButton} to='/main' onClick={this.logOut}>Log out</Link>)}
               {/* <Link className={header.navButton} onClick={this.showTips} to='/main'>Show helpful tips? </Link> */}
               {/* Show help tooltips */}
           </Nav>

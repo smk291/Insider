@@ -6,6 +6,8 @@ import InlineSVG from 'svg-inline-react'
 import MdSearch from 'react-icons/lib/md/search'
 import MdCompare from 'react-icons/lib/md/compare'
 import MdMap from 'react-icons/lib/md/map'
+import Login from './auth/Login'
+
 // </editor-fold>
 
 export default class Home extends React.Component {

@@ -75,7 +75,7 @@ export default class Customize extends React.Component {
             </div>
             <div className={dataviews.scratch}>
             <p>Graph</p>
-            <p>'housing_type'</p>
+            <p>'housing'</p>
             <p>apartment: true, </p>
             <p>condo: true, </p>
             <p>house: true, </p>
@@ -90,7 +90,7 @@ export default class Customize extends React.Component {
             </div>
             <div className={dataviews.scratch}>
             <p>Graph</p>
-            <p>'laundry_types'</p>
+            <p>'laundry'</p>
             <p>'laundry on site': true, </p>
             <p>'w/d in unit': true, </p>
             <p>'laundry in bldg': true,</p>
@@ -99,7 +99,7 @@ export default class Customize extends React.Component {
             </div>
             <div className={dataviews.scratch}>
             <p>Graph</p>
-            <p>'parking_types'</p>
+            <p>'parking'</p>
             <p>'off-street parking': true,</p>
             <p>'detached garage': true,</p>
             <p>'attached garage': true,</p>
@@ -112,7 +112,7 @@ export default class Customize extends React.Component {
             </div>
             <div className={dataviews.scratch}>
             <p>Graph</p>
-            <p>'bath_types'</p>
+            <p>'bath'</p>
             <p>'private bath': true,</p>
             <p>'no private bath': true,</p>
             <p>importance</p>
@@ -120,7 +120,7 @@ export default class Customize extends React.Component {
             </div>
             <div className={dataviews.scratch}>
             <p>Graph</p>
-            <p>'private_room_types'</p>
+            <p>'private_room'</p>
             <p>'private room': true,</p>
             <p>'room not private': true,</p>
             <p>importance</p>
@@ -128,35 +128,35 @@ export default class Customize extends React.Component {
             </div>
             <div className={dataviews.scratch}>
             <p>Graph</p>
-            <p>'cat_types'</p>
+            <p>'cat'</p>
             <p>'cats are OK - purrr': true,</p>
             <p>importance</p>
             <p>required</p>
             </div>
             <div className={dataviews.scratch}>
             <p>Graph</p>
-            <p>'dog_types'</p>
+            <p>'dog'</p>
             <p>'dogs are OK - wooof': true,</p>
             <p>importance</p>
             <p>required</p>
             </div>
             <div className={dataviews.scratch}>
             <p>Graph</p>
-            <p>'furnished_types'</p>
+            <p>'furnished'</p>
             <p>'furnished': true,</p>
             <p>importance</p>
             <p>required</p>
             </div>
             <div className={dataviews.scratch}>
             <p>Graph</p>
-            <p>'smoking_types'</p>
+            <p>'smoking'</p>
             <p>'no smoking': true,</p>
             <p>importance</p>
             <p>required</p>
             </div>
             <div className={dataviews.scratch}>
             <p>Graph</p>
-            <p>'wheelchair_types'</p>
+            <p>'wheelchair'</p>
             <p>'wheelchair accessible': true,</p>
             <p>importance</p>
             <p>required</p>

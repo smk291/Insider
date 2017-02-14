@@ -105,7 +105,7 @@ export default class FilterData extends React.Component {
               className={dataviews.dropdowns}>
               <DropdownGroup
                 header='Housing type ▾'
-                items={this.props.housing_types}
+                items={this.props.housing}
                 propsRequired={this.props.housingImportRequired}
                 required='housingImportRequired'
               />
@@ -200,7 +200,7 @@ export default class FilterData extends React.Component {
 
               <DropdownGroup
                 header='Private room ▾'
-                items={this.props.private_room_types}
+                items={this.props.private_room}
                 propsRequired={this.props.roomImportRequired}
                 required='roomImportRequired'
 
@@ -218,7 +218,7 @@ export default class FilterData extends React.Component {
               />
               <DropdownGroup
                 header='Private bath ▾'
-                items={this.props.bath_types}
+                items={this.props.bath}
                 propsRequired={this.props.bathImportRequired}
                 required='bathImportRequired'
 
@@ -235,7 +235,7 @@ export default class FilterData extends React.Component {
 
               <DropdownGroup
                 header='Parking ▾'
-                items={this.props.parking_types}
+                items={this.props.parking}
                 propsRequired={this.props.parkingImportRequired}
                 required='parkingImportRequired'
 
@@ -252,7 +252,7 @@ export default class FilterData extends React.Component {
 
               <DropdownGroup
                 header='Laundry ▾'
-                items={this.props.laundry_types}
+                items={this.props.laundry}
                 propsRequired={this.props.laundryImportRequired}
                 required='laundryImportRequired'
 
@@ -276,7 +276,7 @@ export default class FilterData extends React.Component {
                 <ListGroup fill>
                   <ListGroupItem
                     style={{padding: '4px 10px'}}>
-                    {this.props.furnished_types.map((type, idx) => {
+                    {this.props.furnished.map((type, idx) => {
                       return <Checkbox
                         key={idx} type="checkbox"
                         checked={this.props[type]}
@@ -297,7 +297,7 @@ export default class FilterData extends React.Component {
                   </ListGroupItem>
                   <ListGroupItem
                     style={{padding: '4px 10px'}}>
-                    {this.props.cat_types.map((type, idx) => {
+                    {this.props.cat.map((type, idx) => {
                       return <Checkbox
                         key={idx} type="checkbox"
                         checked={this.props[type]}
@@ -318,7 +318,7 @@ export default class FilterData extends React.Component {
                   </ListGroupItem>
                   <ListGroupItem
                     style={{padding: '4px 10px'}}>
-                    {this.props.dog_types.map((type, idx) => {
+                    {this.props.dog.map((type, idx) => {
                       return <Checkbox
                         key={idx} type="checkbox"
                         checked={this.props[type]}
@@ -339,7 +339,7 @@ export default class FilterData extends React.Component {
                   </ListGroupItem>
                   <ListGroupItem
                     style={{padding: '4px 10px'}}>
-                    {this.props.smoking_types.map((type, idx) => {
+                    {this.props.smoking.map((type, idx) => {
                       return <Checkbox
                         key={idx} type="checkbox"
                         checked={this.props[type]}
@@ -360,7 +360,7 @@ export default class FilterData extends React.Component {
                   </ListGroupItem>
                   <ListGroupItem
                     style={{padding: '4px 10px'}}>
-                    {this.props.wheelchair_types.map((type, idx) => {
+                    {this.props.wheelchair.map((type, idx) => {
                       return <Checkbox type="checkbox"
                         key={idx} checked={this.props[type]}
                         onChange={this.handleChbox.bind(this, type)}>{humanize(type)}</Checkbox>

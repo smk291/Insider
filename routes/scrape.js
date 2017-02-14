@@ -59,18 +59,18 @@ router.post('/scrape_check_for_404/', authorize, (req, res) => {
       url = row.url;
 
       request(`http://seattle.craigslist.org${url}`, function (error, response, body) {
-        console.log(response);
-        console.log(`response.body.indexOf('This posting has expired.') !== -1: ${response.body.indexOf(`This posting has expired.`) !== -1}`);
-        console.log(`response.body.indexOf('There is nothing here') !== -1: ${response.body.indexOf(`There is nothing here`) !== -1}`);
-        console.log(`response.body.indexOf('This posting has been deleted by its author') !== -1: ${response.body.indexOf(`This posting has been deleted by its author`) !== -1}`);
-        console.log(`response.body.indexOf('This posting has been flagged for removal') !== -1: ${response.body.indexOf(`This posting has been flagged for removal`) !== -1}`);
+        // console.log(response);
+        // console.log(`response.body.indexOf('This posting has expired.') !== -1: ${response.body.indexOf(`This posting has expired.`) !== -1}`);
+        // console.log(`response.body.indexOf('There is nothing here') !== -1: ${response.body.indexOf(`There is nothing here`) !== -1}`);
+        // console.log(`response.body.indexOf('This posting has been deleted by its author') !== -1: ${response.body.indexOf(`This posting has been deleted by its author`) !== -1}`);
+        // console.log(`response.body.indexOf('This posting has been flagged for removal') !== -1: ${response.body.indexOf(`This posting has been flagged for removal`) !== -1}`);
         if (response.body.indexOf(`This posting has expired.`) !== -1 || response.body.indexOf(`There is nothing here`) !== -1 || response.body.indexOf(`This posting has been deleted by its author`) !== -1 || response.body.indexOf(`This posting has been flagged for removal`) !== -1) {
           knex('listings')
           .where('urlnum', urlnums[i])
           .first()
           .update({void: true, checked: true}, '*')
           .then((row) => {
-            console.log(`Page at http://seattle.craigslist.org${row[0].url} no longer exists. New row is ${row}`)
+            // console.log(`Page at http://seattle.craigslist.org${row[0].url} no longer exists. New row is ${row}`)
           }).catch((err) => {
             throw boom.create(400, err);
           })
@@ -80,7 +80,7 @@ router.post('/scrape_check_for_404/', authorize, (req, res) => {
           .first()
           .update({checked: true}, '*')
           .then((row) => {
-            console.log(`Page at http://seattle.craigslist.org${row[0].url} still exists. New row is:`)
+            // console.log(`Page at http://seattle.craigslist.org${row[0].url} still exists. New row is:`)
           }).catch((err) => {
             throw boom.create(400, err);
           })
@@ -286,16 +286,16 @@ router.get('/scrape_details/:urlnum', authorize, (req, res) => {
             let toInsert = {
               urlnum:             pageItem.urlnum,
               descr:              pageItem.desc,
-              housing_type:       pageItem.housingtype,
-              laundry_types:      pageItem.laundry,
-              parking_types:      pageItem.parking,
-              bath_types:         pageItem.privatebath,
-              private_room_types: pageItem.privatebr,
-              cat_types:          pageItem.cats,
-              dog_types:          pageItem.dogs,
-              furnished_types:    pageItem.furnished,
-              smoking_types:      pageItem.nosmoking,
-              wheelchair_types:   pageItem.wheelchair,
+              housing:       pageItem.housingtype,
+              laundry:      pageItem.laundry,
+              parking:      pageItem.parking,
+              bath:         pageItem.privatebath,
+              private_room: pageItem.privatebr,
+              cat:          pageItem.cats,
+              dog:          pageItem.dogs,
+              furnished:    pageItem.furnished,
+              smoking:      pageItem.nosmoking,
+              wheelchair:   pageItem.wheelchair,
               bedrooms:           pageItem.bedrooms,
               sqft:               pageItem.sqft,
               lat:                pageItem.latLong.latitude,
@@ -553,16 +553,16 @@ router.get('/scrape_null/', authorize, (req, res) => {
             let toInsert = {
               urlnum:             pageItem.urlnum,
               descr:              pageItem.desc,
-              housing_type:       pageItem.housingtype,
-              laundry_types:      pageItem.laundry,
-              parking_types:      pageItem.parking,
-              bath_types:         pageItem.privatebath,
-              private_room_types: pageItem.privatebr,
-              cat_types:          pageItem.cats,
-              dog_types:          pageItem.dogs,
-              furnished_types:    pageItem.furnished,
-              smoking_types:      pageItem.nosmoking,
-              wheelchair_types:   pageItem.wheelchair,
+              housing:       pageItem.housingtype,
+              laundry:      pageItem.laundry,
+              parking:      pageItem.parking,
+              bath:         pageItem.privatebath,
+              private_room: pageItem.privatebr,
+              cat:          pageItem.cats,
+              dog:          pageItem.dogs,
+              furnished:    pageItem.furnished,
+              smoking:      pageItem.nosmoking,
+              wheelchair:   pageItem.wheelchair,
               bedrooms:           pageItem.bedrooms,
               sqft:               pageItem.sqft,
               lat:                pageItem.latLong.latitude,

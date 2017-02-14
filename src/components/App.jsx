@@ -27,14 +27,12 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // <editor-fold> Auth
       loggedIn: false,
       signingUp: false,
       email: '',
       password: '',
       firstName: '',
       lastName: '',
-      // </editor-fold>
       searchParams: {
         bedrooms: {
           data: {},
@@ -177,8 +175,6 @@ export default class App extends Component {
           },
         },
       },
-      // </editor-fold>
-      // <editor-fold> State of listings
       listings: [],
       markers: [],
       filteredList: [],
@@ -188,8 +184,6 @@ export default class App extends Component {
       displayAd: {},
       displayAdFromFiltered: {},
       userId: 0,
-      // </editor-fold>
-      // <editor-fold> Comparison
       comparison1: {},
       comparison2: {},
       userFavoritesRaw: [],
@@ -197,28 +191,15 @@ export default class App extends Component {
       activePage1: 0,
       activePage2: 0,
       score: '',
-      rentAvg: '',
-      rent0brAvg: '',
-      rent1brAvg: '',
-      rent2brAvg: '',
-      rent3brAvg: '',
-      rent4brAvg: '',
       strictMode: false,
       maxScore: [],
-      // </editor-fold>
     }
     //<editor-fold> Unused
-    // Unused -- modal controls
-    this.open = this.open.bind(this);
-    this.close = this.close.bind(this);
-    this.showTips = this.showTips.bind(this);
+    // this.showTips = this.showTips.bind(this);
     //</editor-fold>
-    //<editor-fold> Auth
     this.getLoggedIn = this.getLoggedIn.bind(this)
     this.authSwitch = this.authSwitch.bind(this);
     this.processAuth = this.processAuth.bind(this);
-    //</editor-fold>
-    //<editor-fold> HTTP
     this.scrapeList = this.scrapeList.bind(this);
     this.scrapeRows = this.scrapeRows.bind(this);
     this.scrapeNull = this.scrapeNull.bind(this);
@@ -231,117 +212,29 @@ export default class App extends Component {
     this.changeView = this.changeView.bind(this);
     this.changeViewFiltered = this.changeViewFiltered.bind(this);
     this.isInFavorites = this.isInFavorites.bind(this)
-    //</editor-fold>
-    //<editor-fold> Listing functions
     this.filterListings = this.filterListings.bind(this)
     this.convertListings = this.convertListings.bind(this);
     this.formatListing = this.formatListing.bind(this);
     this.createFavoritesForDisplay = this.createFavoritesForDisplay.bind(this)
-    //</editor-fold>
-    //<editor-fold> Handle changes
-    // Handle changes, set state
-    this.setState = this.setState.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.changeState = this.changeState.bind(this);
     this.handleCheckbox = this.handleCheckbox.bind(this);
     this.handleChbox = this.handleChbox.bind(this);
     this.handleSlider = this.handleSlider.bind(this);
     this.changeComparisonView = this.changeComparisonView.bind(this)
-    // </editor-fold>
   }
 
-  // <editor-fold> Unused
-  close() {
-    this.setState({showModal: false});
-  }
+  // showTips(e) {
+  //   e.preventDefault();
+  //
+  //   const bool = this.state.activeTips;
+  //   if (bool) {
+  //     this.setState({loggedIn: true});
+  //   } else {
+  //     this.setState({loggedIn: false});
+  //   }
+  // }
 
-  open() {
-    this.setState({showModal: true});
-  }
-
-  showTips(e) {
-    e.preventDefault();
-
-    const bool = this.state.activeTips;
-    if (bool) {
-      this.setState({loggedIn: true});
-    } else {
-      this.setState({loggedIn: false});
-    }
-  }
-
-  //</editor-fold>
-
-  formatListing(rawListing) {
-    const fL = rawListing;
-
-    if (fL.title.length > 50) {
-      fL.title = humanize(fL.title.slice(0, 50) + '…');
-    } else {
-      fL.title = humanize(fL.title);
-    }
-
-    if (fL.price && fL.price[0] !== '$') {
-      fL.price = '$' + fL.price;
-    }
-
-    if (fL.title.indexOf(' ') === -1 || (fL.title.split(' ').length < 4 && fL.title.length > 30)) {
-      fL.title = fL.title.slice(0, 40);
-    }
-
-    if (fL.neighborhood[0] === '(' && fL.neighborhood[fL.neighborhood.length - 1] === ')') {
-      fL.neighborhood = fL.neighborhood.slice(1)
-      fL.neighborhood = fL.neighborhood.slice(0, -1)
-    }
-
-    fL.neighborhood = fL.neighborhood.toLowerCase();
-    fL.neighborhood = titleize(fL.neighborhood)
-
-    if (fL.neighborhood.length > 14) {
-      fL.neighborhood = fL.neighborhood.slice(0, 14) + '…';
-    }
-
-    return fL;
-  }
-
-  convertListings() {
-    axios({
-      method: 'get',
-      url: '/users_listings_complete',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }).then((res) => {
-      let userFavoritesRaw = res.data;
-      let listings = this.state.listings;
-
-      // let isInFavorites = this.isInFavorites.bind(this);
-
-      let listingsToDisplay = [];
-
-      listingsToDisplay = listings.map((el) => {
-        return this.formatListing(el);
-      });
-
-      let ids = [],
-        userFavoritesForDisplay = [],
-        rawFavorites = userFavoritesRaw;
-
-      ids = rawFavorites.map((el, idx) => {
-        return el.listingsId;
-      });
-
-      userFavoritesForDisplay = listingsToDisplay.filter((el) => {
-        return ids.indexOf(el.id) !== -1;
-      })
-
-      this.setState({listingsToDisplay, userFavoritesRaw, userFavoritesForDisplay, comparison1: userFavoritesForDisplay[0], comparison2: userFavoritesForDisplay[0]});
-    }).catch((err) => {
-      console.log(err);
-    });
-  }
-
-  // <editor-fold> Auth
   getLoggedIn() {
     axios({
       method: 'get',
@@ -352,28 +245,28 @@ export default class App extends Component {
     }).then((res) => {
       let loggedIn = res.data;
 
-      this.setState({auth: loggedIn})
+      this.setState({loggedIn})
 
-      // axios({method: 'get', url: `/listings`}).then((res) => {
-      //   let listings = res.data;
-      //   let markers = [];
-      //
-      //   listings = listings.filter((listing) => {
-      //     return listing.void !== true;
-      //   })
-      //
-      //   markers = listings.filter((el) => {
-      //     return el.lat && el.lon;
-      //   });
-      //
-      //   this.setState({listings, markers});
-      //   this.convertListings();
-      // }).then(() => {
-      //   this.setState({loggedIn});
-      // }).catch(err => {
-      //   console.log(err);
-        // notify.show(err.response.data, 'error', 3000);
-      // });
+      axios({method: 'get', url: `/listings`}).then((res) => {
+        let listings = res.data;
+        let markers = [];
+
+        listings = listings.filter((listing) => {
+          return listing.void !== true;
+        })
+
+        markers = listings.filter((el) => {
+          return el.lat && el.lon;
+        });
+
+        this.setState({listings, markers});
+        this.convertListings();
+      }).then(() => {
+        this.setState({loggedIn});
+      }).catch(err => {
+        console.log(err);
+        notify.show(err.response.data, 'error', 3000);
+      });
     }).catch((err) => {
       // console.log(err);
     })
@@ -460,9 +353,7 @@ export default class App extends Component {
       this.getListings();
     }
   }
-  //</editor-fold>
 
-  // <editor-fold> handle changes
   handleSlider(field, e) {
     var nextState = {}
     nextState[field] = e.value
@@ -496,9 +387,7 @@ export default class App extends Component {
   changeComparisonView(element) {
     this.setState(element);
   }
-  //</editor-fold>
 
-  // <editor-fold> HTTP
   scrapeNull(e) {
     e.preventDefault();
 
@@ -577,6 +466,75 @@ export default class App extends Component {
     })
   }
 
+  formatListing(rawListing) {
+    const fL = rawListing;
+
+    if (fL.title.length > 50) {
+      fL.title = humanize(fL.title.slice(0, 50) + '…');
+    } else {
+      fL.title = humanize(fL.title);
+    }
+
+    if (fL.price && fL.price[0] !== '$') {
+      fL.price = '$' + fL.price;
+    }
+
+    if (fL.title.indexOf(' ') === -1 || (fL.title.split(' ').length < 4 && fL.title.length > 30)) {
+      fL.title = fL.title.slice(0, 40);
+    }
+
+    if (fL.neighborhood[0] === '(' && fL.neighborhood[fL.neighborhood.length - 1] === ')') {
+      fL.neighborhood = fL.neighborhood.slice(1)
+      fL.neighborhood = fL.neighborhood.slice(0, -1)
+    }
+
+    fL.neighborhood = fL.neighborhood.toLowerCase();
+    fL.neighborhood = titleize(fL.neighborhood)
+
+    if (fL.neighborhood.length > 14) {
+      fL.neighborhood = fL.neighborhood.slice(0, 14) + '…';
+    }
+
+    return fL;
+  }
+
+  convertListings() {
+    axios({
+      method: 'get',
+      url: '/users_listings_complete',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then((res) => {
+      let userFavoritesRaw = res.data;
+      let listings = this.state.listings;
+
+      // let isInFavorites = this.isInFavorites.bind(this);
+
+      let listingsToDisplay = [];
+
+      listingsToDisplay = listings.map((el) => {
+        return this.formatListing(el);
+      });
+
+      let ids = [],
+        userFavoritesForDisplay = [],
+        rawFavorites = userFavoritesRaw;
+
+      ids = rawFavorites.map((el, idx) => {
+        return el.listingsId;
+      });
+
+      userFavoritesForDisplay = listingsToDisplay.filter((el) => {
+        return ids.indexOf(el.id) !== -1;
+      })
+
+      this.setState({listingsToDisplay, userFavoritesRaw, userFavoritesForDisplay, comparison1: userFavoritesForDisplay[0], comparison2: userFavoritesForDisplay[0]});
+    }).catch((err) => {
+      console.log(err);
+    });
+  }
+
   changeView(row) {
     axios({method: 'get', url: `/listings/${row.id}`}).then((res) => {
       this.setState({displayAd: res.data})
@@ -622,9 +580,6 @@ export default class App extends Component {
       console.log(err);
     })
   }
-  // </editor-fold>
-
-  // <editor-fold> Listing and filtering functions
 
   filterListings() {
     let maxScore = 0;
@@ -756,8 +711,6 @@ export default class App extends Component {
   fetchAndFormatFavorites() {
     this.convertListings();
   }
-
-  // </editor-fold>
 
   componentWillMount() {
     this.getLoggedIn();

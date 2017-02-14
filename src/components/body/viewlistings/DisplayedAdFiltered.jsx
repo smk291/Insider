@@ -71,8 +71,8 @@ export default class DisplayAd extends React.Component {
             <tbody>
               <tr>
                 <td>Type of housing:</td>
-                <td>{el.housing_types
-                    ? humanize(el.housing_types)
+                <td>{el.housing
+                    ? humanize(el.housing)
                     : <span className={dataviews.blank}>Blank</span>}</td>
               </tr>
               <tr>
@@ -83,32 +83,32 @@ export default class DisplayAd extends React.Component {
               </tr>
               <tr>
                 <td>Private room?</td>
-                <td>{el.private_room_types
-                    ? humanize(el.private_room_types)
+                <td>{el.private_room
+                    ? humanize(el.private_room)
                     : <span className={dataviews.blank}>Blank</span>}</td>
               </tr>
               <tr>
                 <td>Private bath?</td>
-                <td>{el.bath_types
-                    ? humanize(el.bath_types)
+                <td>{el.bath
+                    ? humanize(el.bath)
                     : <span className={dataviews.blank}>Blank</span>}</td>
               </tr>
               <tr>
                 <td>Furnished?</td>
-                <td>{el.furnished_type
-                    ? humanize(el.furnished_type)
+                <td>{el.furnished
+                    ? humanize(el.furnished)
                     : <span className={dataviews.blank}>Blank</span>}</td>
               </tr>
               <tr>
                 <td>Laundry?</td>
-                <td>{el.laundry_types
-                    ? humanize(el.laundry_types)
+                <td>{el.laundry
+                    ? humanize(el.laundry)
                     : <span className={dataviews.blank}>Blank</span>}</td>
               </tr>
               <tr>
                 <td>Parking?</td>
-                <td>{el.parking_types
-                    ? humanize(el.parking_types)
+                <td>{el.parking
+                    ? humanize(el.parking)
                     : <span className={dataviews.blank}>Blank</span>}</td>
               </tr>
             </tbody>
@@ -155,16 +155,16 @@ export default class DisplayAd extends React.Component {
       render(){
         return(
           <div>
-            <p>{el.cat_types
-                ? humanize(el.cat_types)
+            <p>{el.cat
+                ? humanize(el.cat)
                 : ''}</p>
-            <p>{el.dog_types
-                ? humanize(el.dog_types)
+            <p>{el.dog
+                ? humanize(el.dog)
                 : ''}</p>
-            <p>{el.smoking_types
-                ? humanize(el.smoking_types)
+            <p>{el.smoking
+                ? humanize(el.smoking)
                 : ''}</p>
-            <p>{!el.cat_types && !el.dog_types ? 'No information about whether cats or dogs are allowed' : ''}</p>
+            <p>{!el.cat && !el.dog ? 'No information about whether cats or dogs are allowed' : ''}</p>
           </div>
         )
       }

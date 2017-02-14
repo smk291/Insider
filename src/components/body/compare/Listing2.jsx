@@ -69,8 +69,8 @@ export default class Listing1 extends React.Component {
             <Table>
               <tbody style={{textAlign: 'left'}}>
                 <tr>
-                  <td>{listing2.housing_types
-                    ? humanize(listing2.housing_types)
+                  <td>{listing2.housing
+                    ? humanize(listing2.housing)
                     : <span className={dataviews.blank}>Blank</span>}</td>
                   </tr>
                 <tr>
@@ -89,28 +89,28 @@ export default class Listing1 extends React.Component {
                       : <span className={dataviews.blank}>Blank</span>}</td>
                 </tr>
                 <tr>
-                  <td>{listing2.private_room_types
-                      ? humanize(listing2.private_room_types)
+                  <td>{listing2.private_room
+                      ? humanize(listing2.private_room)
                       : <span className={dataviews.blank}>Blank</span>}</td>
                 </tr>
                 <tr>
-                  <td>{listing2.bath_types
-                      ? humanize(listing2.bath_types)
+                  <td>{listing2.bath
+                      ? humanize(listing2.bath)
                       : <span className={dataviews.blank}>Blank</span>}</td>
                 </tr>
                 <tr>
-                  <td>{listing2.furnished_type
-                      ? humanize(listing2.furnished_type)
+                  <td>{listing2.furnished
+                      ? humanize(listing2.furnished)
                       : <span className={dataviews.blank}>Blank</span>}</td>
                 </tr>
                 <tr>
-                  <td>{listing2.laundry_types
-                      ? humanize(listing2.laundry_types)
+                  <td>{listing2.laundry
+                      ? humanize(listing2.laundry)
                       : <span className={dataviews.blank}>Blank</span>}</td>
                 </tr>
                 <tr>
-                  <td>{listing2.parking_types
-                      ? humanize(listing2.parking_types)
+                  <td>{listing2.parking
+                      ? humanize(listing2.parking)
                       : <span className={dataviews.blank}>Blank</span>}</td>
                 </tr>
                 <tr>
@@ -119,10 +119,10 @@ export default class Listing1 extends React.Component {
                       : <span className={dataviews.blank}>None</span>}</td>
                 </tr>
                 <tr>
-                  <td>{listing2.cat_types? humanize(listing2.cat_types): <span className={dataviews.blank}>Blank</span>}</td></tr>
+                  <td>{listing2.cat? humanize(listing2.cat): <span className={dataviews.blank}>Blank</span>}</td></tr>
                 <tr>
-                  <td>{listing2.dog_types? humanize(listing2.dog_types): <span className={dataviews.blank}>Blank</span>}</td></tr>
-                <tr><td>{listing2.smoking_types? humanize(listing2.smoking_types): <span className={dataviews.blank}>Blank</span>}</td></tr>
+                  <td>{listing2.dog? humanize(listing2.dog): <span className={dataviews.blank}>Blank</span>}</td></tr>
+                <tr><td>{listing2.smoking? humanize(listing2.smoking): <span className={dataviews.blank}>Blank</span>}</td></tr>
                 <tr>
                   <td>{listing2.wheelchair_accessible ? humanize(listing2.wheelchair_accessible): <span className={dataviews.blank}>Blank</span>}</td>
                 </tr>

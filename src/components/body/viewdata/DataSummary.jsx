@@ -139,16 +139,16 @@ export default class DataSummary extends React.Component {
 /* <div>
 <p>stats</p>
 <p>charts</p>
-housing_types = ['apartment', 'condo', 'house', 'townhouse', 'duplex', 'land', 'in-law', 'cottage', 'cabin'];
-laundry_types = ['laundry on site', 'w/d in unit', 'laundry in bldg'];
-parking_types = ['off-street parking', 'detached garage', 'attached garage', 'valet parking', 'street parking', 'carport', 'no parking'];
-bath_types = ['private bath', 'no private bath'];
-private_room_types = ['private room', 'room not private'];
-cat_types = ['cats are OK - purrr'];
-dog_types = ['dogs are OK - wooof'];
-furnished_types = ['furnished'];
-smoking_types = ['no smoking'];
-wheelchair_types = ['wheelchair accessible']; */
+housing = ['apartment', 'condo', 'house', 'townhouse', 'duplex', 'land', 'in-law', 'cottage', 'cabin'];
+laundry = ['laundry on site', 'w/d in unit', 'laundry in bldg'];
+parking = ['off-street parking', 'detached garage', 'attached garage', 'valet parking', 'street parking', 'carport', 'no parking'];
+bath = ['private bath', 'no private bath'];
+private_room = ['private room', 'room not private'];
+cat = ['cats are OK - purrr'];
+dog = ['dogs are OK - wooof'];
+furnished = ['furnished'];
+smoking = ['no smoking'];
+wheelchair = ['wheelchair accessible']; */
 // </div>
 /* {this.props.listings.length > 0 ?
 <div>

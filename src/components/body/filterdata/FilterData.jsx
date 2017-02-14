@@ -15,91 +15,91 @@ import MdBackup from 'react-icons/lib/md/backup'
 export default class FilterData extends React.Component {
   constructor(props) {
     super(props);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleCheckbox = this.handleCheckbox.bind(this)
-    this.handleChbox = this.handleChbox.bind(this)
-    this.handleSlider = this.handleSlider.bind(this)
-    this.filterListings = this.filterListings.bind(this)
+    // this.handleChange = this.handleChange.bind(this);
+    // this.handleCheckbox = this.handleCheckbox.bind(this)
+    // this.handleChbox = this.handleChbox.bind(this)
+    // this.handleSlider = this.handleSlider.bind(this)
+    // this.filterListings = this.filterListings.bind(this)
   }
 
-  //<editor-fold> handle changes
-  handleSlider(e, field){
-    this.props.handleSlider(e, field)
-  }
+  // //<editor-fold> handle changes
+  // handleSlider(e, field){
+  //   this.props.handleSlider(e, field)
+  // }
+  //
+  // handleChange(e) {
+  //   this.props.handleChange(e);
+  // }
+  //
+  // handleCheckbox(e) {
+  //   this.props.handleCheckbox(e)
+  // }
+  //
+  // handleChbox(e, field) {
+  //   this.props.handleChbox(e, field);
+  // }
+  // // </editor-fold>
 
-  handleChange(e) {
-    this.props.handleChange(e);
-  }
+  // lineGraphData (){
+  //   let accums = {};
+  //
+  //   this.props.listings.map((el) => {
+  //     let rent = el.price
+  //     let roundedValue = 0;
+  //
+  //     if (rent){
+  //       roundedValue = Math.round(Number(rent.slice(1)) / 100) * 100;
+  //     }
+  //
+  //     if (rent && !accums[roundedValue]){
+  //       accums[roundedValue] = 1;
+  //     } else {
+  //       accums[roundedValue]++;
+  //     }
+  //   })
+  //
+  //   console.log(accums);
+  // }
 
-  handleCheckbox(e) {
-    this.props.handleCheckbox(e)
-  }
-
-  handleChbox(e, field) {
-    this.props.handleChbox(e, field);
-  }
-  // </editor-fold>
-
-  lineGraphData (){
-    let accums = {};
-
-    this.props.listings.map((el) => {
-      let rent = el.price
-      let roundedValue = 0;
-
-      if (rent){
-        roundedValue = Math.round(Number(rent.slice(1)) / 100) * 100;
-      }
-
-      if (rent && !accums[roundedValue]){
-        accums[roundedValue] = 1;
-      } else {
-        accums[roundedValue]++;
-      }
-    })
-
-    console.log(accums);
-  }
-
-  filterListings() {
-    this.props.filterListings();
-  }
+  // filterListings() {
+  //   this.props.filterListings();
+  // }
 
   render(){
-    // <editor-fold> composables
-    const DropdownGroup = ({header, name, onChange, value, items, propsRequired, required}) => {
-      return(
-        <Panel
-          className={dataviews.listDiv} header={header}>
-          <ListGroup fill>
-            <Checkbox inline type="checkbox"
-              checked={propsRequired} onChange={this.handleChbox.bind(this, required)}>Required?</Checkbox>
-            <ListGroupItem
-              className={dataviews.listGroupItem}>
-            </ListGroupItem>
-            <MappedOptions items={items}/>
-          </ListGroup>
-        </Panel>
-      );
-    }
+    // // <editor-fold> composables
+    // const DropdownGroup = ({header, name, onChange, value, items, propsRequired, required}) => {
+    //   return(
+    //     <Panel
+    //       className={dataviews.listDiv} header={header}>
+    //       <ListGroup fill>
+    //         <Checkbox inline type="checkbox"
+    //           checked={propsRequired} onChange={this.handleChbox.bind(this, required)}>Required?</Checkbox>
+    //         <ListGroupItem
+    //           className={dataviews.listGroupItem}>
+    //         </ListGroupItem>
+    //         <MappedOptions items={items}/>
+    //       </ListGroup>
+    //     </Panel>
+    //   );
+    // }
 
-    const MappedOptions = ({items}) => {
-      return(
-        <div>
-          {items.map((type, idx) => {
-            return <ListGroupItem key={idx} style={{padding: '4px 10px'}}>
-              <Checkbox inline key={idx} type="checkbox" checked={this.props[type]} onChange={this.handleChbox.bind(this, type)}>{humanize(type)}</Checkbox>
-            </ListGroupItem>
-          })}
-        </div>
-      )
-    }
-    // </editor-fold>
+    // const MappedOptions = ({items}) => {
+    //   return(
+    //     <div>
+    //       {items.map((type, idx) => {
+    //         return <ListGroupItem key={idx} style={{padding: '4px 10px'}}>
+    //           <Checkbox inline key={idx} type="checkbox" checked={this.props[type]} onChange={this.handleChbox.bind(this, type)}>{humanize(type)}</Checkbox>
+    //         </ListGroupItem>
+    //       })}
+    //     </div>
+    //   )
+    // }
+    // // </editor-fold>
 
     return(
       <div style={{height: '88vh', overflowY: 'scroll'}}>
-        <h3>Set options below</h3>
-        <Grid fluid>
+        {/*}<h3>Set options below</h3>
+          <Grid fluid>
           <Row>
             <Col
               className={dataviews.dropdowns}>
@@ -361,51 +361,51 @@ export default class FilterData extends React.Component {
                   <ListGroupItem
                     style={{padding: '4px 10px'}}>
                     {this.props.wheelchair_types.map((type, idx) => {
-                    return <Checkbox type="checkbox"
-                      key={idx} checked={this.props[type]}
-                      onChange={this.handleChbox.bind(this, type)}>{humanize(type)}</Checkbox>
-                  })}
-                  <ReactSimpleRange
-                    style={{padding: '4px 10px'}}
-                    max={10}
-                    min={0}
-                    label
-                    name='wheelchairImport'
-                    onChange={this.handleSlider.bind(this, 'wheelchairImport')}
-                    value={this.props.wheelchairImport}
-                  />
-                <Checkbox inline type="checkbox"
-                  checked={this.props.wheelchairImportRequired}
-                  onChange={this.handleChbox.bind(this, 'wheelchairImportRequired')}>Required?</Checkbox>
-                </ListGroupItem>
-              </ListGroup>
-            </Panel>
-          </Col>
-        </Row>
-        <Row>
-          <div
-            className={dataviews.listDiv}
-            style={{borderTop: '1px #eee solid'}}>
+                      return <Checkbox type="checkbox"
+                        key={idx} checked={this.props[type]}
+                        onChange={this.handleChbox.bind(this, type)}>{humanize(type)}</Checkbox>
+                    })}
+                    <ReactSimpleRange
+                      style={{padding: '4px 10px'}}
+                      max={10}
+                      min={0}
+                      label
+                      name='wheelchairImport'
+                      onChange={this.handleSlider.bind(this, 'wheelchairImport')}
+                      value={this.props.wheelchairImport}
+                    />
+                    <Checkbox inline type="checkbox"
+                      checked={this.props.wheelchairImportRequired}
+                      onChange={this.handleChbox.bind(this, 'wheelchairImportRequired')}>Required?</Checkbox>
+                  </ListGroupItem>
+                </ListGroup>
+              </Panel>
+            </Col>
+          </Row>
+          <Row>
             <div
-              style={{height: '20px', backgroundColor: 'white'}}>
-            <Button onClick={this.filterListings}>filter listings</Button>
+              className={dataviews.listDiv}
+              style={{borderTop: '1px #eee solid'}}>
+              <div
+                style={{height: '20px', backgroundColor: 'white'}}>
+                <Button onClick={this.filterListings}>filter listings</Button>
 
-            </div>
-            {/* <div className={dataviews.saveSettings}>
-              <MdBackup
-                style={{alignSelf: 'flex-end', margin: '0px 5px', padding: '0px 0px 12px 0px'}} width="48" fill="hsl(200, 50%, 50%)" height="48"
-              />
-              <div style={{display: 'inline-block', margin: '10px 0px 0px 2px', color: 'hsl(200, 50%, 50%)'}}>
-                <p style={{fontWeight: '500'}}>Save settings</p>
               </div>
-            </div> */}
-            <div
-              style={{height: '20px', backgroundColor: 'white'}}>
-            </div>
+              {/* <div className={dataviews.saveSettings}>
+                <MdBackup
+                style={{alignSelf: 'flex-end', margin: '0px 5px', padding: '0px 0px 12px 0px'}} width="48" fill="hsl(200, 50%, 50%)" height="48"
+                />
+                <div style={{display: 'inline-block', margin: '10px 0px 0px 2px', color: 'hsl(200, 50%, 50%)'}}>
+                <p style={{fontWeight: '500'}}>Save settings</p>
+                </div>
           </div>
-        </Row>
-      </Grid>
-    </div>
+              <div
+                style={{height: '20px', backgroundColor: 'white'}}>
+              </div>
+            </div>
+          </Row>
+        </Grid>*/}
+      </div>
     )
   }
 }

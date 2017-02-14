@@ -39,20 +39,20 @@ export default class ViewAndFilter extends React.Component {
 
           </Tab> */}
           <Tab animation eventKey={2} title='Customize your search'>
-            <Customize 
+            <Customize
               {...this.props}
-              bedrooms={this.props.searchParams.bedroomsRange}
-              rent={this.props.searchParams.rentRange}
-              housing={this.props.searchParams.housing_type}
-              laundry={this.props.searchParams.laundry_types}
-              parking={this.props.searchParams.parking_types}
-              bath={this.props.searchParams.bath_types}
-              privateRoom={this.props.searchParams.private_room_types}
-              cats={this.props.searchParams.cats_types}
-              dog={this.props.searchParams.dog_types}
-              furnished={this.props.searchParams.furnished_types}
-              smoking={this.props.searchParams.smoking_types}
-              wheelchair={this.props.searchParams.wheelchair_types}
+              bedrooms={this.props.searchParams.bedrooms}
+              rent={this.props.searchParams.rent}
+              housing={this.props.searchParams.housing}
+              laundry={this.props.searchParams.laundry}
+              parking={this.props.searchParams.parking}
+              bath={this.props.searchParams.bath}
+              privateRoom={this.props.searchParams.private_room}
+              cats={this.props.searchParams.cats}
+              dog={this.props.searchParams.dog}
+              furnished={this.props.searchParams.furnished}
+              smoking={this.props.searchParams.smoking}
+              wheelchair={this.props.searchParams.wheelchair}
             />
           </Tab>
           <Tab className={dataviews.subheadertab} animation eventKey={3} title='Browse all listings'>

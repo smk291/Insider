@@ -39,11 +39,11 @@ export default class Login extends React.Component {
                 <h1>Log In</h1>
                 <div>
                   <p>Email address:</p>
-                  <FormControl id="email" type="email" placeholder="email" name="email" onChange={this.handleChange} value={this.props.email}/>
+                  <FormControl id="email" type="email" placeholder="email" name="email" onChange={this.handleChange} value={this.props.value}/>
                 </div>
                 <div>
                   <p>Password:</p>
-                  <FormControl id="password" type="password" placeholder="password" name="password" onChange={this.props.handleChange} value={this.props.password}/>
+                  <FormControl id="password" type="password" placeholder="password" name="password" onChange={this.props.handleChange} value={this.props.value}/>
                 </div>
                 <div>
                   {/* <Link to="/">Back to Home</Link> */}

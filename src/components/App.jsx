@@ -38,9 +38,10 @@ export default class App extends Component {
       signUpEmail: '',
       // </editor-fold>
       searchParams: {
-        bedroomsRange: {
+        bedrooms: {
+          data: {},
           options: {
-            minBedrooms: '', 
+            minBedrooms: '',
             maxBedrooms: '',
           },
           prefs: {
@@ -48,9 +49,10 @@ export default class App extends Component {
             required: false,
           }
         },
-        rentRange: {
+        rent: {
+          data: {},
           options: {
-            minRent: '', 
+            minRent: '',
             maxRent: '',
           },
           prefs: {
@@ -58,27 +60,29 @@ export default class App extends Component {
             required: false,
           },
         },
-        'housing_type': {
+        housing: {
+          data: {},
           options: {
-            apartment: true, 
-            condo: true, 
-            house: true, 
-            townhouse: true, 
-            duplex: true, 
-            land: true, 
-            'in-law': true, 
-            cottage: true, 
-            cabin: true, 
+            apartment: true,
+            condo: true,
+            house: true,
+            townhouse: true,
+            duplex: true,
+            land: true,
+            'in-law': true,
+            cottage: true,
+            cabin: true,
           },
           prefs: {
             importance: '',
             required: false,
           },
         },
-        'laundry_types': {
+        laundry: {
+          data: {},
           options: {
-            'laundry on site': true, 
-            'w/d in unit': true, 
+            'laundry on site': true,
+            'w/d in unit': true,
             'laundry in bldg': true,
           },
           prefs: {
@@ -86,7 +90,8 @@ export default class App extends Component {
             required: false,
           },
         },
-        'parking_types': {
+        parking: {
+          data: {},
           options: {
             'off-street parking': true,
             'detached garage': true,
@@ -101,7 +106,8 @@ export default class App extends Component {
             required: false,
           },
         },
-        'bath_types': {
+        bath: {
+          data: {},
           options: {
             'private bath': true,
             'no private bath': true,
@@ -111,7 +117,8 @@ export default class App extends Component {
             required: false,
           },
         },
-        'private_room_types': {
+        private: {
+          data: {},
           options: {
             'private room': true,
             'room not private': true,
@@ -121,7 +128,8 @@ export default class App extends Component {
             required: false,
           },
         },
-        'cat_types': {
+        cat: {
+          data: {},
           options: {
             'cats are OK - purrr': true,
           },
@@ -130,7 +138,8 @@ export default class App extends Component {
             required: false,
           },
         },
-        'dog_types': {
+        dog: {
+          data: {},
           options: {
             'dogs are OK - wooof': true,
           },
@@ -139,7 +148,8 @@ export default class App extends Component {
             required: false,
           },
         },
-        'furnished_types': {
+        furnished: {
+          data: {},
           options: {
             'furnished': true,
           },
@@ -148,7 +158,8 @@ export default class App extends Component {
             required: false,
           },
         },
-        'smoking_types': {
+        smoking: {
+          data: {},
           options: {
             'no smoking': true,
           },
@@ -157,7 +168,8 @@ export default class App extends Component {
             required: false,
           },
         },
-        'wheelchair_types': {
+        wheelchair: {
+          data: {},
           options: {
             'wheelchair accessible': true,
           },
@@ -167,20 +179,6 @@ export default class App extends Component {
           },
         },
       },
-      stats: {
-        bedrooms: {}
-        rent: {}
-        housing: {}
-        laundry: {}
-        parking: {}
-        bath: {}
-        privateRoom: {}
-        cats: {}
-        dog: {}
-        furnished: {}
-        smoking: {}
-        wheelchair: {}
-      }
       // </editor-fold>
       // <editor-fold> State of listings
       listings: [],
@@ -760,8 +758,6 @@ export default class App extends Component {
   fetchAndFormatFavorites() {
     this.convertListings();
   }
-
-  graph
 
   // </editor-fold>
 

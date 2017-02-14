@@ -28,14 +28,20 @@ export default class App extends Component {
     super(props);
     this.state = {
       // <editor-fold> Auth
-      email: '',
-      password: '',
+      auth: {
+        loggedIn: false,
+        login: {
+          email: '',
+          password: '',
+        },
+        signUp: {
+          firstName: '',
+          lastName: '',
+          password: '',
+          email: '',
+        },
+      },
       //For sign up
-      firstName: '',
-      lastName: '',
-      loggedIn: '',
-      signUpPassword: '',
-      signUpEmail: '',
       // </editor-fold>
       searchParams: {
         bedrooms: {
@@ -355,22 +361,24 @@ export default class App extends Component {
     }).then((res) => {
       let loggedIn = res.data
 
-      axios({method: 'get', url: `/listings`}).then((res) => {
-        let listings = res.data;
-        let markers = [];
+      this.setState({auth: loggedIn})
 
-        listings = listings.filter((listing) => {
-          return listing.void !== true;
-        })
-
-        markers = listings.filter((el) => {
-          return el.lat && el.lon;
-        });
-
-        this.setState({listings, markers});
-      }).then(() => {
-        this.setState({loggedIn});
-        this.convertListings();
+      // axios({method: 'get', url: `/listings`}).then((res) => {
+      //   let listings = res.data;
+      //   let markers = [];
+      //
+      //   listings = listings.filter((listing) => {
+      //     return listing.void !== true;
+      //   })
+      //
+      //   markers = listings.filter((el) => {
+      //     return el.lat && el.lon;
+      //   });
+      //
+      //   this.setState({listings, markers});
+      //   this.convertListings();
+      // }).then(() => {
+      //   this.setState({loggedIn});
       }).catch(err => {
         console.log(err);
         // notify.show(err.response.data, 'error', 3000);
@@ -391,50 +399,50 @@ export default class App extends Component {
       }
     }).then((res) => {
       console.log(res);
+      this.changeState();
       // notify.show('Logged Out!', 'success', 3000);
     }).catch(err => {
       console.log(err);
       // notify.show(err.response.data, 'error', 3000);
     });
-    this.changeState();
   }
 
   changeState() {
-    const bool = this.state.loggedIn;
-    if (bool) {
-      this.setState({loggedIn: false});
+    if (this.state.auth.loggedIn) {
+      this.setState({auth: {loggedIn: false}});
     } else {
-      this.setState({loggedIn: true});
+      this.setState({auth: {loggedIn: true}});
     }
   }
 
   signUp(e) {
     e.preventDefault();
+    const signUpState = this.state.auth.signUp;
 
     axios({
       method: 'post',
       url: '/users',
       data: {
-        lastName: this.state.lastName,
-        firstName: this.state.firstName,
-        email: this.state.signUpEmail,
-        password: this.state.signUpPassword
+        lastName: this.state.auth.signUp.lastName,
+        firstName: this.state.auth.signUp.firstName,
+        email: this.state.auth.signUp.email,
+        password: this.state.auth.signUp.password,
       }
     }).then((res) => {
-      this.setState({firstName: '', lastName: ''});
+      this.setState({auth: {signUp: {firstName: '', lastName: ''}}});
 
       axios({
         method: 'post',
         url: '/token',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         data: {
-          email: this.state.signUpEmail,
-          password: this.state.signUpPassword
-        }
+          email: this.state.auth.signUp.email,
+          password: this.state.auth.signUp.password,
+        },
       }).then((res) => {
-        this.setState({signUpEmail: '', signUpPassword: ''});
+        this.setState({auth: {signUp: {email: '', password: ''}}});
         this.changeState();
       }).catch((err) => {
         console.log(err);
@@ -453,16 +461,16 @@ export default class App extends Component {
       method: 'post',
       url: '/token',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       data: {
-        email: this.state.email,
-        password: this.state.password
+        email: this.state.auth.login.email,
+        password: this.state.auth.login.password,
       }
     }).then((res) => {
       this.changeState();
       this.convertListings();
-      this.setState({email: '', password: ''});
+      this.setState({auth: login: {email: '', password: ''}});
     }).catch((err) => {
       console.log(err);
       // notify.show(err.response.data, 'error', 3000);

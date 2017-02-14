@@ -17,35 +17,15 @@ export default class Header extends React.Component {
   // <editor-fold> constructor/props and functions
   constructor(props){
     super(props);
-    this.open = this.open.bind(this);
-    this.close = this.close.bind(this);
-    this.logOut = this.logOut.bind(this);
-    this.showTips = this.showTips.bind(this);
-    // this.showToolTips = this.showToolTips.bind(this);
+    this.processAuth = this.processAuth.bind(this);
   }
 
-  open(e) {
-    this.props.open(e);
-  }
-
-  close(e) {
-    this.props.close(e);
-  }
-
-  logOut(e) {
-    this.props.logOut(e);
-  }
-
-  showTips(e) {
-    this.props.showTips(e)
+  processAuth(e) {
+    this.props.processAuth(e);
   }
   // </editor-fold>
 
   render() {
-    const tooltip = (
-      <Tooltip id="tooltip"><strong>Click here to see helpful tips as you navigate Insider!</strong></Tooltip>
-  );
-
     return (
       <header>
         <Navbar className={header.navbar} fluid style={{height: '50px', borderRadius: '0px'}}>
@@ -57,7 +37,7 @@ export default class Header extends React.Component {
           </Nav>): ''}
             <Nav pullRight>
               {!this.props.loggedIn ? (
-                <Link className={header.navButton} activeClassName={header.active} to='/login'>Sign Up / Log in</Link>) : (<Link className={header.navButton} to='/main' onClick={this.logOut}>Log out</Link>)}
+                <Link className={header.navButton} activeClassName={header.active} to='/login'>Sign Up / Log in</Link>) : (<Link className={header.navButton} to='/main' onClick={this.processAuth}>Log out</Link>)}
               {/* <Link className={header.navButton} onClick={this.showTips} to='/main'>Show helpful tips? </Link> */}
               {/* Show help tooltips */}
           </Nav>

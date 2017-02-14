@@ -14,6 +14,8 @@ export default class Login extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.logIn = this.logIn.bind(this);
     this.signUp = this.signUp.bind(this);
+    this.authSwitch = this.authSwitch.bind(this);
+    this.processAuth = this.processAuth.bind(this);
   }
 
   logIn(e) {
@@ -28,54 +30,59 @@ export default class Login extends React.Component {
     this.props.signUp(e);
   }
 
+  authSwitch(e) {
+    this.props.authSwitch();
+  }
+
+  processAuth(e) {
+    this.props.processAuth(e);
+  }
+
   render() {
     return (
       <div>
         <Grid fluid>
           <Row className="show-grid">
+            <a href="#" onClick={this.authSwitch}>Need to sign up?</a>
             <Col md={3} sm={2}/>
             <Col md={3} sm={4}>
-              <form>
-                <h1>Log In</h1>
-                <div>
-                  <p>Email address:</p>
-                  <FormControl id="email" type="email" placeholder="email" name="email" onChange={this.handleChange} value={this.props.value}/>
-                </div>
-                <div>
-                  <p>Password:</p>
-                  <FormControl id="password" type="password" placeholder="password" name="password" onChange={this.props.handleChange} value={this.props.value}/>
-                </div>
-                <div>
-                  {/* <Link to="/">Back to Home</Link> */}
-                  <Button className={login.formButton} bsStyle="primary" placeholder="Submit" onClick={this.logIn} bsStyle='primary' style={{position: 'relative', zIndex: '10000', width: '100px'}}>Sign in</Button>
-                </div>
-              </form>
-            </Col>
-
-            <Col md={3} sm={4}>
-              <form>
-                <h1>Sign Up</h1>
-                <div>
-                  <p>First name:</p>
-                  <FormControl id="firstName" type="firstName" placeholder="firstName" name="firstName" onChange={this.handleChange} value={this.props.value}/>
-                </div>
-                <div>
-                  <p>Last name:</p>
-                  <FormControl id="lastName" type="lastName" placeholder="lastName" name="lastName" onChange={this.handleChange} value={this.props.value}/>
-                </div>
-                <div>
-                  <p>Email address:</p>
-                  <FormControl id="email" type="email" placeholder="email" name="signUpEmail" onChange={this.handleChange} value={this.props.value}/>
-                </div>
-                <div>
-                  <p>Password:</p>
-                  <FormControl id="password" type="password" placeholder="password" name="signUpPassword" onChange={this.props.handleChange} value={this.props.value}/>
-                </div>
-                <div>
-                  {/* <Link to="/">Back to Home</Link> */}
-                  <Button className={login.formButton} bsStyle="primary" bsStyle='primary' style={{position: 'relative', zIndex: '10000', width: '100px'}} placeholder="Submit" onClick={this.signUp}>Sign in</Button>
-                </div>
-              </form>
+            {!this.props.signingUp?
+                <form>
+                  <h1>Log In</h1>
+                  <div>
+                    <p>Email address:</p>
+                    <FormControl id="email" type="email" placeholder="email" name="email" onClick={this.handleChange} value={this.props.value}/>
+                  </div>
+                  <div>
+                    <p>Password:</p>
+                    <FormControl id="password" type="password" placeholder="password" name="password" onClick={this.handleChange} value={this.props.value}/>
+                  </div>
+                  <div>
+                  </div>
+                </form>:
+                <form>
+                  <h1>Sign Up</h1>
+                  <div>
+                    <p>First name:</p>
+                    <FormControl id="firstName" placeholder="firstName" name="signUpFirstName" onClick={this.handleChange} value={this.props.value}/>
+                  </div>
+                  <div>
+                    <p>Last name:</p>
+                    <FormControl id="lastName" placeholder="lastName" name="signUpLastName" onClick={this.handleChange} value={this.props.value}/>
+                  </div>
+                  <div>
+                    <p>Email address:</p>
+                    <FormControl id="email" placeholder="email" name="signUpEmail" onClick={this.handleChange} value={this.props.value}/>
+                  </div>
+                  <div>
+                    <p>Password:</p>
+                    <FormControl id="password" type="password" name="signUpPassword" onClick={this.handleChange} value={this.props.value}/>
+                  </div>
+                  <div>
+                    {/* <Link to="/">Back to Home</Link> */}
+                  </div>
+                </form>}
+              <Button className={login.formButton} bsStyle="primary" bsStyle='primary' style={{position: 'relative', zIndex: '10000', width: '100px'}} placeholder="Submit" onClick={this.processAuth}>Sign in</Button>
             </Col>
             <Col md={3} sm={2}/>
           </Row>

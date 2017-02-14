@@ -28,20 +28,12 @@ export default class App extends Component {
     super(props);
     this.state = {
       // <editor-fold> Auth
-      auth: {
-        loggedIn: false,
-        login: {
-          email: '',
-          password: '',
-        },
-        signUp: {
-          firstName: '',
-          lastName: '',
-          password: '',
-          email: '',
-        },
-      },
-      //For sign up
+      loggedIn: false,
+      signingUp: false,
+      email: '',
+      password: '',
+      firstName: '',
+      lastName: '',
       // </editor-fold>
       searchParams: {
         bedrooms: {
@@ -222,10 +214,9 @@ export default class App extends Component {
     this.showTips = this.showTips.bind(this);
     //</editor-fold>
     //<editor-fold> Auth
-    this.logOut = this.logOut.bind(this);
-    this.logIn = this.logIn.bind(this);
-    this.signUp = this.signUp.bind(this);
     this.getLoggedIn = this.getLoggedIn.bind(this)
+    this.authSwitch = this.authSwitch.bind(this);
+    this.processAuth = this.processAuth.bind(this);
     //</editor-fold>
     //<editor-fold> HTTP
     this.scrapeList = this.scrapeList.bind(this);
@@ -359,7 +350,7 @@ export default class App extends Component {
         'Content-Type': 'application/json'
       }
     }).then((res) => {
-      let loggedIn = res.data
+      let loggedIn = res.data;
 
       this.setState({auth: loggedIn})
 
@@ -379,58 +370,34 @@ export default class App extends Component {
       //   this.convertListings();
       // }).then(() => {
       //   this.setState({loggedIn});
-      }).catch(err => {
-        console.log(err);
+      // }).catch(err => {
+      //   console.log(err);
         // notify.show(err.response.data, 'error', 3000);
-      });
+      // });
     }).catch((err) => {
       // console.log(err);
     })
   }
 
-  logOut(e) {
-    e.preventDefault();
+  changeState(standIn) {
+    let change = {};
+    change[standIn] = !this.state[standIn];
 
-    axios({
-      method: 'delete',
-      url: '/token',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }).then((res) => {
-      console.log(res);
-      this.changeState();
-      // notify.show('Logged Out!', 'success', 3000);
-    }).catch(err => {
-      console.log(err);
-      // notify.show(err.response.data, 'error', 3000);
-    });
-  }
-
-  changeState() {
-    if (this.state.auth.loggedIn) {
-      this.setState({auth: {loggedIn: false}});
+    if (this.state[standIn]) {
+      this.setState(change);
     } else {
-      this.setState({auth: {loggedIn: true}});
+      this.setState(change);
     }
   }
 
-  signUp(e) {
+  authSwitch() {
+    this.changeState('signingUp');
+  }
+
+  processAuth(e) {
     e.preventDefault();
-    const signUpState = this.state.auth.signUp;
 
-    axios({
-      method: 'post',
-      url: '/users',
-      data: {
-        lastName: this.state.auth.signUp.lastName,
-        firstName: this.state.auth.signUp.firstName,
-        email: this.state.auth.signUp.email,
-        password: this.state.auth.signUp.password,
-      }
-    }).then((res) => {
-      this.setState({auth: {signUp: {firstName: '', lastName: ''}}});
-
+    const logIn = () => {
       axios({
         method: 'post',
         url: '/token',
@@ -438,43 +405,60 @@ export default class App extends Component {
           'Content-Type': 'application/json',
         },
         data: {
-          email: this.state.auth.signUp.email,
-          password: this.state.auth.signUp.password,
+          email: this.state.email,
+          password: this.state.password,
         },
       }).then((res) => {
-        this.setState({auth: {signUp: {email: '', password: ''}}});
-        this.changeState();
+        this.setState({email: '', password: ''});
+        this.changeState('loggedIn');
+        this.convertListings();
       }).catch((err) => {
-        console.log(err);
+        // notify.show(err.response.data, 'error', 3000);
       });
-    }).catch((err) => {
-      console.log(err);
-    });
-  }
+    }
 
-  logIn(e) {
-    e.preventDefault();
+    const signUp = () => {
+      axios({
+        method: 'post',
+        url: '/users',
+        data: {
+          email: this.state.email,
+          password: this.state.password,
+          firstName: this.state.firstName,
+          lastName: this.state.lastName,
+        }
+      }).then((res) => {
+        logIn(email, password)
+      }).catch((err) => {
+        // Well..?
+      });
+    }
 
-    let userFavoritesRaw = [];
+    const logOut = () => {
+      axios({
+        method: 'delete',
+        url: '/token',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then((res) => {
+        this.changeState('loggedIn');
+        // notify.show('Logged Out!', 'success', 3000);
+      }).catch(err => {
+        // notify.show(err.response.data, 'error', 3000);
+      });
+    }
 
-    axios({
-      method: 'post',
-      url: '/token',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      data: {
-        email: this.state.auth.login.email,
-        password: this.state.auth.login.password,
-      }
-    }).then((res) => {
-      this.changeState();
-      this.convertListings();
-      this.setState({auth: login: {email: '', password: ''}});
-    }).catch((err) => {
-      console.log(err);
-      // notify.show(err.response.data, 'error', 3000);
-    });
+    if (this.state.loggedIn){
+      logOut();
+    } else if (this.state.signingUp) {
+      signUp();
+      logIn();
+      this.getListings();
+    } else {
+      logIn();
+      this.getListings();
+    }
   }
   //</editor-fold>
 
@@ -501,6 +485,12 @@ export default class App extends Component {
     var change = {};
     change[e.target.name] = e.target.value;
     this.setState(change);
+  }
+
+  handleChangeLogin(e) {
+    var change = {};
+    change[e.target.name] = e.target.value;
+    this.setState({auth: {login: change}});
   }
 
   changeComparisonView(element) {
@@ -796,15 +786,14 @@ export default class App extends Component {
                 {!this.state.loggedIn ?
                   <Login
                     handleChange={this.handleChange}
-                    logIn={this.logIn}
-                    signUp={this.signUp}
+                    processAuth={this.processAuth}
+                    authSwitch={this.authSwitch}
+                    loggedIn={this.state.loggedIn}
+                    signingUp={this.state.signingUp}
                     email={this.state.email}
                     password={this.state.password}
                     firstName={this.state.firstName}
                     lastName={this.state.lastName}
-                    loggedIn={this.state.loggedIn}
-                    signUpPassword={this.state.signUpPassword}
-                    signUpEmail={this.state.signUpEmail}
                   />:
                   <Routing
                     {...this.props}

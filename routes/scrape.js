@@ -59,6 +59,7 @@ router.post('/scrape_check_for_404/', authorize, (req, res) => {
       url = row.url;
 
       request(`http://seattle.craigslist.org${url}`, function (error, response, body) {
+        console.log(response);
         console.log(`response.body.indexOf('This posting has expired.') !== -1: ${response.body.indexOf(`This posting has expired.`) !== -1}`);
         console.log(`response.body.indexOf('There is nothing here') !== -1: ${response.body.indexOf(`There is nothing here`) !== -1}`);
         console.log(`response.body.indexOf('This posting has been deleted by its author') !== -1: ${response.body.indexOf(`This posting has been deleted by its author`) !== -1}`);

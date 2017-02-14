@@ -8,20 +8,16 @@ exports.up = (knex) => {
     table.string('post_date').notNullable().defaultTo('');
     table.string('title').notNullable().defaultTo('No title provided');
     table.jsonb('photos');
-    table.boolean('emptypage');
     table.string('bedrooms');
     table.string('sqft');
     table.text('descr', 'utf-8');
-    table.text('notes', 'utf-8');
     table.integer('price');
     table.string('neighborhood').notNullable().defaultTo('');
-    table.string('location').notNullable().defaultTo('');
     table.string('street_address').defaultTo('');
     table.string('state').defaultTo('');
     table.string('zip').defaultTo('');
     table.string('lat').defaultTo('');
     table.string('lon').defaultTo('');
-    table.string('cross_streets').defaultTo('');
     table.boolean('void');
     table.boolean('checked');
     table.enu('housing', ['apartment', 'condo', 'house', 'townhouse', 'duplex', 'land', 'in-law', 'cottage/cabin']);
@@ -35,7 +31,6 @@ exports.up = (knex) => {
     table.enu('smoking', ['no smoking', null]).defaultTo(null);
     table.enu('wheelchair', ['wheelchair accessible', null]).defaultTo(null);
     table.enu('sub_or_apt', ['sub', 'apt']);
-    table.boolean('void'); // NEW
     table.timestamp('last_checked').defaultTo(knex.fn.now());
     table.timestamps(true, true);
   });

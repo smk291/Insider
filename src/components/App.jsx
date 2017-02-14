@@ -194,46 +194,48 @@ export default class App extends Component {
       strictMode: false,
       maxScore: [],
     }
-    //<editor-fold> Unused
-    // this.showTips = this.showTips.bind(this);
-    //</editor-fold>
+
+    this.changeState = this.changeState.bind(this);
     this.getLoggedIn = this.getLoggedIn.bind(this)
     this.authSwitch = this.authSwitch.bind(this);
     this.processAuth = this.processAuth.bind(this);
+
     this.scrapeList = this.scrapeList.bind(this);
     this.scrapeRows = this.scrapeRows.bind(this);
     this.scrapeNull = this.scrapeNull.bind(this);
-    this.getListings = this.getListings.bind(this);
     this.checkFor404 = this.checkFor404.bind(this)
-    this.fetchAndFormatFavorites = this.fetchAndFormatFavorites.bind(this)
-    this.pageChange = this.pageChange.bind(this)
-    this.saveToFavorites = this.saveToFavorites.bind(this)
-    this.saveToFavoritesFiltered = this.saveToFavoritesFiltered.bind(this)
-    this.changeView = this.changeView.bind(this);
-    this.changeViewFiltered = this.changeViewFiltered.bind(this);
-    this.isInFavorites = this.isInFavorites.bind(this)
-    this.filterListings = this.filterListings.bind(this)
-    this.convertListings = this.convertListings.bind(this);
-    this.formatListing = this.formatListing.bind(this);
-    this.createFavoritesForDisplay = this.createFavoritesForDisplay.bind(this)
+
     this.handleChange = this.handleChange.bind(this);
-    this.changeState = this.changeState.bind(this);
     this.handleCheckbox = this.handleCheckbox.bind(this);
     this.handleChbox = this.handleChbox.bind(this);
     this.handleSlider = this.handleSlider.bind(this);
+
+    this.getListings = this.getListings.bind(this);
+    this.formatListing = this.formatListing.bind(this);
+    this.convertListings = this.convertListings.bind(this);
     this.changeComparisonView = this.changeComparisonView.bind(this)
+    this.filterListings = this.filterListings.bind(this)
+
+    this.createFavoritesForDisplay = this.createFavoritesForDisplay.bind(this)
+    this.saveToFavorites = this.saveToFavorites.bind(this)
+    this.saveToFavoritesFiltered = this.saveToFavoritesFiltered.bind(this)
+    this.isInFavorites = this.isInFavorites.bind(this)
+
+    this.pageChange = this.pageChange.bind(this)
+    this.changeView = this.changeView.bind(this);
+    this.changeViewFiltered = this.changeViewFiltered.bind(this);
   }
 
-  // showTips(e) {
-  //   e.preventDefault();
-  //
-  //   const bool = this.state.activeTips;
-  //   if (bool) {
-  //     this.setState({loggedIn: true});
-  //   } else {
-  //     this.setState({loggedIn: false});
-  //   }
-  // }
+  changeState(standIn) {
+    let change = {};
+    change[standIn] = !this.state[standIn];
+
+    if (this.state[standIn]) {
+      this.setState(change);
+    } else {
+      this.setState(change);
+    }
+  }
 
   getLoggedIn() {
     axios({
@@ -247,40 +249,35 @@ export default class App extends Component {
 
       this.setState({loggedIn})
 
-      axios({method: 'get', url: `/listings`}).then((res) => {
-        let listings = res.data;
-        let markers = [];
+      /*
+      If logged in, get listings
+      Then format listings
+      Then
+      */
 
-        listings = listings.filter((listing) => {
-          return listing.void !== true;
-        })
-
-        markers = listings.filter((el) => {
-          return el.lat && el.lon;
-        });
-
-        this.setState({listings, markers});
-        this.convertListings();
-      }).then(() => {
+      // axios({method: 'get', url: `/listings`}).then((res) => {
+      //   let listings = res.data;
+      //   let markers = [];
+      //
+      //   listings = listings.filter((listing) => {
+      //     return listing.void !== true;
+      //   })
+      //
+      //   markers = listings.filter((el) => {
+      //     return el.lat && el.lon;
+      //   });
+      //
+      //   this.setState({listings, markers});
+      //   this.convertListings();
+      // }).then(() => {
         this.setState({loggedIn});
-      }).catch(err => {
-        console.log(err);
+      // }).catch(err => {
+        // console.log(err);
         notify.show(err.response.data, 'error', 3000);
-      });
+      // });
     }).catch((err) => {
       // console.log(err);
     })
-  }
-
-  changeState(standIn) {
-    let change = {};
-    change[standIn] = !this.state[standIn];
-
-    if (this.state[standIn]) {
-      this.setState(change);
-    } else {
-      this.setState(change);
-    }
   }
 
   authSwitch() {
@@ -304,6 +301,7 @@ export default class App extends Component {
       }).then((res) => {
         this.setState({email: '', password: ''});
         this.changeState('loggedIn');
+        this.getListings()
         this.convertListings();
       }).catch((err) => {
         // notify.show(err.response.data, 'error', 3000);
@@ -321,7 +319,7 @@ export default class App extends Component {
           lastName: this.state.lastName,
         }
       }).then((res) => {
-        logIn(email, password)
+        logIn()
       }).catch((err) => {
         // Well..?
       });
@@ -336,6 +334,7 @@ export default class App extends Component {
         }
       }).then((res) => {
         this.changeState('loggedIn');
+        this.setState({listings: {}});
         // notify.show('Logged Out!', 'success', 3000);
       }).catch(err => {
         // notify.show(err.response.data, 'error', 3000);
@@ -348,9 +347,13 @@ export default class App extends Component {
       signUp();
       logIn();
       this.getListings();
+      // this.convertListings();
+      // this.createFavoritesForDisplay();
     } else {
       logIn();
       this.getListings();
+      // this.convertListings();
+      // this.createFavoritesForDisplay();
     }
   }
 
@@ -447,12 +450,13 @@ export default class App extends Component {
 
   getListings() {
     axios({method: 'get', url: `/listings`}).then((res) => {
+      console.log(listings);
       let listings = res.data;
       let markers = [];
 
-      listings = listings.filter((listing) => {
-        return listing.void !== true;
-      })
+      listings = listings
+        .filter((listing) => listing.void !== true)
+        .map((listing) => this.formatListing(listing));
 
       console.log(listings);
 
@@ -461,6 +465,7 @@ export default class App extends Component {
       });
 
       this.setState({listings, markers});
+      this.convertListings();
     }).then(() => {}).catch((err) => {
       // console.log(err);
     })
@@ -508,8 +513,6 @@ export default class App extends Component {
     }).then((res) => {
       let userFavoritesRaw = res.data;
       let listings = this.state.listings;
-
-      // let isInFavorites = this.isInFavorites.bind(this);
 
       let listingsToDisplay = [];
 
@@ -682,9 +685,12 @@ export default class App extends Component {
 
   createFavoritesForDisplay() {
     let ids = [],
-    userFavoritesForDisplay = [],
-    ld = this.state.listingsToDisplay,
-    rawFavorites = this.state.userFavoritesRaw;
+        userFavoritesForDisplay = [],
+        ld = this.state.listingsToDisplay,
+        rawFavorites = this.state.userFavoritesRaw;
+
+    console.log('hi');
+    console.log(rawFavorites);
 
     ids = rawFavorites.map((el, idx) => {
       return el.listingsId;
@@ -708,10 +714,6 @@ export default class App extends Component {
     this.setState(change1);
   }
 
-  fetchAndFormatFavorites() {
-    this.convertListings();
-  }
-
   componentWillMount() {
     this.getLoggedIn();
   }
@@ -727,9 +729,7 @@ export default class App extends Component {
               minWidth: '1000px'
             }}>
               <Col>
-                <Header style={{
-                  height: '50px'
-                }} {...this.props} {...this.state} {...this}/>
+                <Header style={{height: '50px'}} loggedIn={this.state.loggedIn} processAuth={this.processAuth}/>
               </Col>
             </Row>
             <Row style={{
@@ -751,7 +751,6 @@ export default class App extends Component {
                   <Routing
                     {...this.props}
                     {...this.state}
-                    {...this}
                   />}
               </Col>
             </Row>

@@ -47,7 +47,7 @@
   color: #bbb
 }
 
-customSort {
+.customSort {
   -webkit-box-shadow: 0 3px 8px rgba(0, 0, 0, .25);
   -moz-box-shadow: 0 3px 8px rgba(0, 0, 0, .25);
   box-shadow: 0 3px 8px rgba(0, 0, 0, .25);
@@ -71,4 +71,10 @@ customSort {
 
 .notFavorited {
 
+}
+
+.scratch {
+  border: 1px solid black;
+  margin: 10px;
+  width: 400px;
 }

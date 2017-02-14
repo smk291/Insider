@@ -2,6 +2,7 @@
 import React                                from 'react'
 import {Tooltip, Tab, Tabs, Grid, Col, Row} from 'react-bootstrap'
 import dataviews                            from './dataviews'
+import Customize from './customize/Customize'
 import ListingsView                         from './viewlistings/ListingsView'
 import ListingsViewFiltered                 from './viewlistings/ListingsViewFiltered'
 import FilterData                           from './filterdata/FilterData.jsx'
@@ -30,28 +31,36 @@ export default class ViewAndFilter extends React.Component {
   render() {
     return (
       <div className       = {dataviews.tabs}>
-        <Tabs
-          animation
-          defaultActiveKey = {3}
-          id               = "placeholder1"
-        >
+        <Tabs animation defaultActiveKey={3} id="placeholder1">
           {/* <Tab className={dataviews.subheadertab} animation eventKey={1} title='Housing data at a glance'>
             <DataSummary {...this.props}/>
           </Tab> */}
           {/* <Tab className={dataviews.subheadertab} animation eventKey={2} title='Filter data'>
 
           </Tab> */}
-          <Tab
-            className = {dataviews.subheadertab}
-            animation
-            eventKey  = {3}
-            title     = 'Browse all listings'
-          >
+          <Tab animation eventKey={2} title='Customize your search'>
+            <Customize
+              {...this.props}
+              bedrooms={this.props.searchParams.bedrooms}
+              rent={this.props.searchParams.rent}
+              housing={this.props.searchParams.housing}
+              laundry={this.props.searchParams.laundry}
+              parking={this.props.searchParams.parking}
+              bath={this.props.searchParams.bath}
+              privateRoom={this.props.searchParams.private_room}
+              cats={this.props.searchParams.cats}
+              dog={this.props.searchParams.dog}
+              furnished={this.props.searchParams.furnished}
+              smoking={this.props.searchParams.smoking}
+              wheelchair={this.props.searchParams.wheelchair}
+            />
+          </Tab>
+          <Tab className={dataviews.subheadertab} animation eventKey={3} title='Browse all listings'>
             <Grid fluid>
               <Row>
-                <Col md={2}>
+                {/*<Col md={2}>
                   <FilterData {...this.props}/>
-                </Col>
+                </Col>*/}
                 <Col md={10}>
                   <ListingsView
                     changeView        = {this.props.changeView}

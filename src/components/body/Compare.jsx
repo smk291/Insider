@@ -13,9 +13,9 @@ import axios from 'axios'
 export default class Compare extends React.Component {
   constructor(props) {
     super(props);
-    this.scrapeList = this.scrapeList.bind(this);
-    this.scrapeRows = this.scrapeRows.bind(this);
-    this.scrapeNull = this.scrapeNull.bind(this);
+    this.scrapeList = this.scrapeList.bind(this)
+    this.scrapeRows = this.scrapeRows.bind(this)
+    this.scrapeNull = this.scrapeNull.bind(this)
     this.filterListings = this.filterListings.bind(this)
   }
 
@@ -51,7 +51,7 @@ export default class Compare extends React.Component {
         <Grid fluid style={{minWidth: '1000px'}}>
           <Row>
             <Col>
-            {/* Header */}
+              {/* Header */}
             </Col>
           </Row>
           <Row>

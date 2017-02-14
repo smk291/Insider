@@ -29,7 +29,6 @@ export default class MapRender extends React.Component {
         'in-law': <MdMoodBad />,
         'cottage': <MdNaturePeople />,
         'cabin': <MdNaturePeople />,
-
       }
     }
   }
@@ -83,7 +82,7 @@ export default class MapRender extends React.Component {
 
     const CityMap = withGoogleMap(props => (
       <GoogleMap
-        ref={props.onMapLoad}
+        // ref={props.onMapLoad}
         defaultZoom={13}
         center={{ lat: 47.6062, lng: -122.3321 }}
       >
@@ -93,23 +92,23 @@ export default class MapRender extends React.Component {
           gridSize={30}
         >
           {this.state.markers.map((el, idx) => (<Marker
-              key={idx}
-              position = {{lat: Number(el.lat), lng: Number(el.lon)}}
-              onClick={() => this.handleMarkerClick(el)}
-              infoContent = {<DisplayedAd
-                displayAd={this.props.displayAd}
-                saveToFavorites={this.props.saveToFavorites}
-              />}
-            >
+            key={idx}
+            position = {{lat: Number(el.lat), lng: Number(el.lon)}}
+            onClick={() => this.handleMarkerClick(el)}
+            infoContent = {<DisplayedAd
+              displayAd={this.props.displayAd}
+              saveToFavorites={this.props.saveToFavorites}
+                           />}
+                                                >
             {el.showInfo && (
               <InfoWindow onCloseClick={() => this.handleMarkerClose(el)}>
                 <div>{<DisplayedAd
                   displayAd={el}
                   saveToFavorites={this.props.saveToFavorites}
-                />}</div>
+                      />}</div>
               </InfoWindow>
             )}
-            </Marker>
+          </Marker>
           ))}
         </MarkerClusterer>
       </GoogleMap>
@@ -126,7 +125,7 @@ export default class MapRender extends React.Component {
         lat={this.props.lat}
         lng={this.props.lng}
         markers={this.state.markers}
-        onMapLoad={this.props.onMapLoad}
+        // onMapLoad={this.props.onMapLoad}
         onMarkerClick={this.handleMarkerClick}
         onMarkerClose={this.handleMarkerClose}
       />

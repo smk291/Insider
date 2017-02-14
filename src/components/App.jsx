@@ -11,8 +11,9 @@ import {
   Tooltip,
   Modal
 } from 'react-bootstrap';
-import Footer from './footer/Footer';
-import Routing from './body/Routing';
+// import Footer from './footer/Footer'
+import Routing from './body/Routing'
+import Login from './body/auth/Login'
 import 'bootstrap/less/bootstrap.less'
 import axios from 'axios';
 import Header from './header/Header';
@@ -20,435 +21,222 @@ import globalCSS from '../../globalCSS.css'
 import request from 'request'
 import titleize from 'underscore.string/titleize'
 import humanize from 'underscore.string/humanize'
-
 //</editor-fold>
 
 export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // <editor-fold> Auth
+      loggedIn: false,
+      signingUp: false,
       email: '',
       password: '',
-      //For sign up
       firstName: '',
       lastName: '',
-      loggedIn: '',
-      signUpPassword: '',
-      signUpEmail: '',
-      // </editor-fold>
-      // <editor-fold> State for determining boolean preferences
-      minRent: '',
-      maxRent: '',
-      minBedrooms: '',
-      maxBedrooms: '',
-      housing_types: [
-        'apartment',
-        'condo',
-        'house',
-        'townhouse',
-        'duplex',
-        'land',
-        'in-law',
-        'cottage',
-        'cabin'
-      ],
-      apartment: true,
-      condo: true,
-      house: true,
-      townhouse: true,
-      duplex: true,
-      land: true,
-      'in-law': true,
-      cottage: true,
-      cabin: true,
-      laundry_types: [
-        'laundry on site', 'w/d in unit', 'laundry in bldg'
-      ],
-      'laundry on site': true,
-      'w/d in unit': true,
-      'laundry in bldg': true,
-      parking_types: [
-        'off-street parking',
-        'detached garage',
-        'attached garage',
-        'valet parking',
-        'street parking',
-        'carport',
-        'no parking'
-      ],
-      'off-street parking': true,
-      'detached garage': true,
-      'attached garage': true,
-      'valet parking': true,
-      'street parking': true,
-      'carport': true,
-      'no parking': true,
-      'bath_types': [
-        'private bath', 'no private bath'
-      ],
-      'private bath': true,
-      'no private bath': true,
-      'private_room_types': [
-        'private room', 'room not private'
-      ],
-      'private room': true,
-      'room not private': false,
-      'cat_types': ['cats are OK - purrr'],
-      'cats are OK - purrr': true,
-      'dog_types': ['dogs are OK - wooof'],
-      'dogs are OK - wooof': true,
-      'furnished_types': ['furnished'],
-      'furnished': true,
-      'smoking_types': ['no smoking'],
-      'no smoking': true,
-      'wheelchair_types': ['wheelchair accessible'],
-      'wheelchair accessible': true,
-      // </editor-fold>
-      // <editor-fold> State for weighting
-      bedroomsImport: 0,
-      rentImport: 0,
-      housingImport: 0,
-      laundryImport: 0,
-      parkingImport: 0,
-      bathImport: 0,
-      roomImport: 0,
-      catImport: 0,
-      dogImport: 0,
-      furnishedImport: 0,
-      smokingImport: 0,
-      wheelchairImport: 0,
-      // </editor-fold>
-      // <editor-fold> State for removing null values if user specifies strict mode
-      bedroomsImportRequired: false,
-      rentImportRequired: false,
-      housingImportRequired: false,
-      laundryImportRequired: false,
-      parkingImportRequired: false,
-      bathImportRequired: false,
-      roomImportRequired: false,
-      catImportRequired: false,
-      dogImportRequired: false,
-      furnishedImportRequired: false,
-      smokingImportRequired: false,
-      wheelchairImportRequired: false,
-      // </editor-fold>
-      // <editor-fold> unnecessarily stored data
-      rentAvg: '',
-      rent0brAvg: '',
-      rent1brAvg: '',
-      rent2brAvg: '',
-      rent3brAvg: '',
-      rent4brAvg: '',
-      strictMode: false,
-      maxScore: [],
-      // </editor-fold>
-      // <editor-fold> State of listings
+      searchParams: {
+        bedrooms: {
+          data: {},
+          options: {
+            minBedrooms: '',
+            maxBedrooms: '',
+          },
+          prefs: {
+            importance: '',
+            required: false,
+          }
+        },
+        rent: {
+          data: {},
+          options: {
+            minRent: '',
+            maxRent: '',
+          },
+          prefs: {
+            importance: '',
+            required: false,
+          },
+        },
+        housing: {
+          data: {},
+          options: {
+            apartment: true,
+            condo: true,
+            house: true,
+            townhouse: true,
+            duplex: true,
+            land: true,
+            'in-law': true,
+            cottage: true,
+            cabin: true,
+          },
+          prefs: {
+            importance: '',
+            required: false,
+          },
+        },
+        laundry: {
+          data: {},
+          options: {
+            'laundry on site': true,
+            'w/d in unit': true,
+            'laundry in bldg': true,
+          },
+          prefs: {
+            importance: '',
+            required: false,
+          },
+        },
+        parking: {
+          data: {},
+          options: {
+            'off-street parking': true,
+            'detached garage': true,
+            'attached garage': true,
+            'valet parking': true,
+            'street parking': true,
+            'carport': true,
+            'no parking': true,
+          },
+          prefs: {
+            importance: '',
+            required: false,
+          },
+        },
+        bath: {
+          data: {},
+          options: {
+            'private bath': true,
+            'no private bath': true,
+          },
+          prefs: {
+            importance: '',
+            required: false,
+          },
+        },
+        private: {
+          data: {},
+          options: {
+            'private room': true,
+            'room not private': true,
+          },
+          prefs: {
+            importance: '',
+            required: false,
+          },
+        },
+        cat: {
+          data: {},
+          options: {
+            'cats are OK - purrr': true,
+          },
+          prefs: {
+            importance: '',
+            required: false,
+          },
+        },
+        dog: {
+          data: {},
+          options: {
+            'dogs are OK - wooof': true,
+          },
+          prefs: {
+            importance: '',
+            required: false,
+          },
+        },
+        furnished: {
+          data: {},
+          options: {
+            'furnished': true,
+          },
+          prefs: {
+            importance: '',
+            required: false,
+          },
+        },
+        smoking: {
+          data: {},
+          options: {
+            'no smoking': true,
+          },
+          prefs: {
+            importance: '',
+            required: false,
+          },
+        },
+        wheelchair: {
+          data: {},
+          options: {
+            'wheelchair accessible': true,
+          },
+          prefs: {
+            importance: '',
+            required: false,
+          },
+        },
+      },
       listings: [],
       markers: [],
       filteredList: [],
       filteredOptions: [],
       listingsToDisplay: [],
       filteredListingsToDisplay: [],
-      // </editor-fold>
-      // <editor-fold> State for filtering listings
-      types: [
-        'bedroomsRange',
-        'rentRange',
-        'housing_type',
-        'laundry_types',
-        'parking_types',
-        'bath_types',
-        'private_room_types',
-        'cat_types',
-        'dog_types',
-        'furnished_types',
-        'smoking_types',
-        'wheelchair_types'
-      ],
-      importTypes: [
-        'bedroomsImport',
-        'rentImport',
-        'housingImport',
-        'laundryImport',
-        'parkingImport',
-        'bathImport',
-        'roomImport',
-        'catImport',
-        'dogImport',
-        'furnishedImport',
-        'smokingImport',
-        'wheelchairImport'
-      ],
-      optionArrays: [
-        [
-          'minBedrooms', 'maxBedrooms'
-        ],
-        [
-          'minRent', 'maxRent'
-        ],
-        [
-          'apartment',
-          'condo',
-          'house',
-          'townhouse',
-          'duplex',
-          'land',
-          'in-law',
-          'cottage',
-          'cabin'
-        ],
-        [
-          'laundry on site', 'w/d in unit', 'laundry in bldg'
-        ],
-        [
-          'off-street parking',
-          'detached garage',
-          'attached garage',
-          'valet parking',
-          'street parking',
-          'carport',
-          'no parking'
-        ],
-        [
-          'private bath', 'no private bath'
-        ],
-        [
-          'private room', 'room not private'
-        ],
-        ['cats are OK - purrr'],
-        ['dogs are OK - wooof'],
-        ['furnished'],
-        ['no smoking'],
-        ['wheelchair accessible']
-      ],
-      requiredTypes: [
-        'bedroomsImportRequired',
-        'rentImportRequired',
-        'housingImportRequired',
-        'laundryImportRequired',
-        'parkingImportRequired',
-        'bathImportRequired',
-        'roomImportRequired',
-        'catImportRequired',
-        'dogImportRequired',
-        'furnishedImportRequired',
-        'smokingImportRequired',
-        'wheelchairImportRequired'
-      ],
-      typesAndPrefs: [
-        [
-          'bedroomsRange',
-          'bedroomsImport',
-          ['minBedrooms', 'maxBedrooms']
-        ],
-        [
-          'rentRange',
-          'rentImport',
-          ['minRent', 'maxRent']
-        ],
-        [
-          'housing_type',
-          'housingImport',
-          [
-            'apartment',
-            'condo',
-            'house',
-            'townhouse',
-            'duplex',
-            'land',
-            'in-law',
-            'cottage',
-            'cabin'
-          ]
-        ],
-        [
-          'laundry_types',
-          'laundryImport',
-          ['laundry on site', 'w/d in unit', 'laundry in bldg']
-        ],
-        [
-          'parking_types',
-          'parkingImport',
-          [
-            'off-street parking',
-            'detached garage',
-            'attached garage',
-            'valet parking',
-            'street parking',
-            'carport',
-            'no parking'
-          ]
-        ],
-        [
-          'bath_types',
-          'bathImport',
-          ['private bath', 'no private bath']
-        ],
-        [
-          'private_room_types',
-          'roomImport',
-          ['private room', 'room not private']
-        ],
-        ['cat_types', 'catImport', ['cats are OK - purrr']
-        ],
-        ['dog_types', 'dogImport', ['dogs are OK - wooof']
-        ],
-        ['furnished_types', 'furnishedImport', ['furnished']
-        ],
-        ['smoking_types', 'smokingImport', ['no smoking']
-        ],
-        ['wheelchair_types', 'wheelchairImport', ['wheelchair accessible']
-        ]
-      ],
-      // </editor-fold>
       displayAd: {},
       displayAdFromFiltered: {},
       userId: 0,
-      // <editor-fold> Comparison
       comparison1: {},
       comparison2: {},
       userFavoritesRaw: [],
       userFavoritesForDisplay: [],
       activePage1: 0,
       activePage2: 0,
-      score: ''
-      // </editor-fold>
+      score: '',
+      strictMode: false,
+      maxScore: [],
     }
-    //<editor-fold> Unused
-    // Unused -- modal controls
-    this.open = this.open.bind(this);
-    this.close = this.close.bind(this);
-    this.showTips = this.showTips.bind(this);
-    //</editor-fold>
-    //<editor-fold> Auth
-    this.logOut = this.logOut.bind(this);
-    this.logIn = this.logIn.bind(this);
-    this.signUp = this.signUp.bind(this);
+
+    this.changeState = this.changeState.bind(this);
     this.getLoggedIn = this.getLoggedIn.bind(this)
-    //</editor-fold>
-    //<editor-fold> HTTP
+    this.authSwitch = this.authSwitch.bind(this);
+    this.processAuth = this.processAuth.bind(this);
+
     this.scrapeList = this.scrapeList.bind(this);
     this.scrapeRows = this.scrapeRows.bind(this);
     this.scrapeNull = this.scrapeNull.bind(this);
-    this.getListings = this.getListings.bind(this);
     this.checkFor404 = this.checkFor404.bind(this)
-    this.fetchAndFormatFavorites = this.fetchAndFormatFavorites.bind(this)
-    this.pageChange = this.pageChange.bind(this)
-    this.saveToFavorites = this.saveToFavorites.bind(this)
-    this.saveToFavoritesFiltered = this.saveToFavoritesFiltered.bind(this)
-    this.changeView = this.changeView.bind(this);
-    this.changeViewFiltered = this.changeViewFiltered.bind(this);
-    this.isInFavorites = this.isInFavorites.bind(this)
-    //</editor-fold>
-    //<editor-fold> Listing functions
-    this.filterListings = this.filterListings.bind(this)
-    this.convertListings = this.convertListings.bind(this);
-    this.formatListing = this.formatListing.bind(this);
-    this.createFavoritesForDisplay = this.createFavoritesForDisplay.bind(this)
-    //</editor-fold>
-    //<editor-fold> Handle changes
-    // Handle changes, set state
-    this.setState = this.setState.bind(this);
+
     this.handleChange = this.handleChange.bind(this);
-    this.changeState = this.changeState.bind(this);
     this.handleCheckbox = this.handleCheckbox.bind(this);
     this.handleChbox = this.handleChbox.bind(this);
     this.handleSlider = this.handleSlider.bind(this);
+
+    this.getListings = this.getListings.bind(this);
+    this.formatListing = this.formatListing.bind(this);
+    this.convertListings = this.convertListings.bind(this);
     this.changeComparisonView = this.changeComparisonView.bind(this)
-    // </editor-fold>
+    this.filterListings = this.filterListings.bind(this)
+
+    this.createFavoritesForDisplay = this.createFavoritesForDisplay.bind(this)
+    this.saveToFavorites = this.saveToFavorites.bind(this)
+    this.saveToFavoritesFiltered = this.saveToFavoritesFiltered.bind(this)
+    this.isInFavorites = this.isInFavorites.bind(this)
+
+    this.pageChange = this.pageChange.bind(this)
+    this.changeView = this.changeView.bind(this);
+    this.changeViewFiltered = this.changeViewFiltered.bind(this);
   }
 
-  // <editor-fold> Unused
-  close() {
-    this.setState({showModal: false});
-  }
+  changeState(standIn) {
+    let change = {};
+    change[standIn] = !this.state[standIn];
 
-  open() {
-    this.setState({showModal: true});
-  }
-
-  showTips(e) {
-    e.preventDefault();
-
-    const bool = this.state.activeTips;
-    if (bool) {
-      this.setState({loggedIn: true});
+    if (this.state[standIn]) {
+      this.setState(change);
     } else {
-      this.setState({loggedIn: false});
+      this.setState(change);
     }
   }
 
-  //</editor-fold>
-
-  formatListing(rawListing) {
-    if (rawListing.title.length > 50) {
-      rawListing.title = humanize(rawListing.title.slice(0, 50) + '…');
-    } else {
-      rawListing.title = humanize(rawListing.title);
-    }
-
-    if (rawListing.price && rawListing.price[0] !== '$') {
-      rawListing.price = '$' + rawListing.price;
-    }
-
-    if (rawListing.title.indexOf(' ') === -1 || (rawListing.title.split(' ').length < 4 && rawListing.title.length > 30)) {
-      rawListing.title = rawListing.title.slice(0, 40);
-    }
-
-    if (rawListing.neighborhood[0] === '(' && rawListing.neighborhood[rawListing.neighborhood.length - 1] === ')') {
-      rawListing.neighborhood = rawListing.neighborhood.slice(1)
-      rawListing.neighborhood = rawListing.neighborhood.slice(0, -1)
-    }
-
-    rawListing.neighborhood = rawListing.neighborhood.toLowerCase();
-    rawListing.neighborhood = titleize(rawListing.neighborhood)
-
-    if (rawListing.neighborhood.length > 14) {
-      rawListing.neighborhood = rawListing.neighborhood.slice(0, 14) + '…';
-    }
-
-    return rawListing
-  }
-
-  convertListings() {
-    axios({
-      method: 'get',
-      url: '/users_listings_complete',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }).then((res) => {
-      let userFavoritesRaw = res.data;
-      let listings = this.state.listings;
-
-      // let isInFavorites = this.isInFavorites.bind(this);
-
-      let listingsToDisplay = [];
-
-      listingsToDisplay = listings.map((el) => {
-        return this.formatListing(el);
-      });
-
-      let ids = [],
-        userFavoritesForDisplay = [],
-        rawFavorites = userFavoritesRaw;
-
-      ids = rawFavorites.map((el, idx) => {
-        return el.listingsId;
-      });
-
-      userFavoritesForDisplay = listingsToDisplay.filter((el) => {
-        return ids.indexOf(el.id) !== -1;
-      })
-
-      this.setState({listingsToDisplay, userFavoritesRaw, userFavoritesForDisplay, comparison1: userFavoritesForDisplay[0], comparison2: userFavoritesForDisplay[0]});
-    }).catch((err) => {
-      console.log(err);
-    });
-  }
-
-  // <editor-fold> Auth
   getLoggedIn() {
     axios({
       method: 'get',
@@ -457,124 +245,118 @@ export default class App extends Component {
         'Content-Type': 'application/json'
       }
     }).then((res) => {
-      let loggedIn = res.data
+      let loggedIn = res.data;
 
-      axios({method: 'get', url: `/listings`}).then((res) => {
-        let listings = res.data;
-        let markers = [];
+      this.setState({loggedIn})
 
-        listings = listings.filter((listing) => {
-          return listing.void !== true;
-        })
+      /*
+      If logged in, get listings
+      Then format listings
+      Then
+      */
 
-        markers = listings.filter((el) => {
-          return el.lat && el.lon;
-        });
-
-        this.setState({listings, markers});
-      }).then(() => {
+      // axios({method: 'get', url: `/listings`}).then((res) => {
+      //   let listings = res.data;
+      //   let markers = [];
+      //
+      //   listings = listings.filter((listing) => {
+      //     return listing.void !== true;
+      //   })
+      //
+      //   markers = listings.filter((el) => {
+      //     return el.lat && el.lon;
+      //   });
+      //
+      //   this.setState({listings, markers});
+      //   this.convertListings();
+      // }).then(() => {
         this.setState({loggedIn});
-        this.convertListings();
-      }).catch(err => {
-        console.log(err);
-        // notify.show(err.response.data, 'error', 3000);
-      });
+      // }).catch(err => {
+        // console.log(err);
+        notify.show(err.response.data, 'error', 3000);
+      // });
     }).catch((err) => {
       // console.log(err);
     })
   }
 
-  logOut(e) {
-    e.preventDefault();
-
-    axios({
-      method: 'delete',
-      url: '/token',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }).then((res) => {
-      console.log(res);
-      // notify.show('Logged Out!', 'success', 3000);
-    }).catch(err => {
-      console.log(err);
-      // notify.show(err.response.data, 'error', 3000);
-    });
-    this.changeState();
+  authSwitch() {
+    this.changeState('signingUp');
   }
 
-  changeState() {
-    const bool = this.state.loggedIn;
-    if (bool) {
-      this.setState({loggedIn: false});
-    } else {
-      this.setState({loggedIn: true});
-    }
-  }
-
-  signUp(e) {
+  processAuth(e) {
     e.preventDefault();
 
-    axios({
-      method: 'post',
-      url: '/users',
-      data: {
-        lastName: this.state.lastName,
-        firstName: this.state.firstName,
-        email: this.state.signUpEmail,
-        password: this.state.signUpPassword
-      }
-    }).then((res) => {
-      this.setState({firstName: '', lastName: ''});
-
+    const logIn = () => {
       axios({
         method: 'post',
         url: '/token',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         data: {
-          email: this.state.signUpEmail,
-          password: this.state.signUpPassword
+          email: this.state.email,
+          password: this.state.password,
+        },
+      }).then((res) => {
+        this.setState({email: '', password: ''});
+        this.changeState('loggedIn');
+        this.getListings()
+        this.convertListings();
+      }).catch((err) => {
+        // notify.show(err.response.data, 'error', 3000);
+      });
+    }
+
+    const signUp = () => {
+      axios({
+        method: 'post',
+        url: '/users',
+        data: {
+          email: this.state.email,
+          password: this.state.password,
+          firstName: this.state.firstName,
+          lastName: this.state.lastName,
         }
       }).then((res) => {
-        this.setState({signUpEmail: '', signUpPassword: ''});
-        this.changeState();
+        logIn()
       }).catch((err) => {
-        console.log(err);
+        // Well..?
       });
-    }).catch((err) => {
-      console.log(err);
-    });
+    }
+
+    const logOut = () => {
+      axios({
+        method: 'delete',
+        url: '/token',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then((res) => {
+        this.changeState('loggedIn');
+        this.setState({listings: {}});
+        // notify.show('Logged Out!', 'success', 3000);
+      }).catch(err => {
+        // notify.show(err.response.data, 'error', 3000);
+      });
+    }
+
+    if (this.state.loggedIn){
+      logOut();
+    } else if (this.state.signingUp) {
+      signUp();
+      logIn();
+      this.getListings();
+      // this.convertListings();
+      // this.createFavoritesForDisplay();
+    } else {
+      logIn();
+      this.getListings();
+      // this.convertListings();
+      // this.createFavoritesForDisplay();
+    }
   }
 
-  logIn(e) {
-    e.preventDefault();
-
-    let userFavoritesRaw = [];
-
-    axios({
-      method: 'post',
-      url: '/token',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      data: {
-        email: this.state.email,
-        password: this.state.password
-      }
-    }).then((res) => {
-      this.changeState();
-      this.convertListings();
-      this.setState({email: '', password: ''});
-    }).catch((err) => {
-      console.log(err);
-      // notify.show(err.response.data, 'error', 3000);
-    });
-  }
-  //</editor-fold>
-
-  // <editor-fold> handle changes
   handleSlider(field, e) {
     var nextState = {}
     nextState[field] = e.value
@@ -599,12 +381,16 @@ export default class App extends Component {
     this.setState(change);
   }
 
+  handleChangeLogin(e) {
+    var change = {};
+    change[e.target.name] = e.target.value;
+    this.setState({auth: {login: change}});
+  }
+
   changeComparisonView(element) {
     this.setState(element);
   }
-  //</editor-fold>
 
-  // <editor-fold> HTTP
   scrapeNull(e) {
     e.preventDefault();
 
@@ -664,12 +450,13 @@ export default class App extends Component {
 
   getListings() {
     axios({method: 'get', url: `/listings`}).then((res) => {
+      console.log(listings);
       let listings = res.data;
       let markers = [];
 
-      listings = listings.filter((listing) => {
-        return listing.void !== true;
-      })
+      listings = listings
+        .filter((listing) => listing.void !== true)
+        .map((listing) => this.formatListing(listing));
 
       console.log(listings);
 
@@ -678,9 +465,77 @@ export default class App extends Component {
       });
 
       this.setState({listings, markers});
+      this.convertListings();
     }).then(() => {}).catch((err) => {
       // console.log(err);
     })
+  }
+
+  formatListing(rawListing) {
+    const fL = rawListing;
+
+    if (fL.title.length > 50) {
+      fL.title = humanize(fL.title.slice(0, 50) + '…');
+    } else {
+      fL.title = humanize(fL.title);
+    }
+
+    if (fL.price && fL.price[0] !== '$') {
+      fL.price = '$' + fL.price;
+    }
+
+    if (fL.title.indexOf(' ') === -1 || (fL.title.split(' ').length < 4 && fL.title.length > 30)) {
+      fL.title = fL.title.slice(0, 40);
+    }
+
+    if (fL.neighborhood[0] === '(' && fL.neighborhood[fL.neighborhood.length - 1] === ')') {
+      fL.neighborhood = fL.neighborhood.slice(1)
+      fL.neighborhood = fL.neighborhood.slice(0, -1)
+    }
+
+    fL.neighborhood = fL.neighborhood.toLowerCase();
+    fL.neighborhood = titleize(fL.neighborhood)
+
+    if (fL.neighborhood.length > 14) {
+      fL.neighborhood = fL.neighborhood.slice(0, 14) + '…';
+    }
+
+    return fL;
+  }
+
+  convertListings() {
+    axios({
+      method: 'get',
+      url: '/users_listings_complete',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then((res) => {
+      let userFavoritesRaw = res.data;
+      let listings = this.state.listings;
+
+      let listingsToDisplay = [];
+
+      listingsToDisplay = listings.map((el) => {
+        return this.formatListing(el);
+      });
+
+      let ids = [],
+        userFavoritesForDisplay = [],
+        rawFavorites = userFavoritesRaw;
+
+      ids = rawFavorites.map((el, idx) => {
+        return el.listingsId;
+      });
+
+      userFavoritesForDisplay = listingsToDisplay.filter((el) => {
+        return ids.indexOf(el.id) !== -1;
+      })
+
+      this.setState({listingsToDisplay, userFavoritesRaw, userFavoritesForDisplay, comparison1: userFavoritesForDisplay[0], comparison2: userFavoritesForDisplay[0]});
+    }).catch((err) => {
+      console.log(err);
+    });
   }
 
   changeView(row) {
@@ -728,9 +583,6 @@ export default class App extends Component {
       console.log(err);
     })
   }
-  // </editor-fold>
-
-  // <editor-fold> Listing and filtering functions
 
   filterListings() {
     let maxScore = 0;
@@ -833,9 +685,12 @@ export default class App extends Component {
 
   createFavoritesForDisplay() {
     let ids = [],
-    userFavoritesForDisplay = [],
-    ld = this.state.listingsToDisplay,
-    rawFavorites = this.state.userFavoritesRaw;
+        userFavoritesForDisplay = [],
+        ld = this.state.listingsToDisplay,
+        rawFavorites = this.state.userFavoritesRaw;
+
+    console.log('hi');
+    console.log(rawFavorites);
 
     ids = rawFavorites.map((el, idx) => {
       return el.listingsId;
@@ -859,12 +714,6 @@ export default class App extends Component {
     this.setState(change1);
   }
 
-  fetchAndFormatFavorites() {
-    this.convertListings();
-  }
-
-  // </editor-fold>
-
   componentWillMount() {
     this.getLoggedIn();
   }
@@ -880,16 +729,29 @@ export default class App extends Component {
               minWidth: '1000px'
             }}>
               <Col>
-                <Header style={{
-                  height: '50px'
-                }} {...this.props} {...this.state} {...this}/>
+                <Header style={{height: '50px'}} loggedIn={this.state.loggedIn} processAuth={this.processAuth}/>
               </Col>
             </Row>
             <Row style={{
               minWidth: '1000px'
             }}>
               <Col>
-                <Routing createFavoritesForDisplay={this.createFavoritesForDisplay} getListings={this.getListings} {...this.props} {...this.state} {...this}/>
+                {!this.state.loggedIn ?
+                  <Login
+                    handleChange={this.handleChange}
+                    processAuth={this.processAuth}
+                    authSwitch={this.authSwitch}
+                    loggedIn={this.state.loggedIn}
+                    signingUp={this.state.signingUp}
+                    email={this.state.email}
+                    password={this.state.password}
+                    firstName={this.state.firstName}
+                    lastName={this.state.lastName}
+                  />:
+                  <Routing
+                    {...this.props}
+                    {...this.state}
+                  />}
               </Col>
             </Row>
           </Grid>

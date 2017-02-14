@@ -3,7 +3,7 @@ import NotFound from './NotFound'
 import React, { Component } from 'react'
 import Login from './auth/Login'
 import Home from './Home'
-import MapPage from './mapping/MapPage'
+import MapPage from './MapPage'
 import Compare from  './Compare'
 import ViewAndFilter from './ViewAndFilter'
 
@@ -15,14 +15,14 @@ export default class Main extends Component {
   render() {
     return (
       <main className="page-wrap">
-        <Match pattern="/login" render={() => <Login
+        {/* <Match pattern="/login" render={() => <Login
           {...this.props}
-        />} />
-        <Match pattern="/" exactly render={() => <Home
+                                              />} /> */}
+        <Match pattern="/home" exactly render={() => <Home
           createFavoritesForDisplay={this.props.createFavoritesForDisplay}
           {...this.props}
         />} />
-        <Match pattern="/data" render={() => <ViewAndFilter
+        <Match pattern="/" exactly render={() => <ViewAndFilter
           {...this.props}
         />} />
         <Match pattern="/map" render={() => <MapPage

@@ -1,4 +1,3 @@
-//<editor-fold import
 import React, {Component} from 'react';
 import {BrowserRouter, Route, browserHistory} from 'react-router';
 import {
@@ -21,7 +20,6 @@ import globalCSS from '../../globalCSS.css'
 import request from 'request'
 import titleize from 'underscore.string/titleize'
 import humanize from 'underscore.string/humanize'
-//</editor-fold>
 
 export default class App extends Component {
   constructor(props) {
@@ -194,7 +192,6 @@ export default class App extends Component {
       strictMode: false,
       maxScore: [],
     }
-
     this.changeState = this.changeState.bind(this);
     this.getLoggedIn = this.getLoggedIn.bind(this)
     this.authSwitch = this.authSwitch.bind(this);
@@ -236,7 +233,6 @@ export default class App extends Component {
       this.setState(change);
     }
   }
-
   getLoggedIn() {
     axios({
       method: 'get',
@@ -279,11 +275,9 @@ export default class App extends Component {
       // console.log(err);
     })
   }
-
   authSwitch() {
     this.changeState('signingUp');
   }
-
   processAuth(e) {
     e.preventDefault();
 
@@ -357,46 +351,6 @@ export default class App extends Component {
     }
   }
 
-  handleSlider(field, e) {
-    var nextState = {}
-    nextState[field] = e.value
-    this.setState(nextState)
-  }
-
-  handleCheckbox(e) {
-    let change = {}
-    change[e.target.name] = e.target.checked;
-    this.setState({change})
-  }
-
-  handleChbox(field, e) {
-    var nextState = {}
-    nextState[field] = e.target.checked
-    this.setState(nextState)
-  }
-
-  handleChange(e) {
-    var change = {};
-    change[e.target.name] = e.target.value;
-    this.setState(change);
-  }
-
-  handleChangeLogin(e) {
-    var change = {};
-    change[e.target.name] = e.target.value;
-    this.setState({auth: {login: change}});
-  }
-
-  changeComparisonView(element) {
-    this.setState(element);
-  }
-
-  scrapeNull(e) {
-    e.preventDefault();
-
-    axios({method: 'get', url: '/scrape_null'}).then((res) => {}).catch((err) => {});
-  }
-
   scrapeList(e) {
     e.preventDefault();
 
@@ -406,7 +360,6 @@ export default class App extends Component {
       // notify.show(err.response.data.errors[0].messages[0], 'error', 3000);
     });
   }
-
   scrapeRows(e) {
     let details = [];
 
@@ -425,7 +378,11 @@ export default class App extends Component {
       }
     })
   }
+  scrapeNull(e) {
+    e.preventDefault();
 
+    axios({method: 'get', url: '/scrape_null'}).then((res) => {}).catch((err) => {});
+  }
   checkFor404(){
     axios({method: 'get', url: `/listings_check_for_404`}).then((res) => {
       // console.log(res.data);
@@ -448,15 +405,36 @@ export default class App extends Component {
     })
   }
 
+  handleChange(e) {
+    var change = {};
+    change[e.target.name] = e.target.value;
+    this.setState(change);
+  }
+  handleCheckbox(e) {
+    let change = {}
+    change[e.target.name] = e.target.checked;
+    this.setState({change})
+  }
+  handleChbox(field, e) {
+    var nextState = {}
+    nextState[field] = e.target.checked
+    this.setState(nextState)
+  }
+  handleSlider(field, e) {
+    var nextState = {}
+    nextState[field] = e.value
+    this.setState(nextState)
+  }
+
   getListings() {
     axios({method: 'get', url: `/listings`}).then((res) => {
       console.log(listings);
       let listings = res.data;
       let markers = [];
 
-      listings = listings
-        .filter((listing) => listing.void !== true)
-        .map((listing) => this.formatListing(listing));
+      listings = listings.filter((listing) => listing.void !== true);
+
+      listings = listings.map((listing) => this.formatListing(listing));
 
       console.log(listings);
 
@@ -470,7 +448,6 @@ export default class App extends Component {
       // console.log(err);
     })
   }
-
   formatListing(rawListing) {
     const fL = rawListing;
 
@@ -502,7 +479,6 @@ export default class App extends Component {
 
     return fL;
   }
-
   convertListings() {
     axios({
       method: 'get',
@@ -521,8 +497,8 @@ export default class App extends Component {
       });
 
       let ids = [],
-        userFavoritesForDisplay = [],
-        rawFavorites = userFavoritesRaw;
+      userFavoritesForDisplay = [],
+      rawFavorites = userFavoritesRaw;
 
       ids = rawFavorites.map((el, idx) => {
         return el.listingsId;
@@ -537,53 +513,9 @@ export default class App extends Component {
       console.log(err);
     });
   }
-
-  changeView(row) {
-    axios({method: 'get', url: `/listings/${row.id}`}).then((res) => {
-      this.setState({displayAd: res.data})
-    }).catch((err) => {
-      //
-    });
+  changeComparisonView(element) {
+    this.setState(element);
   }
-
-  changeViewFiltered(row) {
-    axios({method: 'get', url: `/listings/${row.id}`}).then((res) => {
-      let displayAdFromFiltered = res.data;
-      displayAdFromFiltered.score = row.score;
-      this.setState({displayAdFromFiltered})
-    }).catch((err) => {
-      //
-    });
-  }
-
-  saveToFavorites() {
-    axios({
-      method: 'post',
-      url: `/users_listings/`,
-      data: {
-        listingsId: this.state.displayAd.id
-      }
-    }).then((res) => {
-      console.log(res);
-    }).catch((err) => {
-      console.log(err);
-    })
-  }
-
-  saveToFavoritesFiltered() {
-    axios({
-      method: 'post',
-      url: `/users_listings/`,
-      data: {
-        listingsId: this.state.displayAdFromFiltered.id
-      }
-    }).then((res) => {
-      console.log(res);
-    }).catch((err) => {
-      console.log(err);
-    })
-  }
-
   filterListings() {
     let maxScore = 0;
     let filteredOptions = [];
@@ -671,23 +603,11 @@ export default class App extends Component {
     this.setState({filteredListingsToDisplay});
   }
 
-  isInFavorites(row) {
-    axios({method: 'get', url: `/users_listings/${row.id}`}).then((res) => {
-      if (res.data.length > 0) {
-        return true
-      } else {
-        return false
-      }
-    }).catch((err) => {
-      console.log(err);
-    })
-  }
-
   createFavoritesForDisplay() {
     let ids = [],
-        userFavoritesForDisplay = [],
-        ld = this.state.listingsToDisplay,
-        rawFavorites = this.state.userFavoritesRaw;
+    userFavoritesForDisplay = [],
+    ld = this.state.listingsToDisplay,
+    rawFavorites = this.state.userFavoritesRaw;
 
     console.log('hi');
     console.log(rawFavorites);
@@ -702,6 +622,43 @@ export default class App extends Component {
 
     this.setState({userFavoritesForDisplay, comparison1: userFavoritesForDisplay[0], comparison2: userFavoritesForDisplay[0]});
   }
+  saveToFavorites() {
+    axios({
+      method: 'post',
+      url: `/users_listings/`,
+      data: {
+        listingsId: this.state.displayAd.id
+      }
+    }).then((res) => {
+      console.log(res);
+    }).catch((err) => {
+      console.log(err);
+    })
+  }
+  saveToFavoritesFiltered() {
+    axios({
+      method: 'post',
+      url: `/users_listings/`,
+      data: {
+        listingsId: this.state.displayAdFromFiltered.id
+      }
+    }).then((res) => {
+      console.log(res);
+    }).catch((err) => {
+      console.log(err);
+    })
+  }
+  isInFavorites(row) {
+    axios({method: 'get', url: `/users_listings/${row.id}`}).then((res) => {
+      if (res.data.length > 0) {
+        return true
+      } else {
+        return false
+      }
+    }).catch((err) => {
+      console.log(err);
+    })
+  }
 
   pageChange(activePageName, activePageNumber, comparisonPageName) {
     let change = {}
@@ -712,6 +669,22 @@ export default class App extends Component {
 
     this.setState(change);
     this.setState(change1);
+  }
+  changeView(row) {
+    axios({method: 'get', url: `/listings/${row.id}`}).then((res) => {
+      this.setState({displayAd: res.data})
+    }).catch((err) => {
+      //
+    });
+  }
+  changeViewFiltered(row) {
+    axios({method: 'get', url: `/listings/${row.id}`}).then((res) => {
+      let displayAdFromFiltered = res.data;
+      displayAdFromFiltered.score = row.score;
+      this.setState({displayAdFromFiltered})
+    }).catch((err) => {
+      //
+    });
   }
 
   componentWillMount() {

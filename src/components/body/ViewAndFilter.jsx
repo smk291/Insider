@@ -65,7 +65,7 @@ export default class ViewAndFilter extends React.Component {
                   <ListingsView
                     changeView        = {this.props.changeView}
                     displayAd         = {this.props.displayAd}
-                    listingsToDisplay = {this.props.listingsToDisplay}
+                    listings          = {this.props.listings}
                     saveToFavorites   = {this.saveToFavorites}
                     filterListings    = {this.props.filterListings}
                   />

@@ -129,6 +129,7 @@
     "react-simple-range": "^1.4.0",
     "react-toastr": "^2.8.2",
     "request": "^2.79.0",
+    "request-promise": "^4.1.1",
     "rimraf": "^2.4.3",
     "style-loader": "^0.13.1",
     "svg-inline-loader": "^0.7.1",

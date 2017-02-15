@@ -52,7 +52,7 @@ export default class ListingsView extends React.Component {
           <Row>
             <Col sm={12} md={6}>
               <BrowseListings
-                displayThese={this.props.listingsToDisplay}
+                displayThese={this.props.listings}
                 changeView={this.props.changeView}
               />
             </Col>

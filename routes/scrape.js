@@ -41,55 +41,49 @@ function authorize(req, res, next) {
 router.post('/scrape_check_for_404/', authorize, (req, res) => {
   let urlnums = req.body.listings;
   let url = '';
-  //
-  // // console.log(urlnums);
-  // let urlnum = urlnums[0];
-
-  // console.log(urlnums);
-
+  
   for (let i = 0; i < urlnums.length; i++){
     knex('listings')
-    .where('urlnum', urlnums[i])
-    .first()
-    .then((row) => {
-      if (!row){
-        throw boom.create(400, `No row found for urlnum ${urlnums[i]}`);
-      }
-
-      url = row.url;
-
-      request(`http://seattle.craigslist.org${url}`, function (error, response, body) {
-        // console.log(response);
-        // console.log(`response.body.indexOf('This posting has expired.') !== -1: ${response.body.indexOf(`This posting has expired.`) !== -1}`);
-        // console.log(`response.body.indexOf('There is nothing here') !== -1: ${response.body.indexOf(`There is nothing here`) !== -1}`);
-        // console.log(`response.body.indexOf('This posting has been deleted by its author') !== -1: ${response.body.indexOf(`This posting has been deleted by its author`) !== -1}`);
-        // console.log(`response.body.indexOf('This posting has been flagged for removal') !== -1: ${response.body.indexOf(`This posting has been flagged for removal`) !== -1}`);
-        if (response.body.indexOf(`This posting has expired.`) !== -1 || response.body.indexOf(`There is nothing here`) !== -1 || response.body.indexOf(`This posting has been deleted by its author`) !== -1 || response.body.indexOf(`This posting has been flagged for removal`) !== -1) {
-          knex('listings')
-          .where('urlnum', urlnums[i])
-          .first()
-          .update({void: true, checked: true}, '*')
-          .then((row) => {
-            // console.log(`Page at http://seattle.craigslist.org${row[0].url} no longer exists. New row is ${row}`)
-          }).catch((err) => {
-            throw boom.create(400, err);
-          })
-        } else {
-          knex('listings')
-          .where('urlnum', urlnums[i])
-          .first()
-          .update({checked: true}, '*')
-          .then((row) => {
-            // console.log(`Page at http://seattle.craigslist.org${row[0].url} still exists. New row is:`)
-          }).catch((err) => {
-            throw boom.create(400, err);
-          })
+      .where('urlnum', urlnums[i])
+      .first()
+      .then((row) => {
+        if (!row){
+          throw boom.create(400, `No row found for urlnum ${urlnums[i]}`);
         }
-      })
 
-    }).catch((err) => {
-      throw boom.create(400, err)
-    });
+        url = row.url;
+
+        request(`http://seattle.craigslist.org${url}`, function (error, response, body) {
+          console.log(response);
+          console.log(`response.body.indexOf('This posting has expired.') !== -1: ${response.body.indexOf(`This posting has expired.`) !== -1}`);
+          console.log(`response.body.indexOf('There is nothing here') !== -1: ${response.body.indexOf(`There is nothing here`) !== -1}`);
+          console.log(`response.body.indexOf('This posting has been deleted by its author') !== -1: ${response.body.indexOf(`This posting has been deleted by its author`) !== -1}`);
+          console.log(`response.body.indexOf('This posting has been flagged for removal') !== -1: ${response.body.indexOf(`This posting has been flagged for removal`) !== -1}`);
+          if (response.body.indexOf(`This posting has expired.`) !== -1 || response.body.indexOf(`There is nothing here`) !== -1 || response.body.indexOf(`This posting has been deleted by its author`) !== -1 || response.body.indexOf(`This posting has been flagged for removal`) !== -1) {
+            knex('listings')
+            .where('urlnum', urlnums[i])
+            .first()
+            .update({void: true, checked: true}, '*')
+            .then((row) => {
+              // console.log(`Page at http://seattle.craigslist.org${row[0].url} no longer exists. New row is ${row}`)
+            }).catch((err) => {
+              throw boom.create(400, err);
+            })
+          } else {
+            knex('listings')
+            .where('urlnum', urlnums[i])
+            .first()
+            .update({checked: true}, '*')
+            .then((row) => {
+              // console.log(`Page at http://seattle.craigslist.org${row[0].url} still exists. New row is:`)
+            }).catch((err) => {
+              throw boom.create(400, err);
+            })
+          }
+        })
+      }).catch((err) => {
+        throw boom.create(400, err)
+      });
   }
 })
 

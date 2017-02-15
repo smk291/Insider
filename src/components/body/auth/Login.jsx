@@ -51,11 +51,11 @@ export default class Login extends React.Component {
                   <h1>Log In</h1>
                   <div>
                     <p>Email address:</p>
-                    <FormControl id="email" type="email" placeholder="email" name="email" onClick={this.handleChange} value={this.props.value}/>
+                    <FormControl id="email" type="email" placeholder="email" name="email" onChange={this.handleChange} value={this.props.value}/>
                   </div>
                   <div>
                     <p>Password:</p>
-                    <FormControl id="password" type="password" placeholder="password" name="password" onClick={this.handleChange} value={this.props.value}/>
+                    <FormControl id="password" type="password" placeholder="password" name="password" onChange={this.handleChange} value={this.props.value}/>
                   </div>
                   <div>
                   </div>
@@ -64,19 +64,19 @@ export default class Login extends React.Component {
                   <h1>Sign Up</h1>
                   <div>
                     <p>First name:</p>
-                    <FormControl id="firstName" placeholder="firstName" name="signUpFirstName" onClick={this.handleChange} value={this.props.value}/>
+                    <FormControl id="firstName" placeholder="firstName" name="signUpFirstName" onChange={this.handleChange} value={this.props.value}/>
                   </div>
                   <div>
                     <p>Last name:</p>
-                    <FormControl id="lastName" placeholder="lastName" name="signUpLastName" onClick={this.handleChange} value={this.props.value}/>
+                    <FormControl id="lastName" placeholder="lastName" name="signUpLastName" onChange={this.handleChange} value={this.props.value}/>
                   </div>
                   <div>
                     <p>Email address:</p>
-                    <FormControl id="email" placeholder="email" name="signUpEmail" onClick={this.handleChange} value={this.props.value}/>
+                    <FormControl id="email" placeholder="email" name="signUpEmail" onChange={this.handleChange} value={this.props.value}/>
                   </div>
                   <div>
                     <p>Password:</p>
-                    <FormControl id="password" type="password" name="signUpPassword" onClick={this.handleChange} value={this.props.value}/>
+                    <FormControl id="password" type="password" name="signUpPassword" onChange={this.handleChange} value={this.props.value}/>
                   </div>
                   <div>
                     {/* <Link to="/">Back to Home</Link> */}

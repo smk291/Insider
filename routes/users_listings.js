@@ -95,9 +95,11 @@ router.get('/users_listings/:id', authorize, (req, res, next) => {
 });
 
 router.get('/users_listings_complete', authorize, (req, res, next) => {
-  if (!req.verify) {
-    throw boom.create(401, 'Unauthorized');
-  }
+  // if (!req.verify) {
+  //   throw boom.create(401, 'Unauthorized');
+  // }
+
+  console.log(req.verify);
 
   const { userId } = req.token;
 

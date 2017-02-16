@@ -36,13 +36,9 @@ class CondensedPager extends React.Component {
   render() {
     return (
       <div>
-        {this.props.ternFn ?
-          <Pager.Item direction={this.props.direction} onSelect={this.props.pageFn} href="#">
-            {this.props.direction === 'previous'? <span>&larr; {capitalize(this.props.direction)} Page</span>:<span>Next Page &rarr;</span>}
-          </Pager.Item>:
-          <Pager.Item direction={this.props.direction} pageFn={this.props.pageFn} href="#" disabled>
-            {this.props.direction === 'previous'? <span>&larr; {capitalize(this.props.direction)} Page</span>:<span>Next Page &rarr;</span>}
-          </Pager.Item>}
+        <Pager.Item direction={this.props.direction} onSelect={this.props.pageFn} href="#" disabled={!this.props.ternFn}>
+          {this.props.direction === 'previous'? <span>&larr; {capitalize(this.props.direction)} Page</span>:<span>Next Page &rarr;</span>}
+        </Pager.Item>
       </div>
     )
   }
@@ -56,14 +52,17 @@ export default class Listing extends React.Component {
   }
 
   pageForward(){
-    if (this.props.activePage < this.props.userFavorites.length - 1){
+    if (this.props.activePage < this.props.userFavorites.length - 1 && this.props.activePage + 1 !== this.props.otherPage) {
       this.props.pageChange(this.props.activePageNum, this.props.activePage + 1, this.props.comparisonPage);
+    } else if (this.props.activePage + 2 < this.props.userFavorites.length && this.props.activePage + 1 === this.props.otherPage) {
+      this.props.pageChange(this.props.activePageNum, this.props.activePage + 2, this.props.comparisonPage);
     }
   }
-
   pageBack(){
-    if (this.props.activePage >= 0){
+    if (this.props.activePage >= 0 &&  this.props.activePage - 1 !== this.props.otherPage){
       this.props.pageChange(this.props.activePageNum, this.props.activePage - 1, this.props.comparisonPage);
+    } else if (this.props.activePage - 2 >= 0 && this.props.activePage - 1 === this.props.otherPage) {
+      this.props.pageChange(this.props.activePageNum, this.props.activePage - 2, this.props.comparisonPage);
     }
   }
 
@@ -92,7 +91,18 @@ export default class Listing extends React.Component {
       listing.title = listing.title.slice(0,50) + '…'
     }
 
+    let pageBackCheck = true,
+        pageForwardCheck = true;
+
+    if (this.props.activePage === 1) {
+      pageBackCheck = !(this.props.otherPage === 0);
+    }
+
+    if (this.props.activePage === this.props.userFavorites.length - 2) {
+      pageForwardCheck = !(this.props.otherPage === this.props.userFavorites.length - 1)
+    }
     return(
+
       <div>
         <div className='panel panel-default'>
           <div style={{
@@ -104,9 +114,9 @@ export default class Listing extends React.Component {
               justifyContent: 'space-between',
               width: '100%'
             }}>
-              <CondensedPager ternFn={this.props.activePage > 0} direction='previous' pageFn={this.pageBack}/>
+              <CondensedPager ternFn={this.props.activePage > 0 && pageBackCheck} direction='previous' pageFn={this.pageBack}/>
               <p>Viewing {this.props.activePage + 1} out of {this.props.userFavorites.length}</p>
-              <CondensedPager ternFn={this.props.activePage < this.props.userFavorites.length} direction='next' pageFn={this.pageForward}/>
+              <CondensedPager ternFn={this.props.activePage < this.props.userFavorites.length - 1 && pageForwardCheck} direction='next' pageFn={this.pageForward}/>
             </Pager>
             <Table striped bordered condensed hover>
               <thead>

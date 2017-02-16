@@ -172,6 +172,7 @@ export default class App extends Component {
       activePage1: 0,
       activePage2: 0,
       maxScore: [],
+      addedFavorite: false,
     }
     //Auth
     this.changeState = this.changeState.bind(this);
@@ -193,6 +194,7 @@ export default class App extends Component {
     this.filterListings = this.filterListings.bind(this)
     //Favorites
     this.getFavorites = this.getFavorites.bind(this)
+    this.checkForAddedFavorite = this.checkForAddedFavorite.bind(this)
     this.saveToFavorites = this.saveToFavorites.bind(this)
     this.saveToFavoritesFiltered = this.saveToFavoritesFiltered.bind(this)
     this.isInFavorites = this.isInFavorites.bind(this)
@@ -406,12 +408,31 @@ export default class App extends Component {
           }
         });
 
+        let comparison1 = {},
+            comparison2 = {},
+            activePage1,
+            activePage2;
+
+        if (userFavorites.length > 1){
+          comparison1 = userFavorites[0];
+          comparison2 = userFavorites[1];
+          activePage1 = 0,
+          activePage2 = 1;
+        } else if (userFavorites.length === 1) {
+          comparison1 = userFavorites[0];
+          comparison2 = userFavorites[0];
+          acivePage1 = 0;
+          activePage2 = 0;
+        }
+
         this.setState({
           listings,
           markers,
           userFavorites,
-          comparison1: userFavorites[0],
-          comparison2: userFavorites[0]
+          comparison1,
+          comparison2,
+          activePage1,
+          activePage2
         });
       }).catch((err) => {
         console.log(err);
@@ -523,6 +544,12 @@ export default class App extends Component {
       console.log(err);
     });
   }
+  checkForAddedFavorite() {
+    if (this.state.addedFavorite) {
+      this.getFavorites();
+      this.setState({addedFavorite: false});
+    }
+  }
   saveToFavorites() {
     axios({
       method: 'post',
@@ -531,6 +558,7 @@ export default class App extends Component {
         listingsId: this.state.displayAd.id
       }
     }).then((res) => {
+      this.setState({addedFavorite: true})
       console.log(res);
     }).catch((err) => {
       console.log(err);

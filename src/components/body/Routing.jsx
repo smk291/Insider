@@ -29,8 +29,6 @@ export default class Main extends Component {
           {...this.props}
         />} />
         <Match pattern="/compare" render={() => <Compare
-          handleSelect1={this.props.handleSelect1}
-          handleSelect2={this.props.handleSelect2}
           {...this.props}
         />} />
         <Miss component={NotFound} />

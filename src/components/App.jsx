@@ -166,11 +166,9 @@ export default class App extends Component {
       filteredListingsToDisplay: [],
       displayAd: {},
       displayAdFromFiltered: {},
-      userId: 0,
       comparison1: {},
       comparison2: {},
       userFavorites: [],
-      userFavoritesForDisplay: [],
       activePage1: 0,
       activePage2: 0,
       maxScore: [],
@@ -194,7 +192,7 @@ export default class App extends Component {
     this.getListings = this.getListings.bind(this);
     this.filterListings = this.filterListings.bind(this)
     //Favorites
-    this.createFavoritesForDisplay = this.createFavoritesForDisplay.bind(this)
+    this.getFavorites = this.getFavorites.bind(this)
     this.saveToFavorites = this.saveToFavorites.bind(this)
     this.saveToFavoritesFiltered = this.saveToFavoritesFiltered.bind(this)
     this.isInFavorites = this.isInFavorites.bind(this)
@@ -382,109 +380,46 @@ export default class App extends Component {
   }
   //Listings
   getListings() {
-    function formatListing (listing) {
-
-      listing.title = titleize(listing.title);
-      listing.descr = humanize(listing.descr);
-
-      if (listing.price && listing.price[0] !== '$') {
-        listing.price = '$' + listing.price;
-      }
-
-      // if (listing.title.indexOf(' ') === -1 || (listing.title.split(' ').length < 4 && listing.title.length > 30)) {
-      //   listing.title = listing.title.slice(0, 40);
-      // }
-      //
-      if (listing.neighborhood[0] === '(' && listing.neighborhood[listing.neighborhood.length - 1] === ')') {
-        listing.neighborhood = listing.neighborhood.slice(1)
-        listing.neighborhood = listing.neighborhood.slice(0, -1)
-      }
-
-      listing.neighborhood = listing.neighborhood.toLowerCase();
-      listing.neighborhood = titleize(listing.neighborhood)
-
-      // if (listing.neighborhood.length > 14) {
-      //   listing.neighborhood = listing.neighborhood.slice(0, 14) + '…';
-      // }
-
-      return listing;
-    }
-
     axios({
       method: 'get',
-      url: `/listings`,
+      url: '/users_listings',
     }).then((res) => {
-      let listings = res.data,
-          markers = [];
+      let userFavorites = res.data,
+          listings = [],
+          ids = [];
 
-      listings = listings.filter((listing) => listing.void !== true);
-      listings = listings.map((listing) => formatListing(listing));
-      console.log(`listings 429: ${JSON.stringify(listings[268])}`);
-
-      markers = listings.filter((el) => {
-        return el.lat && el.lon;
+      ids = userFavorites.map((el, idx) => {
+        return el.listingsId;
       });
 
-      //console.log(`markers 435: ${markers}`);
+      axios({method: 'get', url: `/listings`}).then((res) => {
+        let markers = [];
 
-      // axios({
-      //   method: 'get',
-      //   url: '/users_listings_complete',
-      //   headers: {
-      //     'Content-Type': 'application/json'
-      //   }
-      // }).then((res) => {
-      //   let userFavorites = res.data,
-      //       ids = [];
-      //
-      //   ids = userFavorites.map((el, idx) => {
-      //     return el.id;
-      //   });
-      //
-      //   userFavorites = listings.filter((el) => {
-      //     return ids.indexOf(el.id) !== -1;
-      //   })
-      //
+        listings = res.data.filter((listing) => listing.void !== true);
+        markers = listings.map((el) => {
+          if (el.lat !== null && el.lon !== null) {
+            return {
+              id: el.id,
+              lat: el.lat,
+              lon: el.lon
+            };
+          }
+        });
+
         this.setState({
           listings,
-          // userFavorites,
-          // comparison1: userFavorites[0],
-          // comparison2: userFavorites[0]
+          markers,
+          userFavorites,
+          comparison1: userFavorites[0],
+          comparison2: userFavorites[0]
         });
-      // }).catch((err) => {
-      //   console.log(err);
-      // });
+      }).catch((err) => {
+        console.log(err);
+      });
     }).catch((err) => {
-      // console.log(err);
-    })
+      console.log(err);
+    });
   }
-  // convertListings() {
-  //   axios({
-  //     method: 'get',
-  //     url: '/users_listings',
-  //     headers: {
-  //       'Content-Type': 'application/json'
-  //     }
-  //   }).then((res) => {
-  //     let userFavorites = res.data;
-  //
-  //     let ids = [],
-  //     userFavoritesForDisplay = [];
-  //
-  //     // ids = userFavorites.map((el, idx) => {
-  //     //   console.log(el.id);
-  //     //   return el.id;
-  //     // });
-  //     //
-  //     // userFavorites = listings.filter((el) => {
-  //     //   return ids.indexOf(el.id) !== -1;
-  //     // })
-  //
-  //     this.setState({userFavorites, comparison1: userFavorites[0], comparison2: userFavorites[0]});
-  //   }).catch((err) => {
-  //     console.log(err);
-  //   });
-  // }
   filterListings() {
     let maxScore = 0;
     let filteredOptions = [];
@@ -572,24 +507,21 @@ export default class App extends Component {
     this.setState({filteredListingsToDisplay});
   }
   //Favorites
-  createFavoritesForDisplay() {
-    let ids = [],
-    userFavoritesForDisplay = [],
-    ld = this.state.listings,
-    rawFavorites = this.state.userFavorites;
+  getFavorites() {
+    axios({
+      method: 'get',
+      url: '/users_listings',
+    }).then((res) => {
+      let userFavorites = res.data;
 
-    console.log('hi');
-    console.log(rawFavorites);
-
-    ids = rawFavorites.map((el, idx) => {
-      return el.id;
+      this.setState({
+        userFavorites,
+        comparison1: userFavorites[0],
+        comparison2: userFavorites[0]
+      });
+    }).catch((err) => {
+      console.log(err);
     });
-
-    userFavorites = ld.filter((el) => {
-      return ids.indexOf(el.id) !== -1;
-    })
-
-    this.setState({userFavorites, comparison1: userFavorites[0], comparison2: userFavorites[0]});
   }
   saveToFavorites() {
     axios({
@@ -637,7 +569,7 @@ export default class App extends Component {
     let change1 = {}
     change[activePageName] = activePageNumber;
 
-    change1[comparisonPageName] = this.state.userFavoritesForDisplay[activePageNumber]
+    change1[comparisonPageName] = this.state.userFavorites[activePageNumber]
 
     this.setState(change);
     this.setState(change1);

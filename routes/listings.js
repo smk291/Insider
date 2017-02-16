@@ -7,10 +7,31 @@ const express                        = require('express');
 const router                         = express.Router();
 const jwt                            = require('jsonwebtoken');
 const knex                           = require('../knex');
-const ev                             = require('express-validation');
+// const ev                             = require('express-validation');
 // const validations = require('../validations/token');
 const {camelizeKeys, decamelizeKeys} = require('humps');
 const request                        = require('request');
+const titleize                       = require('underscore.string/titleize');
+const humanize                       = require('underscore.string/humanize');
+
+function formatListing(listing) {
+  listing.title = titleize(listing.title);
+  listing.descr = humanize(listing.descr);
+
+  if (listing.price && listing.price[0] !== '$') {
+    listing.price = '$' + listing.price;
+  }
+
+  if (listing.neighborhood[0] === '(' && listing.neighborhood[listing.neighborhood.length - 1] === ')') {
+    listing.neighborhood = listing.neighborhood.slice(1);
+    listing.neighborhood = listing.neighborhood.slice(0, -1);
+  }
+
+  listing.neighborhood = listing.neighborhood.toLowerCase();
+  listing.neighborhood = titleize(listing.neighborhood);
+
+  return listing;
+}
 
 const authorize = function(req, res, next) {
   jwt.verify(req.cookies.token, process.env.JWT_SECRET, (err, decoded) => {
@@ -50,6 +71,8 @@ router.get('/listings', (req, res, next) => {
       if (listings === [] || !listings) {
         throw boom.create(400, `No listings found`);
       }
+
+      listings = listings.map((listing) => formatListing(listing))
 
       res.send(listings);
     }).catch((err) => {

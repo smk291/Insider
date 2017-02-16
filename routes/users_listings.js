@@ -1,14 +1,31 @@
-//eslint-disable-next-line new-cap
-'use strict';
-
-const express = require('express');
-const router = express.Router();
-const knex = require('../knex');
-const bcrypt = require('bcrypt-as-promised');
-const boom = require('boom');
-const ev = require('express-validation');
-const jwt = require('jsonwebtoken');
+const express                          = require('express');
+const router                           = express.Router();
+const knex                             = require('../knex');
+const bcrypt                           = require('bcrypt-as-promised');
+const boom                             = require('boom');
+const jwt                              = require('jsonwebtoken');
 const { camelizeKeys, decamelizeKeys } = require('humps');
+const titleize                         = require('underscore.string/titleize');
+const humanize                         = require('underscore.string/humanize');
+
+function formatListing(listing) {
+  listing.title = titleize(listing.title);
+  listing.descr = humanize(listing.descr);
+
+  if (listing.price && listing.price[0] !== '$') {
+    listing.price = '$' + listing.price;
+  }
+
+  if (listing.neighborhood[0] === '(' && listing.neighborhood[listing.neighborhood.length - 1] === ')') {
+    listing.neighborhood = listing.neighborhood.slice(1);
+    listing.neighborhood = listing.neighborhood.slice(0, -1);
+  }
+
+  listing.neighborhood = listing.neighborhood.toLowerCase();
+  listing.neighborhood = titleize(listing.neighborhood);
+
+  return listing;
+}
 
 function authorize(req, res, next) {
   jwt.verify(req.cookies.token, process.env.JWT_SECRET, (err, decoded) => {
@@ -53,7 +70,7 @@ router.post('/users_listings', authorize, (req, res, next) => {
       .first()
       .then((row) => {
         if (row){
-          throw boom.create(400, `Entry already exists for this. You shouldn\'t be seeing this error.`)
+          throw boom.create(400, `Already favorited.`)
         }
 
         knex('users_listings')
@@ -75,40 +92,26 @@ router.post('/users_listings', authorize, (req, res, next) => {
   });
 })
 
-router.get('/users_listings/:id', authorize, (req, res, next) => {
+router.get('/users_listings', authorize, (req, res, next) => {
   if (!req.verify) {
-    return boom.create(401, 'Unauthorized');
+    throw boom.create(401, 'Unauthorized');
   }
 
   const { userId } = req.token;
-  const listingsId = req.params.id;
+  let favListings = [];
 
   knex('users_listings')
     .where('user_id', userId)
-    .where('listings_id', listingsId)
-    .then((rows) => {
-      res.send(camelizeKeys(rows));
-    })
-    .catch((err) => {
-      next(err);
-    });
-});
+    .innerJoin('listings', 'listings.id', 'users_listings.listings_id')
 
-router.get('/users_listings_complete', authorize, (req, res, next) => {
-  // if (!req.verify) {
-  //   throw boom.create(401, 'Unauthorized');
-  // }
+    .then((favs) => {
+      if (!favs) {
+        throw boom.create(400, 'No favorites');
+      }
 
-  console.log(req.verify);
+      favs = favs.map((listing) => formatListing(listing));
 
-  const { userId } = req.token;
-
-  knex('users_listings')
-    .where('user_id', userId)
-    // .join('listings', 'listings.id', 'users_listings.listings_id')
-
-    .then((rows) => {
-      res.send(camelizeKeys(rows));
+      res.send(camelizeKeys(favs));
     })
     .catch((err) => {
       next(err);

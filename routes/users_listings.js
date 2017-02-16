@@ -93,6 +93,8 @@ router.post('/users_listings', authorize, (req, res, next) => {
 })
 
 router.get('/users_listings', authorize, (req, res, next) => {
+  console.log('hi!');
+
   if (!req.verify) {
     throw boom.create(401, 'Unauthorized');
   }

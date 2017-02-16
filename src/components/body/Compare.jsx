@@ -84,7 +84,7 @@ export default class Compare extends React.Component {
   }
 
   componentWillMount() {
-    this.props.getFavorites();
+    this.props.checkForAddedFavorite();
   }
 
   render() {
@@ -145,7 +145,7 @@ export default class Compare extends React.Component {
                     userFavorites={this.props.userFavorites}
                     pageChange={this.props.pageChange}
                     fetchAndFormatFavorites={this.props.fetchAndFormatFavorites}
-                    alignment='left' 
+                    alignment='left'
                     comparisonPage='comparison2'
                     activePageNum='activePage2'
                     otherPage={this.props.activePage1}

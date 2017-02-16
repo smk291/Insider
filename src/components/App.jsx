@@ -408,14 +408,31 @@ export default class App extends Component {
           }
         });
 
+        let comparison1 = {},
+            comparison2 = {},
+            activePage1,
+            activePage2;
+
+        if (userFavorites.length > 1){
+          comparison1 = userFavorites[0];
+          comparison2 = userFavorites[1];
+          activePage1 = 0,
+          activePage2 = 1;
+        } else if (userFavorites.length === 1) {
+          comparison1 = userFavorites[0];
+          comparison2 = userFavorites[0];
+          acivePage1 = 0;
+          activePage2 = 0;
+        }
+
         this.setState({
           listings,
           markers,
           userFavorites,
-          comparison1: userFavorites[0],
-          comparison2: userFavorites[1],
-          acivePage1: 0,
-          activePage2: 1
+          comparison1,
+          comparison2,
+          activePage1,
+          activePage2
         });
       }).catch((err) => {
         console.log(err);

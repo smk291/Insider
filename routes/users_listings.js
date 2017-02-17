@@ -101,8 +101,39 @@ router.get('/users_listings', authorize, (req, res, next) => {
   let favListings = [];
 
   knex('users_listings')
-    .where('user_id', userId)
+    .select('users_listings.id', 'listings_id')
     .innerJoin('listings', 'listings.id', 'users_listings.listings_id')
+    .select(
+      'bath',
+      'bedrooms',
+      'cat',
+      'checked',
+      'descr',
+      'dog',
+      'furnished',
+      'housing',
+      'last_checked',
+      'lat',
+      'laundry',
+      'lon',
+      'neighborhood',
+      'parking',
+      'photos',
+      'post_date',
+      'price',
+      'private_room',
+      'smoking',
+      'sqft',
+      'state',
+      'street_address',
+      'sub_or_apt',
+      'title',
+      'url',
+      'urlnum',
+      'void',
+      'wheelchair',
+      'zip')
+    .select()
 
     .then((favs) => {
       if (!favs) {
@@ -118,49 +149,38 @@ router.get('/users_listings', authorize, (req, res, next) => {
     });
 });
 
-router.delete('/users_listings/:id/:userId', authorize, (req, res, next) => {
-  const { listingsId } = req.body;
+router.delete('/users_listings/:id', authorize, (req, res, next) => {
   const { userId } = req.token;
-  const deleted = {};
+  const { id } = req.params;
+  let deleted = {};
 
   knex('users_listings')
-    .where('listings_id', listingsId)
-    .where('user_id', userId)
+    .where('id', id)
     .first()
     .then((row) => {
       if (!row) {
-        throw boom.create(400, `No entry for user ${userId} at ${housingSearchId}`);
+        throw boom.create(400, `No row at id ${id}`);
       }
 
-      deleted.fromUsersListings = camelizeKeys(row);
+      if (Number(row.user_id) !== userId && Number(row.user_id)) {
+        throw boom.create(400, `Row at id ${id} does not belong to user id ${userId}`);
+      }
+
+      deleted = camelizeKeys(row);
 
       knex('users_listings')
-      .where('listings_id', listingsId)
-      .then((row) => {
-        if (Number(row.user_id) !== userId && Number(row.user_id)) {
-          throw boom.create(400, `listings_id ${listingsId} does not belong to current user user.id ${userId}`);
-        }
-      })
-      .catch((err) => {
-        next(err);
-      });
-    })
-    .then(() => {
-      knex('users_listings')
-      .where('listings_id', listingsId)
-      .where('user_id', userId)
-      .del()
-      .returning('*')
-      .then((rows) => {
-        if (!rows) {
-          throw boom.create(400, `listings.id ${listingsId} exists in listings, but there's no entry for it in users_housing_searches. This shouldn't be possible.`);
-        }
+        .where('id', id)
+        .del()
+        .returning('*')
+        .first()
+        .then((deletedRow) => {
+          if (!deletedRow) {
+            throw boom.create(400, `This shouldn't be possible...`);
+          }
 
-        deleted.fromUserListings = camelizeKeys(rows);
-      }).then(() => {
-        res.send(deleted);
-      }).catch((err) => {
-        next(err);
+          res.send(deletedRow);
+        }).catch((err) => {
+          next(err);
       });
     }).catch((err) => {
       next(err);

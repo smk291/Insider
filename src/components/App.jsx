@@ -183,7 +183,8 @@ export default class App extends Component {
     this.scrapeList = this.scrapeList.bind(this);
     this.scrapeRows = this.scrapeRows.bind(this);
     this.scrapeNull = this.scrapeNull.bind(this);
-    this.checkFor404 = this.checkFor404.bind(this)
+    this.checkFor404 = this.checkFor404.bind(this);
+    this.checkEverything = this.checkEverything.bind(this);
     //Handle changes
     this.handleChange = this.handleChange.bind(this);
     this.handleCheckbox = this.handleCheckbox.bind(this);
@@ -338,7 +339,7 @@ export default class App extends Component {
 
     axios({method: 'get', url: '/scrape_null'}).then((res) => {}).catch((err) => {});
   }
-  checkFor404(){
+  checkFor404() {
     axios({method: 'get', url: `/listings_check_for_404`}).then((res) => {
       // console.log(res.data);
       let listings = res.data
@@ -355,6 +356,18 @@ export default class App extends Component {
       }).catch((err) => {
         console.log(`Err here: ${err}`);
       });
+    }).catch((err) => {
+      console.log(err);
+    })
+  }
+  checkEverything() {
+    axios({
+      method: 'get',
+      url: `/scrape/Seattle`
+    }).then((res) => {
+      let data = res.data
+
+      console.log(data);
     }).catch((err) => {
       console.log(err);
     })

@@ -19,32 +19,37 @@ export default class Home extends React.Component {
     this.filterListings = this.filterListings.bind(this)
     this.createFavoritesForDisplay = this.createFavoritesForDisplay.bind(this);
     this.checkFor404 = this.checkFor404.bind(this);
+    this.checkEverything = this.checkEverything.bind(this);
   }
 
   //<editor-fold HTTP and list
-  scrapeList(e){
+  scrapeList(e) {
     this.props.scrapeList(e);
   }
 
-  scrapeRows(e){
+  scrapeRows(e) {
     this.props.scrapeRows(e);
   }
 
-  scrapeNull(e){
+  scrapeNull(e) {
     this.props.scrapeNull(e);
   }
 
-  filterListings(){
+  filterListings() {
     this.props.filterListings();
   }
   // </editor-fold>
 
-  createFavoritesForDisplay(e){
+  createFavoritesForDisplay(e) {
     this.props.createFavoritesForDisplay(e)
   }
 
-  checkFor404(){
+  checkFor404() {
     this.props.checkFor404();
+  }
+
+  checkEverything() {
+    this.props.checkEverything();
   }
 
   render() {
@@ -64,6 +69,7 @@ export default class Home extends React.Component {
               <Button onClick={this.scrapeList}>get list</Button>
               <Button onClick={this.scrapeRows}>get row scrapes</Button>
               <Button onClick={this.checkFor404}>check for 404</Button>
+              <Button onClick={this.checkEverything}>check everything</Button>
               {/* <Button onClick={this.getListings}>get listings</Button> */}
               {/* <Button onClick={this.filterListings}>filter listings</Button> */}
               {/* <Button onClick={this.createFavoritesForDisplay}>Favorites for listing</Button> */}

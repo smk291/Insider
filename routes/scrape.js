@@ -35,6 +35,40 @@ function authorize(req, res, next) {
   });
 }
 
+function checkFor404() {
+  knex('listings')
+    .whereNot('void', true)
+    .then((listings) => {
+      for (let i = 0; i < listings.length; i++) {
+        let url = listings[i].url;
+
+        request(`http://seattle.craigslist.org${url}`, function (error, response, body) {
+          if (response && response.body && (response.body.indexOf(`This posting has expired.`) !== -1 || response.body.indexOf(`There is nothing here`) !== -1 || response.body.indexOf(`This posting has been deleted by its author`) !== -1 || response.body.indexOf(`This posting has been flagged for removal`) !== -1)) {
+            knex('listings')
+            .where('urlnum', listings[i].urlnum)
+            .first()
+            .update({void: true, checked: true}, '*')
+            .then((row) => {
+              // console.log(`Page at http://seattle.craigslist.org${row[0].url} no longer exists. New row is ${row}`)
+            }).catch((err) => {
+              throw boom.create(400, err);
+            })
+          } else {
+            knex('listings')
+            .where('urlnum', listings[i].urlnum)
+            .first()
+            .update({checked: true}, '*')
+            .then((row) => {
+              // console.log(`Page at http://seattle.craigslist.org${row[0].url} still exists. New row is:`)
+            }).catch((err) => {
+              throw boom.create(400, err);
+            })
+          }
+        })
+      }
+    }).catch((err) => {console.log(err)});
+}
+
 router.get('/scrape/:city', authorize, (req, res) => {
   const { city } = req.params
   let details = [],
@@ -342,41 +376,29 @@ router.get('/scrape/:city', authorize, (req, res) => {
   });
 
   var dispatcher = new CerealScraper.Dispatcher(cereallist).start().then(function() {
-    list = list.map((listing) => {
-      return scrapeRow(listing);
-    });
+    console.log(list.length);
 
-    knex('listings')
-      .whereNot('checked', true)
-      .then((listings) => {
-        for (let i = 0; i < listings.length; i++) {
-          let url = listings[i].url;
+      knex('listings')
+        .then((listings) => {
+          let listUrlNums = list.reduce((acc, listing) => {
+            acc[listing.urlnum] = listing.url;
+            return acc;
+          }, {});
 
-          request(`http://seattle.craigslist.org${url}`, function (error, response, body) {
-            if (response && response.body && (response.body.indexOf(`This posting has expired.`) !== -1 || response.body.indexOf(`There is nothing here`) !== -1 || response.body.indexOf(`This posting has been deleted by its author`) !== -1 || response.body.indexOf(`This posting has been flagged for removal`) !== -1)) {
-              knex('listings')
-              .where('urlnum', listings[i].urlnum)
-              .first()
-              .update({void: true, checked: true}, '*')
-              .then((row) => {
-                // console.log(`Page at http://seattle.craigslist.org${row[0].url} no longer exists. New row is ${row}`)
-              }).catch((err) => {
-                throw boom.create(400, err);
-              })
-            } else {
-              knex('listings')
-              .where('urlnum', listings[i].urlnum)
-              .first()
-              .update({checked: true}, '*')
-              .then((row) => {
-                // console.log(`Page at http://seattle.craigslist.org${row[0].url} still exists. New row is:`)
-              }).catch((err) => {
-                throw boom.create(400, err);
-              })
+          for (let i = 0; i < listings.length; i++) {
+            if (listUrlNums[listings[i].urlnum]) {
+              delete listUrlNums[listings[i].urlnum];
             }
-          })
-        }
-      }).catch((err) => {console.log(err)});
+          }
+
+          console.log(listUrlNums);
+        }).catch((err) => {console.log(err)});
+        
+    // list = list.map((listing) => {
+    //   return scrapeRow(listing);
+    // });
+
+
 
     // res.send(list);
   });

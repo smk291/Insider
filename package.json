@@ -127,7 +127,6 @@
     "react-router-active-component": "^4.0.0",
     "react-router-bootstrap": "^0.23.1",
     "react-simple-range": "^1.4.0",
-    "react-toastr": "^2.8.2",
     "request": "^2.79.0",
     "request-promise": "^4.1.1",
     "rimraf": "^2.4.3",

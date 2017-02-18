@@ -1,9 +1,7 @@
-'use strict';
-
-exports.up = (knex) => {
-  return knex.schema.createTable('listings', (table) => {
+exports.up = knex => {
+  return knex.schema.createTable('listings', table => {
     table.increments();
-    table.string('url').notNullable().unique()
+    table.string('url').notNullable().unique();
     table.string('urlnum').notNullable().unique();
     table.string('post_date').notNullable().defaultTo('');
     table.string('title').notNullable().defaultTo('No title provided');
@@ -33,8 +31,4 @@ exports.up = (knex) => {
   });
 };
 
-
-exports.down = (knex) => {
-  return knex.schema.dropTableIfExists('listings');
-};
-
+exports.down = knex => knex.schema.dropTableIfExists('listings');

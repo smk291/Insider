@@ -230,7 +230,7 @@ router.get('/scrape/:city', authorize, (req, res) => {
           let dispatcher2 = new CerealScraper.Dispatcher(cerealIndiv).start();
         }
       });
-    }).catch((err) => {console.log(err);})
+    }).catch((err) => {throw boom.create(400, err)})
 });
 
 router.get('/scrape_for_404/', authorize, (req, res) => {
@@ -241,8 +241,6 @@ router.get('/scrape_for_404/', authorize, (req, res) => {
       let countNew404 = 0;
       let j = 0;
       for (let i = 0; i < listings.length; i++) {
-        j++;
-
         fetchUrl(`http://seattle.craigslist.org${listings[i].url}`, (error, meta, body) => {
           if (body.indexOf(`This posting has expired.`) !== -1
           || body.indexOf(`There is nothing here`) !== -1
@@ -260,8 +258,8 @@ router.get('/scrape_for_404/', authorize, (req, res) => {
           }
         });
       }
-      res.send(200, `j: ${j}, countNew404: ${countNew404}`);
-    }).catch((err) => {console.log(err)});
+      res.send(200, countNew404);
+    }).catch((err) => {throw boom.create(400, err)});
 })
 
 module.exports = router;

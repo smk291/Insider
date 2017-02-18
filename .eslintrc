@@ -1,4 +1,9 @@
 {
+  "extends": "airbnb",
+  "globals": {
+    "document": true,
+    "window": true
+  },
   "ecmaFeatures": {
     "jsx": true,
     "modules": true
@@ -10,7 +15,7 @@
   "parser": "babel-eslint",
   "rules": {
     "quotes": [2, "single"],
-    "strict": [2, "never"],
+    "strict": ["error", "global"],
     "babel/generator-star-spacing": 1,
     "babel/new-cap": 1,
     "babel/object-shorthand": 1,
@@ -18,7 +23,11 @@
     "babel/no-await-in-loop": 1,
     "react/jsx-uses-react": 2,
     "react/jsx-uses-vars": 2,
-    "react/react-in-jsx-scope": 2
+    "react/react-in-jsx-scope": 2,
+    "react/jsx-curly-spacing": [2, "always"],
+    "react/prefer-stateless-function": [0],
+    "arrow-parens": ["error", "as-needed"],
+    "arrow-body-style": 0
   },
   "plugins": [
     "babel",

@@ -1,7 +1,5 @@
-'use strict';
-
-exports.up = (knex) => {
-  return knex.schema.createTable('users', (table) => {
+exports.up = knex => {
+  return knex.schema.createTable('users', table => {
     table.increments();
     table.string('first_name').notNullable().defaultTo('');
     table.string('last_name').notNullable().defaultTo('');
@@ -13,6 +11,4 @@ exports.up = (knex) => {
   });
 };
 
-exports.down = (knex) => {
-  return knex.schema.dropTableIfExists('users');
-};
+exports.down = knex => knex.schema.dropTableIfExists('users');

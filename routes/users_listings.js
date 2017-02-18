@@ -1,38 +1,44 @@
-const express                          = require('express');
-const router                           = express.Router();
-const knex                             = require('../knex');
-const bcrypt                           = require('bcrypt-as-promised');
-const boom                             = require('boom');
-const jwt                              = require('jsonwebtoken');
+const express = require('express');
+const knex = require('../knex');
+const boom = require('boom');
+const jwt = require('jsonwebtoken');
 const { camelizeKeys, decamelizeKeys } = require('humps');
-const titleize                         = require('underscore.string/titleize');
-const humanize                         = require('underscore.string/humanize');
+const titleize = require('underscore.string/titleize');
+const humanize = require('underscore.string/humanize');
+
+// eslint-disable-next-line babel/new-cap
+const router = express.Router();
 
 function formatListing(listing) {
-  listing.title = titleize(listing.title);
-  listing.descr = humanize(listing.descr);
+  const fL = listing;
 
-  if (listing.price && listing.price[0] !== '$') {
-    listing.price = '$' + listing.price;
+  fL.title = titleize(fL.title);
+  fL.descr = humanize(fL.descr);
+
+  if (fL.price && fL.price[0] !== '$') {
+    fL.price = `$${fL.price}`;
   }
 
-  if (listing.neighborhood[0] === '(' && listing.neighborhood[listing.neighborhood.length - 1] === ')') {
-    listing.neighborhood = listing.neighborhood.slice(1);
-    listing.neighborhood = listing.neighborhood.slice(0, -1);
+  if (fL.neighborhood[0] === '(' && fL.neighborhood[fL.neighborhood.length - 1] === ')') {
+    fL.neighborhood = fL.neighborhood.slice(1);
+    fL.neighborhood = fL.neighborhood.slice(0, -1);
   }
 
-  listing.neighborhood = listing.neighborhood.toLowerCase();
-  listing.neighborhood = titleize(listing.neighborhood);
+  fL.neighborhood = fL.neighborhood.toLowerCase();
+  fL.neighborhood = titleize(fL.neighborhood);
 
-  return listing;
+  return fL;
 }
 
 function authorize(req, res, next) {
   jwt.verify(req.cookies.token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
+      // eslint-disable-next-line no-param-reassign
       req.verify = false;
     } else {
+      // eslint-disable-next-line no-param-reassign
       req.verify = true;
+      // eslint-disable-next-line no-param-reassign
       req.token = decoded;
     }
 
@@ -41,64 +47,54 @@ function authorize(req, res, next) {
 }
 
 router.post('/users_listings', authorize, (req, res, next) => {
-  if (!req.verify){
-    throw boom.create(401,'Unauthorized. Please log in.')
+  if (!req.verify) {
+    throw boom.create(401, 'Unauthorized. Please log in.');
   }
 
   const { userId } = req.token;
   const { listingsId } = req.body;
 
   knex('users')
-  .where('id', userId)
-  .first()
-  .then((row) => {
-    if (!row || row.length === 0){
-      throw boom.create(400, 'Attempting to access nonexistent user account or someone else\'s account')
-    }
-
-    knex('listings')
-    .where('id', listingsId)
+    .where('id', userId)
     .first()
-    .then((row) => {
-      if (!row || row.length === 0){
-        throw boom.create(400, 'Attempting to access nonexistent listing')
+    .then(user => {
+      if (!user || user.length === 0) {
+        throw boom.create(400, 'Attempting to access nonexistent user account or someone else\'s account');
       }
 
-      knex('users_listings')
-      .where('user_id', userId)
-      .where('listings_id', listingsId)
-      .first()
-      .then((row) => {
-        if (row){
-          throw boom.create(400, `Already favorited.`)
-        }
+      knex('listings')
+        .where('id', listingsId)
+        .first()
+        .then(listing => {
+          if (!listing || listing.length === 0) {
+            throw boom.create(400, 'Attempting to access nonexistent listing');
+          }
 
-        knex('users_listings')
-        .insert(decamelizeKeys({userId, listingsId}), '*')
-        .then((row) => {
-          res.send(camelizeKeys(row))
-        }).catch((err) => {
-          next(err);
+          knex('users_listings')
+            .where('user_id', userId)
+            .where('listings_id', listingsId)
+            .first()
+            .then(userListing => {
+              if (userListing) {
+                throw boom.create(400, 'Already favorited.');
+              }
+
+              knex('users_listings')
+                .insert(decamelizeKeys({ userId, listingsId }), '*')
+                .then(newUserListing => res.send(camelizeKeys(newUserListing)))
+                .catch(err => next(err));
+            })
+            .catch(err => next(err));
         })
-      }).catch((err) => {
-        next(err);
-      });
-    }).catch((err) => {
-      next(err);
-    });
-
-  }).catch((err) => {
-    next(err);
-  });
-})
+        .catch(err => next(err));
+    })
+    .catch(err => next(err));
+});
 
 router.get('/users_listings', authorize, (req, res, next) => {
   if (!req.verify) {
     throw boom.create(401, 'Unauthorized');
   }
-
-  const { userId } = req.token;
-  let favListings = [];
 
   knex('users_listings')
     .select('users_listings.id', 'listings_id')
@@ -107,7 +103,6 @@ router.get('/users_listings', authorize, (req, res, next) => {
       'bath',
       'bedrooms',
       'cat',
-      'checked',
       'descr',
       'dog',
       'furnished',
@@ -133,31 +128,27 @@ router.get('/users_listings', authorize, (req, res, next) => {
       'void',
       'wheelchair',
       'zip')
-    .select()
-
-    .then((favs) => {
+    .then(favs => {
       if (!favs) {
         throw boom.create(400, 'No favorites');
       }
 
-      favs = favs.map((listing) => formatListing(listing));
+      let formattedFavs = [];
+      formattedFavs = favs.map(listing => formatListing(listing));
 
-      res.send(camelizeKeys(favs));
+      res.send(camelizeKeys(formattedFavs));
     })
-    .catch((err) => {
-      next(err);
-    });
+    .catch(err => next(err));
 });
 
 router.delete('/users_listings/:id', authorize, (req, res, next) => {
   const { userId } = req.token;
   const { id } = req.params;
-  let deleted = {};
 
   knex('users_listings')
     .where('id', id)
     .first()
-    .then((row) => {
+    .then(row => {
       if (!row) {
         throw boom.create(400, `No row at id ${id}`);
       }
@@ -166,25 +157,21 @@ router.delete('/users_listings/:id', authorize, (req, res, next) => {
         throw boom.create(400, `Row at id ${id} does not belong to user id ${userId}`);
       }
 
-      deleted = camelizeKeys(row);
-
       knex('users_listings')
         .where('id', id)
         .del()
         .returning('*')
         .first()
-        .then((deletedRow) => {
+        .then(deletedRow => {
           if (!deletedRow) {
-            throw boom.create(400, `This shouldn't be possible...`);
+            throw boom.create(400, 'This shouldn\'t be possible...');
           }
 
-          res.send(deletedRow);
-        }).catch((err) => {
-          next(err);
-      });
-    }).catch((err) => {
-      next(err);
-    });
+          res.send(camelizeKeys(deletedRow));
+        })
+        .catch(err => next(err));
+    })
+    .catch(err => next(err));
 });
 
 module.exports = router;

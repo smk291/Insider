@@ -12,14 +12,11 @@ exports.up = (knex) => {
     table.string('sqft');
     table.text('descr', 'utf-8');
     table.integer('price');
-    table.string('neighborhood').notNullable().defaultTo('');
+    table.string('neighborhood').notNullable();
     table.string('street_address').defaultTo('');
-    table.string('state').defaultTo('');
-    table.string('zip').defaultTo('');
     table.string('lat').defaultTo('');
     table.string('lon').defaultTo('');
     table.boolean('void');
-    table.boolean('checked');
     table.enu('housing', ['apartment', 'condo', 'house', 'townhouse', 'duplex', 'land', 'in-law', 'cottage/cabin']);
     table.enu('laundry', ['laundry on site', 'w/d in unit', 'laundry in bldg', null]).defaultTo(null);
     table.enu('parking', ['off-street parking', 'detached garage', 'attached garage', 'valet parking', 'street parking', 'carport', 'no parking', null]).defaultTo(null);

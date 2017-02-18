@@ -13,38 +13,12 @@ import Login from './auth/Login'
 export default class Home extends React.Component {
   constructor(props) {
     super(props);
-    this.scrapeList = this.scrapeList.bind(this);
-    this.scrapeRows = this.scrapeRows.bind(this);
-    this.scrapeNull = this.scrapeNull.bind(this);
-    this.filterListings = this.filterListings.bind(this)
-    this.createFavoritesForDisplay = this.createFavoritesForDisplay.bind(this);
-    this.checkFor404 = this.checkFor404.bind(this);
+    this.scrape = this.scrape.bind(this);
   }
 
   //<editor-fold HTTP and list
-  scrapeList(e){
-    this.props.scrapeList(e);
-  }
-
-  scrapeRows(e){
-    this.props.scrapeRows(e);
-  }
-
-  scrapeNull(e){
-    this.props.scrapeNull(e);
-  }
-
-  filterListings(){
-    this.props.filterListings();
-  }
-  // </editor-fold>
-
-  createFavoritesForDisplay(e){
-    this.props.createFavoritesForDisplay(e)
-  }
-
-  checkFor404(){
-    this.props.checkFor404();
+  scrape() {
+    this.props.scrape();
   }
 
   render() {
@@ -60,10 +34,11 @@ export default class Home extends React.Component {
             <p className={primary.points}>It doesn't need to be this way.</p>
             <p>Insider shows how easy it would be to make craigslist more functional, useful and usable.</p>
             <div>
-              <Button onClick={this.scrapeNull}>get null</Button>
+              {/* <Button onClick={this.scrapeNull}>get null</Button>
               <Button onClick={this.scrapeList}>get list</Button>
               <Button onClick={this.scrapeRows}>get row scrapes</Button>
-              <Button onClick={this.checkFor404}>check for 404</Button>
+              <Button onClick={this.checkFor404}>check for 404</Button> */}
+              <Button onClick={this.scrape}>check everything</Button>
               {/* <Button onClick={this.getListings}>get listings</Button> */}
               {/* <Button onClick={this.filterListings}>filter listings</Button> */}
               {/* <Button onClick={this.createFavoritesForDisplay}>Favorites for listing</Button> */}

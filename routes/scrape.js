@@ -14,8 +14,6 @@ const request                        = require('request');
 const http                           = require('http');
 const cheerio                        = require('cheerio');
 const fs                             = require('fs');
-const decycle                        = require('json-decycle').decycle;
-const retrocycle                     = require('json-decycle').retrocycle;
 const timeout                        = require('connect-timeout');
 const fetchUrl                       = require("fetch").fetchUrl;
 
@@ -260,11 +258,6 @@ router.get('/scrape_for_404/', authorize, (req, res) => {
                 throw boom.create(400, err);
               });
           }
-
-          // if (i + 1 === listings.length){
-          //   res.send(200, countNew404)
-          // }
-          console.log(j);
         });
       }
       res.send(200, `j: ${j}, countNew404: ${countNew404}`);

@@ -180,11 +180,7 @@ export default class App extends Component {
     this.authSwitch = this.authSwitch.bind(this);
     this.processAuth = this.processAuth.bind(this);
     //Scraping
-    this.scrapeList = this.scrapeList.bind(this);
-    this.scrapeRows = this.scrapeRows.bind(this);
-    this.scrapeNull = this.scrapeNull.bind(this);
-    this.checkFor404 = this.checkFor404.bind(this);
-    this.checkEverything = this.checkEverything.bind(this);
+    this.scrape = this.scrape.bind(this);
     //Handle changes
     this.handleChange = this.handleChange.bind(this);
     this.handleCheckbox = this.handleCheckbox.bind(this);
@@ -307,60 +303,7 @@ export default class App extends Component {
     }
   }
   //Scraping
-  scrapeList(e) {
-    e.preventDefault();
-
-    axios({method: 'get', url: '/scrape_list/seattle'}).then((res) => {
-      this.setState({list: res.data});
-    }).catch((err) => {
-      // notify.show(err.response.data.errors[0].messages[0], 'error', 3000);
-    });
-  }
-  scrapeRows(e) {
-    let details = [];
-
-    this.state.list.map((el) => {
-      if (el.urlnum) {
-        axios({method: 'get', url: `/scrape_details/${el.urlnum}`}).then((res) => {
-          details.push(res.data);
-          this.setState({details});
-        }).catch((err) => {
-          details.push(err);
-          this.setState({details});
-        });
-      } else {
-        details.push(null);
-        this.setState({details});
-      }
-    })
-  }
-  scrapeNull(e) {
-    e.preventDefault();
-
-    axios({method: 'get', url: '/scrape_null'}).then((res) => {}).catch((err) => {});
-  }
-  checkFor404() {
-    axios({method: 'get', url: `/listings_check_for_404`}).then((res) => {
-      // console.log(res.data);
-      let listings = res.data
-
-      axios({
-        method: 'post',
-        url: `/scrape_check_for_404`,
-        data: {
-          listings: listings
-        },
-        'Content-Type': 'applicaton/json'
-      }).then((res) => {
-        // console.log(res);
-      }).catch((err) => {
-        console.log(`Err here: ${err}`);
-      });
-    }).catch((err) => {
-      console.log(err);
-    })
-  }
-  checkEverything() {
+  scrape() {
     axios({
       method: 'get',
       url: `/scrape/Seattle`

@@ -60,7 +60,6 @@ router.get('/scrape/:city', authorize, (req, res) => {
           qs: {}
         },
         itemsSelector: '.rows .result-row',
-        // skipRows: [],
         fieldSelectors: {
           postDate: new TextSelector('.result-date'),
           title: new TextSelector('p a', 0),
@@ -242,30 +241,33 @@ router.get('/scrape_for_404/', authorize, (req, res) => {
     .returning('*')
     .then((listings) => {
       let countNew404 = 0;
-
+      let j = 0;
       for (let i = 0; i < listings.length; i++) {
+        j++;
+
         fetchUrl(`http://seattle.craigslist.org${listings[i].url}`, (error, meta, body) => {
-          if (body.indexOf(`This posting has expired.`) !== -1 || body.indexOf(`There is nothing here`) !== -1 || body.indexOf(`This posting has been deleted by its author`) !== -1 || body.indexOf(`This posting has been flagged for removal`) !== -1) {
-            // console.log(`body.indexOf(This posting has expired.) !== -1: ${body.indexOf('This posting has expired.') !== -1}`);
-            // console.log(`body.indexOf(There is nothing here) !== -1: ${body.indexOf('There is nothing here') !== -1}`);
-            // console.log(`body.indexOf(This posting has been deleted by its author) !== -1: ${body.indexOf('This posting has been deleted by its author') !== -1}`);
-            // console.log(`body.indexOf(This posting has been flagged for removal) !== -1): ${body.indexOf('This posting has been flagged for removal') !== -1}`);
+          if (body.indexOf(`This posting has expired.`) !== -1
+          || body.indexOf(`There is nothing here`) !== -1
+          || body.indexOf(`This posting has been deleted by its author`) !== -1
+          || body.indexOf(`This posting has been flagged for removal`) !== -1) {
             knex('listings')
               .where('urlnum', listings[i].urlnum)
               .first()
               .update({void: true}, '*')
               .then((row) => {
-                countNew404++;// console.log(`Page at http://seattle.craigslist.org${row[0].url} no longer exists. New row is ${row}`)
+                countNew404++;
               }).catch((err) => {
                 throw boom.create(400, err);
               });
           }
 
-          if (i + 1 === listings.length){
-            res.send(200, countNew404)
-          }
+          // if (i + 1 === listings.length){
+          //   res.send(200, countNew404)
+          // }
+          console.log(j);
         });
       }
+      res.send(200, `j: ${j}, countNew404: ${countNew404}`);
     }).catch((err) => {console.log(err)});
 })
 

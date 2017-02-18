@@ -88,6 +88,7 @@
     "express-partials": "^0.3.0",
     "express-session": "^1.14.2",
     "express-validation": "^1.0.1",
+    "fetch": "^1.1.0",
     "file-loader": "^0.9.0",
     "google-auth-library": "^0.9.10",
     "googleapis": "^15.0.0",

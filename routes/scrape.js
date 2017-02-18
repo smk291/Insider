@@ -13,9 +13,8 @@ const {camelizeKeys, decamelizeKeys} = require('humps');
 const request                        = require('request');
 const cheerio                        = require('cheerio');
 const fs                             = require('fs');
-const decycle                        = require('json-decycle').decycle;
-const retrocycle                     = require('json-decycle').retrocycle;
 const timeout                        = require('connect-timeout');
+const fetchUrl                       = require("fetch").fetchUrl;
 
 var CerealScraper   = require('cerealscraper'),
   TextSelector      = CerealScraper.Blueprint.TextSelector,
@@ -236,28 +235,34 @@ router.get('/scrape/:city', authorize, (req, res) => {
 
 router.get('/scrape_for_404/', authorize, (req, res) => {
   knex('listings')
-    .whereNot('void', true)
+    .where('void', null)
+    .returning('*')
     .then((listings) => {
-      console.log(listings);
-      // for (let i = 0; i < listings.length; i++) {
-      //   let url = listings[i].url;
-      //
-      //   request(`http://seattle.craigslist.org${url}`, function (error, response, body) {
-      //     console.log(response);
-      //     console.log(error);
-      //     if (response && response.body && (response.body.indexOf(`This posting has expired.`) !== -1 || response.body.indexOf(`There is nothing here`) !== -1 || response.body.indexOf(`This posting has been deleted by its author`) !== -1 || response.body.indexOf(`This posting has been flagged for removal`) !== -1)) {
-      //       knex('listings')
-      //       .where('urlnum', listings[i].urlnum)
-      //       .first()
-      //       .update({void: true}, '*')
-      //       .then((row) => {
-      //         // console.log(`Page at http://seattle.craigslist.org${row[0].url} no longer exists. New row is ${row}`)
-      //       }).catch((err) => {
-      //         throw boom.create(400, err);
-      //       })
-      //     }
-      //   });
-      // }
+      let countNew404 = 0;
+
+      for (let i = 0; i < listings.length; i++) {
+        fetchUrl(`http://seattle.craigslist.org${listings[i].url}`, (error, meta, body) => {
+          if (body.indexOf(`This posting has expired.`) !== -1 || body.indexOf(`There is nothing here`) !== -1 || body.indexOf(`This posting has been deleted by its author`) !== -1 || body.indexOf(`This posting has been flagged for removal`) !== -1) {
+            // console.log(`body.indexOf(This posting has expired.) !== -1: ${body.indexOf('This posting has expired.') !== -1}`);
+            // console.log(`body.indexOf(There is nothing here) !== -1: ${body.indexOf('There is nothing here') !== -1}`);
+            // console.log(`body.indexOf(This posting has been deleted by its author) !== -1: ${body.indexOf('This posting has been deleted by its author') !== -1}`);
+            // console.log(`body.indexOf(This posting has been flagged for removal) !== -1): ${body.indexOf('This posting has been flagged for removal') !== -1}`);
+            knex('listings')
+              .where('urlnum', listings[i].urlnum)
+              .first()
+              .update({void: true}, '*')
+              .then((row) => {
+                countNew404++;// console.log(`Page at http://seattle.craigslist.org${row[0].url} no longer exists. New row is ${row}`)
+              }).catch((err) => {
+                throw boom.create(400, err);
+              });
+          }
+
+          if (i + 1 === listings.length){
+            res.send(200, countNew404)
+          }
+        });
+      }
     }).catch((err) => {console.log(err)});
 })
 

@@ -83,7 +83,6 @@ router.get('/listings', (req, res, next) => {
 router.get('/listings_check_for_404', (req, res, next) => {
   knex('listings')
     .whereNull('void')
-    .whereNull('checked')
     .orderBy('id', 'asc')
     .then((rows) => {
       let listings = rows;
@@ -95,11 +94,6 @@ router.get('/listings_check_for_404', (req, res, next) => {
       listings = listings.map((el) => {
         return el.urlnum;
       });
-
-      // if (listings === [] || !listings) {
-      //   throw boom.create(400, `No listings found`);
-      // }
-      // console.log(listings);
 
       res.send(listings);
       res.end();
@@ -126,18 +120,6 @@ router.patch('/listings/:id', authorize, /*ev(validations.post),*/ (req, res, ne
     if (!row) {
       throw boom.create(400, `No listing found at listings.id ${id}`);
     }
-
-    // knex('housing_searches_listings_users')
-    // .where('user_id', userId)
-    // .where('listings_id', id)
-    // .first()
-    // .then((row) => {
-    //   if (!row) {
-    //     throw boom.create(400, `Listing at id ${id} does not belong to user.id ${userId}`);
-    //   }
-    // }).catch((err) => {
-    //   next(err);
-    // });
 
     return knex('listings')
     .where('id', id)

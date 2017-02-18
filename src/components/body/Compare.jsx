@@ -1,21 +1,10 @@
 import React from 'react'
-import {
-  Table,
-  Button,
-  Grid,
-  Jumbotron,
-  Row,
-  Col,
-  Popover,
-  Tooltip,
-  Modal
-} from 'react-bootstrap'
+import {Table, Button, Grid, Jumbotron, Row, Col, Popover, Tooltip, Modal} from 'react-bootstrap'
 import primary from './primary.css'
 import InlineSVG from 'svg-inline-react'
 import MdSearch from 'react-icons/lib/md/search'
 import MdCompare from 'react-icons/lib/md/compare'
 import MdMap from 'react-icons/lib/md/map'
-// import ContentTable from './compare/ContentTable'
 import axios from 'axios'
 import Listing from './compare/Listing.jsx'
 
@@ -66,7 +55,7 @@ class ContentTable extends React.Component {
               <tbody style={{
                 textAlign: 'center'
               }}>
-                {fields.map((field) => <tr>
+                {fields.map((field, idx) => <tr>
                   <td>{field}</td>
                 </tr>)}
               </tbody>

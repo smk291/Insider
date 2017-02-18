@@ -1,11 +1,9 @@
-// eslint-disable-next-line new-cap
-'use strict';
-
 const express = require('express');
 const morgan = require('morgan');
 const path = require('path');
 const webpack = require('webpack');
 const config = require('./webpack.config.dev');
+
 const compiler = webpack(config);
 
 const app = express();
@@ -29,7 +27,7 @@ switch (app.get('env')) {
 
 app.use(require('webpack-dev-middleware')(compiler, {
   // noInfo: true,
-  publicPath: config.output.publicPath
+  publicPath: config.output.publicPath,
 }));
 
 app.use(require('webpack-hot-middleware')(compiler));
@@ -49,6 +47,7 @@ const users = require('./routes/users');
 const token = require('./routes/token');
 const listings = require('./routes/listings');
 const scrape = require('./routes/scrape');
+// eslint-disable-next-line camelcase
 const users_listings = require('./routes/users_listings');
 
 app.use(bodyParser.json());
@@ -59,6 +58,7 @@ app.use(listings);
 app.use(scrape);
 app.use(users_listings);
 
+// eslint-disable-next-line no-unused-vars, consistent-return
 app.use((err, _req, res, _next) => {
   if (err.output && err.output.statusCode) {
     return res
@@ -83,6 +83,7 @@ app.use((err, _req, res, _next) => {
 });
 
 if (process.env.NODE_ENV !== 'production') {
+  // eslint-disable-next-line global-require
   require('dotenv').config();
 }
 
@@ -94,11 +95,13 @@ app.get('*', (req, res) => {
 
 app.listen(port, err => {
   if (err) {
+    // eslint-disable-next-line no-console
     console.log(err);
     return;
   }
 
-  console.log('Listening on port: ' + port);
+  // eslint-disable-next-line no-console
+  console.log(`Listening on port: ${port}`);
 });
 
 module.exports = app;

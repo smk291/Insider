@@ -1,4 +1,5 @@
-exports.seed = function(knex) {
+// eslint-disable-next-line func-names
+exports.seed = function (knex) {
   return knex('listings').del().then(() => {
     return knex('listings').insert([
       {
@@ -29,8 +30,8 @@ exports.seed = function(knex) {
             '00T0T_gvPopRUkcZW',
             '00x0x_9CyitWon6Hh',
             '00G0G_3QwByJiu8E9',
-            '01212_ioZPUhlsmx9'
-          ]
+            '01212_ioZPUhlsmx9',
+          ],
         },
         post_date: 'Dec 31',
         price: 2695,
@@ -46,7 +47,7 @@ exports.seed = function(knex) {
         urlnum: '5940205032',
         void: false,
         wheelchair: null,
-        zip: ''
+        zip: '',
       }, {
         bath: 'private bath',
         bedrooms: '2BR',
@@ -75,8 +76,8 @@ exports.seed = function(knex) {
             '00T0T_gvPopRUkcZW',
             '00x0x_9CyitWon6Hh',
             '00G0G_3QwByJiu8E9',
-            '01212_ioZPUhlsmx9'
-          ]
+            '01212_ioZPUhlsmx9',
+          ],
         },
         post_date: 'Dec 31',
         price: 2695,
@@ -92,7 +93,7 @@ exports.seed = function(knex) {
         urlnum: '5940204098',
         void: false,
         wheelchair: null,
-        zip: ''
+        zip: '',
       }, {
         bath: 'private bath',
         bedrooms: '2BR',
@@ -111,7 +112,7 @@ exports.seed = function(knex) {
         neighborhood: '(N\nEdmonds)',
         parking: 'off-street parking',
         photos: {
-          photos: ['00J0J_fGlvYyJlk7N', '00S0S_94tDYHdcdmO', '00P0P_caKcrEPeOx1']
+          photos: ['00J0J_fGlvYyJlk7N', '00S0S_94tDYHdcdmO', '00P0P_caKcrEPeOx1'],
         },
         post_date: 'Dec 31',
         price: 1500,
@@ -127,7 +128,7 @@ exports.seed = function(knex) {
         urlnum: '5910154143',
         void: false,
         wheelchair: null,
-        zip: ''
+        zip: '',
       }, {
         bath: 'private bath',
         bedrooms: '2BR',
@@ -146,7 +147,7 @@ exports.seed = function(knex) {
         neighborhood: '(Edmonds)',
         parking: 'carport',
         photos: {
-          photos: ['00M0M_6Dwe0R9A8Yi', '01313_5FJV6d90IOJ', '00d0d_hm0icm8IvuJ', '00M0M_a8Q1Y77zihx']
+          photos: ['00M0M_6Dwe0R9A8Yi', '01313_5FJV6d90IOJ', '00d0d_hm0icm8IvuJ', '00M0M_a8Q1Y77zihx'],
         },
         post_date: 'Dec 31',
         price: 2500,
@@ -162,7 +163,7 @@ exports.seed = function(knex) {
         urlnum: '5905305651',
         void: false,
         wheelchair: null,
-        zip: ''
+        zip: '',
       }, {
         bath: 'private bath',
         bedrooms: '1BR',
@@ -196,8 +197,8 @@ exports.seed = function(knex) {
             '00U0U_bDXLmHzgXTr',
             '00y0y_bx5O8vVBWTu',
             '00F0F_k5tT4oyBkgn',
-            '00Y0Y_8UiKAF35Gr9'
-          ]
+            '00Y0Y_8UiKAF35Gr9',
+          ],
         },
         post_date: 'Dec 31',
         price: 1000,
@@ -213,7 +214,7 @@ exports.seed = function(knex) {
         urlnum: '5940246129',
         void: false,
         wheelchair: null,
-        zip: ''
+        zip: '',
       }, {
         bath: null,
         bedrooms: '1BR',
@@ -245,8 +246,8 @@ exports.seed = function(knex) {
             '00i0i_aDPW8mNjoI2',
             '00I0I_Fs5ZZp7jcU',
             '00D0D_aszwUfSXaou',
-            '00T0T_kl1Iq3k9Cbt'
-          ]
+            '00T0T_kl1Iq3k9Cbt',
+          ],
         },
         post_date: 'Dec 31',
         price: 99,
@@ -262,7 +263,7 @@ exports.seed = function(knex) {
         urlnum: '5940332102',
         void: false,
         wheelchair: null,
-        zip: ''
+        zip: '',
       }, {
         bath: 'private bath',
         bedrooms: '1BR',
@@ -291,8 +292,8 @@ exports.seed = function(knex) {
             '00404_hYR1dKuQbQ1',
             '01313_6HZ430ChbCN',
             '00606_37nGbhCLvn9',
-            '00q0q_l7s5R7NbmGw'
-          ]
+            '00q0q_l7s5R7NbmGw',
+          ],
         },
         post_date: 'Dec 31',
         price: 2000,
@@ -308,7 +309,7 @@ exports.seed = function(knex) {
         urlnum: '5917286230',
         void: false,
         wheelchair: null,
-        zip: ''
+        zip: '',
       }, {
         bath: 'private bath',
         bedrooms: '1BR',
@@ -336,8 +337,8 @@ exports.seed = function(knex) {
             '00m0m_59Q3O8lGF0y',
             '00P0P_cvENxcCJCBj',
             '00E0E_gXLWNivXnAO',
-            '00w0w_30Owmv1mgTs'
-          ]
+            '00w0w_30Owmv1mgTs',
+          ],
         },
         post_date: 'Dec 31',
         price: 1550,
@@ -353,7 +354,7 @@ exports.seed = function(knex) {
         urlnum: '5932061017',
         void: false,
         wheelchair: null,
-        zip: ''
+        zip: '',
       }, {
         bath: 'private bath',
         bedrooms: '1BR',
@@ -382,8 +383,8 @@ exports.seed = function(knex) {
             '00i0i_bRiaoAp0VX1',
             '00t0t_jqLUzS26cc1',
             '00808_15U97yM007r',
-            '01414_i4jOQESGwob'
-          ]
+            '01414_i4jOQESGwob',
+          ],
         },
         post_date: 'Dec 31',
         price: 1365,
@@ -399,7 +400,7 @@ exports.seed = function(knex) {
         urlnum: '5940361044',
         void: false,
         wheelchair: null,
-        zip: ''
+        zip: '',
       }, {
         bath: 'no private bath',
         bedrooms: '1BR',
@@ -418,7 +419,7 @@ exports.seed = function(knex) {
         neighborhood: '(SHORLINE)',
         parking: 'street parking',
         photos: {
-          photos: ['01212_hQykhjxxYV1']
+          photos: ['01212_hQykhjxxYV1'],
         },
         post_date: 'Dec 31',
         price: 30,
@@ -434,7 +435,10 @@ exports.seed = function(knex) {
         urlnum: '5940326521',
         void: false,
         wheelchair: null,
-        zip: ''
-      }).then(() => {
-        return knex.raw('SELECT setval('listings_id_seq', (SELECT MAX(id) FROM listings));');
-      });};
+        zip: '',
+      },
+    ]).then(() => {
+      return knex.raw('SELECT setval(\'listings_id_seq\', (SELECT MAX(id) FROM listings));');
+    });
+  });
+};

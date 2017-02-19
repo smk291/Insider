@@ -271,7 +271,7 @@ router.get('/scrape/:city', authorize, (req, res, next) => {
           });
 
           // eslint-disable-next-line no-unused-vars
-          const dispatcher2 = new CerealScraper.Dispatcher(cerealIndiv).start();
+          new CerealScraper.Dispatcher(cerealIndiv).start();
         }
       });
     }).catch(err => next(err));

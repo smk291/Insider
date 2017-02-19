@@ -1,4 +1,3 @@
-const boom = require('boom');
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const knex = require('../knex');
@@ -28,7 +27,7 @@ function authorize(req, res, next) {
   });
 }
 
-router.get('/scrape/:city', authorize, (req, res) => {
+router.get('/scrape/:city', authorize, (req, res, next) => {
   const newListings = [];
 
   knex('listings')
@@ -215,6 +214,11 @@ router.get('/scrape/:city', authorize, (req, res) => {
                 return detailHash;
               }),
               // eslint-disable-next-line array-callback-return, consistent-return
+              bedrooms: new TransformSelector('.attrgroup span b', 0, el => {
+                if (el[0] && el[0].children){
+                  return el[0].children[0].data;
+                }
+              }),
               sqft: new TransformSelector('.attrgroup sup', 0, el => {
                 // eslint-disable-next-line max-len
                 if (el && el[0] && el[0].prev && el[0].prev.prev && el[0].prev.prev.children[0].data) {
@@ -260,7 +264,7 @@ router.get('/scrape/:city', authorize, (req, res) => {
                     .insert(decamelizeKeys(newListings))
                     .returning('*')
                     .then(insertedRows => res.send(camelizeKeys(insertedRows)))
-                    .catch(err => { throw boom.create(400, err); });
+                    .catch(err => next(err));
                 }
               });
             },
@@ -270,10 +274,10 @@ router.get('/scrape/:city', authorize, (req, res) => {
           const dispatcher2 = new CerealScraper.Dispatcher(cerealIndiv).start();
         }
       });
-    }).catch(err => { throw boom.create(400, err); });
+    }).catch(err => next(err));
 });
 
-router.get('/scrape_for_404/', authorize, (req, res) => {
+router.get('/scrape_for_404/', authorize, (req, res, next) => {
   knex('listings')
     .where('void', null)
     .returning('*')
@@ -282,7 +286,10 @@ router.get('/scrape_for_404/', authorize, (req, res) => {
 
       function checkFor404(listing) {
         fetchUrl(`http://seattle.craigslist.org${listing.url}`, (error, meta, body) => {
-          if (body.indexOf('This posting has expired.') !== -1 || body.indexOf('There is nothing here') !== -1 || body.indexOf('This posting has been deleted by its author') !== -1 || body.indexOf('This posting has been flagged for removal') !== -1) {
+          if (body.indexOf('This posting has expired.') !== -1
+          || body.indexOf('There is nothing here') !== -1
+          || body.indexOf('This posting has been deleted by its author') !== -1
+          || body.indexOf('This posting has been flagged for removal') !== -1) {
             knex('listings')
               .where('urlnum', listing.urlnum)
               .first()
@@ -290,7 +297,7 @@ router.get('/scrape_for_404/', authorize, (req, res) => {
               .then(() => {
                 countNew404 += 1;
               })
-              .catch(err => { throw boom.create(400, err); });
+              .catch(err => next(err));
           }
         });
       }
@@ -301,9 +308,7 @@ router.get('/scrape_for_404/', authorize, (req, res) => {
 
       res.send(200, countNew404);
     })
-    .catch(err => {
-      throw boom.create(400, err);
-    });
+    .catch(err => next(err));
 });
 
 module.exports = router;

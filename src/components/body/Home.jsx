@@ -14,11 +14,16 @@ export default class Home extends React.Component {
   constructor(props) {
     super(props);
     this.scrape = this.scrape.bind(this);
+    this.checkFor404 = this.checkFor404.bind(this);
   }
 
   //<editor-fold HTTP and list
   scrape() {
     this.props.scrape();
+  }
+
+  checkFor404() {
+    this.props.checkFor404();
   }
 
   render() {
@@ -36,8 +41,8 @@ export default class Home extends React.Component {
             <div>
               {/* <Button onClick={this.scrapeNull}>get null</Button>
               <Button onClick={this.scrapeList}>get list</Button>
-              <Button onClick={this.scrapeRows}>get row scrapes</Button>
-              <Button onClick={this.checkFor404}>check for 404</Button> */}
+              <Button onClick={this.scrapeRows}>get row scrapes</Button> */}
+              <Button onClick={this.checkFor404}>check for 404</Button>
               <Button onClick={this.scrape}>check everything</Button>
               {/* <Button onClick={this.getListings}>get listings</Button> */}
               {/* <Button onClick={this.filterListings}>filter listings</Button> */}

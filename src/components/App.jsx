@@ -181,6 +181,7 @@ export default class App extends Component {
     this.processAuth = this.processAuth.bind(this);
     //Scraping
     this.scrape = this.scrape.bind(this);
+    this.checkFor404 = this.checkFor404.bind(this);
     //Handle changes
     this.handleChange = this.handleChange.bind(this);
     this.handleCheckbox = this.handleCheckbox.bind(this);
@@ -310,7 +311,19 @@ export default class App extends Component {
     }).then((res) => {
       let data = res.data
 
-      console.log(data);
+      // console.log(data);
+    }).catch((err) => {
+      // console.log(err);
+    })
+  }
+  checkFor404() {
+    let checkedListings = [];
+
+    axios({
+      method: 'get',
+      url: '/scrape/check_for_404',
+    }).then((result) => {
+      console.log(result);;
     }).catch((err) => {
       console.log(err);
     })

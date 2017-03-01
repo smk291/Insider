@@ -85,17 +85,14 @@ router.get('/listings', (req, res, next) => {
     .catch(err => next(err));
 });
 
-router.get('/listings_check_for_404', (req, res, next) => {
+router.get('/listings_sans_void', (req, res, next) => {
   knex('listings')
     .whereNull('void')
     .orderBy('id', 'asc')
-    .then(rows => {
-      let listings = rows;
-      listings = listings.filter(listing => listing.void === null);
-      listings = listings.map(listing => listing.urlnum);
-
-      res.send(listings);
-      res.end();
+    .then(activeListings => {
+      res.status(200).send(activeListings.map(listing => {
+        return {url: listing.url, urlnum: listing.urlnum};
+      }));
     })
     .catch(err => next(err));
 });

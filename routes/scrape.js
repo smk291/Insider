@@ -5,6 +5,9 @@ const { camelizeKeys, decamelizeKeys } = require('humps');
 const fetchUrl = require('fetch').fetchUrl;
 const CerealScraper = require('cerealscraper');
 const Promise = require('bluebird');
+const request = Promise.promisify(require('request'));
+const https = require('https');
+const cheerio = require('cheerio');
 // const ev = require('express-validation');
 // const validations = require('../validations/token');
 
@@ -27,11 +30,67 @@ function authorize(req, res, next) {
   });
 }
 
-router.get('/scrape/:city', authorize, (req, res, next) => {
+
+router.get('new_scrape', authorize, (req, res, next) => {
+  // Read about promisify in bluebird
+  // Read about limiter package and RateLimiter
+  // read about request.spread/catch
+  // Outline:
+  // Get list of urls from psql
+  // Create hash of URLs ({[url]: true}) to provide quick lookup for listings already exist in database
+    // Alternatively: store this object statically instead of generating it each time the program runs. This should be better, faster and simpler somewhat, though it'll mean creating the initial object and updating it
+  // ASYNC -- Make call to main search page
+    // Find number of results, divide by 100, round up for number of pages
+    // Pull information from each page
+  // ASYNC -- Make https requests to each url
+    // If url exists in database
+      // Delete that from the lookup hash
+    // If url doesn't exist
+      // Find all relevant information in the html
+      // Put it in the database
+        // Alternatively, push the new listings to an array and insert all at once. If this is a possibility, it would obviously be preferable
+  // EITHER
+    // Insert listings into database one by one
+    // or
+    // Insert all
+  // Send user response containing list of number of new entries + the new entries
+    // Add these to the table without making call to API?
+    // No, if I did that I'd need to process those listings.
+      // Sounds like a pain
+      // But it would probably be faster actually than calling API
+});
+
+router.get('/scrape_total/:city', authorize, (req, res, next) => {
+  let { city } = req.params;
+  let response = '';
+
+  let cg = https.get(`https://${city}.craigslist.org/search/sub`, (searchRes) => {
+    searchRes.on('data', (chunk) => response += chunk);
+
+    searchRes.on('error', (e) => {
+      next(e);
+    });
+
+    searchRes.on('end', () => {
+      try {
+        let $ = cheerio.load(response);
+        let pages = Math.ceil(Number($('.totalcount:first-of-type').text()) / 100);
+        let response = https.get(`/scrape/${city}/${pages]}`);
+      } catch (err) {
+        next(err)
+      }
+    });
+
+    cg.end();
+  })
+})
+
+router.get('/scrape/:city/:pages', authorize, (req, res, next) => {
   const newListings = [];
+  const voidedListings = [];
 
   knex('listings')
-    .returning('*')
+    .whereNot('void', true)
     .then(listings => {
       const listingsHash = {};
 
@@ -41,7 +100,7 @@ router.get('/scrape/:city', authorize, (req, res, next) => {
         return acc;
       }, listingsHash);
 
-      const { city } = req.params;
+      const { city, pages } = req.params;
       const scrapedRowsFromSearchPage = [];
       const cereallist = new CerealScraper.Blueprint({
         requestTemplate: {
@@ -89,12 +148,14 @@ router.get('/scrape/:city', authorize, (req, res, next) => {
             resolve();
             if (!listingsHash[item.urlnum]) {
               scrapedRowsFromSearchPage.push(item);
+            } else {
+              delete listingsHash[item.urlnum];
             }
           });
         },
         getNextRequestOptions() {
           const dispatcher = this;
-          const pagesToLoad = 3;
+          const pagesToLoad = pages;
           const rowsPerPage = 100;
           const requestOptions = dispatcher.blueprint.requestTemplate;
 
@@ -111,11 +172,11 @@ router.get('/scrape/:city', authorize, (req, res, next) => {
         },
         parallelRequests: true,
         requestLimiterOptions: {
-          requests: 1,
+          requests: 3,
           perUnit: 'second',
         },
         processLimiterOptions: {
-          requests: 100,
+          requests: 10,
           perUnit: 'second',
         },
       });
@@ -242,14 +303,17 @@ router.get('/scrape/:city', authorize, (req, res, next) => {
                 }
               }),
             },
-
             itemProcessor(detailedItem) {
               const listingToFormat = detailedItem;
               // eslint-disable-next-line no-unused-vars
               return new Promise((resolve, _reject) => {
                 resolve();
-                const { details } = listingToFormat;
-                const { coords } = listingToFormat;
+
+                if (listingsToFormat.length === 0) {
+                  res.status(200).send('No new listings to add');
+                }
+
+                const { details, coords } = listingToFormat;
 
                 delete listingToFormat.details;
                 delete listingToFormat.coords;
@@ -263,7 +327,24 @@ router.get('/scrape/:city', authorize, (req, res, next) => {
                   knex('listings')
                     .insert(decamelizeKeys(newListings))
                     .returning('*')
-                    .then(insertedRows => res.send(camelizeKeys(insertedRows)))
+                    .then(insertedRows => {
+                      Object.keys(listingsHash).map(key => {
+                        knex('listings')
+                          .where('urlnum', key)
+                          .update({ 'void': true }, '*')
+                          .then(voidedListing => {
+                            voidedListings.push(voidedListing);
+                          })
+                          .catch(err => next(err));
+                      });
+
+                      res.status(200).send([
+                        insertedRows: insertedRows.length,
+                        inserted: camelizeKeys(insertedRows),
+                        voidedRows: voidedRows.length,
+                        voided: camelieKeys(voidedRows)
+                      ])
+                    })
                     .catch(err => next(err));
                 }
               });
@@ -277,36 +358,62 @@ router.get('/scrape/:city', authorize, (req, res, next) => {
     }).catch(err => next(err));
 });
 
-router.get('/scrape_for_404/', authorize, (req, res, next) => {
+router.get('/scrape_check_for_404', authorize, (req, res, next) => {
+  let countNew404 = 0;
+  let voidedRows = [];
+  let i = 0;
+
   knex('listings')
     .where('void', null)
     .returning('*')
     .then(listings => {
-      let countNew404 = 0;
+      if (listings.length === 0) {
+        res.status(200).send('No listings or all listings are expired.')
+      }
 
-      function checkFor404(listing) {
+      function checkFor404() {
+        i++
+        console.log(i);
+        let listing = listings.shift();
+        console.log(listing);
+
         fetchUrl(`http://seattle.craigslist.org${listing.url}`, (error, meta, body) => {
-          if (body.indexOf('This posting has expired.') !== -1
+          if (error) {
+            next(err)
+          }
+
+          if (body && (body.indexOf('This posting has expired.') !== -1
           || body.indexOf('There is nothing here') !== -1
           || body.indexOf('This posting has been deleted by its author') !== -1
-          || body.indexOf('This posting has been flagged for removal') !== -1) {
+          || body.indexOf('This posting has been flagged for removal') !== -1)) {
             knex('listings')
               .where('urlnum', listing.urlnum)
               .first()
-              .update({ void: true })
-              .then(() => {
+              .update({ void: true }, '*')
+              .then((voidedRow) => {
                 countNew404 += 1;
+
+                voidedRows.push([i, decamelizeKeys(voidedRow)]);
+
+                if (listings.length !== 0) {
+                  checkFor404();
+                } else {
+                  res.status(200).send([countNew404, voidedRows]);
+                }
               })
               .catch(err => next(err));
+          } else {
+            if (listings.length !== 0) {
+              checkFor404();
+            } else {
+              res.status(200).send([countNew404, voidedRows]);
+            }
           }
         });
       }
 
-      for (let i = 0; i < listings.length; i += 1) {
-        checkFor404(listings[i]);
-      }
+      checkFor404();
 
-      res.send(200, countNew404);
     })
     .catch(err => next(err));
 });

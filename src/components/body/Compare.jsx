@@ -1,16 +1,77 @@
 import React from 'react'
 import {Table, Button, Grid, Jumbotron, Row, Col, Popover, Tooltip, Modal} from 'react-bootstrap'
+import { Panel, Pager } from 'react-bootstrap'
+import { BootstrapTable, TableHeaderColumn, TableBody, TableHeader, PaginationList, Pagination } from 'react-bootstrap-table'
 import primary from './primary.css'
 import InlineSVG from 'svg-inline-react'
 import MdSearch from 'react-icons/lib/md/search'
 import MdCompare from 'react-icons/lib/md/compare'
 import MdMap from 'react-icons/lib/md/map'
 import axios from 'axios'
-import Listing from './compare/Listing.jsx'
+import humanize from 'underscore.string/humanize'
+import titleize from 'underscore.string/titleize'
+import capitalize from 'underscore.string/capitalize'
+import dataviews from './dataviews.css'
+import MdDateRange from 'react-icons/lib/md/date-range'
+import MdInsertLink from 'react-icons/lib/md/insert-link'
+import MdAttachMoney from 'react-icons/lib/md/attach-money'
+import MdLocationCity from 'react-icons/lib/md/location-city'
+import MdSave from 'react-icons/lib/md/save'
+import MdStar from 'react-icons/lib/md/star'
+import FaBed from 'react-icons/lib/fa/bed'
+import comp from './compare/comparison'
 
-class ContentTable extends React.Component {
+class Blank extends React.Component {
   render() {
-    const fields = [
+    return (
+        <span className={dataviews.blank}>Blank</span>
+    );
+  }
+}
+
+class TableRewritten extends React.Component {
+  constructor(props) {
+    super(props);
+    this.pageBack1 = this.pageBack1.bind(this);
+    this.pageForward1 = this.pageForward1.bind(this);
+    this.pageB2ck1 = this.pageBack2.bind(this);
+    this.pageForward2 = this.pageForward2.bind(this);
+  }
+
+  pageForward1(){
+    if (this.props.activePage1 < this.props.userFavorites.length - 1 && this.props.activePage1 + 1 !== this.props.otherPage1) {
+      this.props.pageChange(this.props.activePageNum1, this.props.activePage1 + 1, this.props.comparisonPage1);
+    } else if (this.props.activePage1 + 2 < this.props.userFavorites.length && this.props.activePage1 + 1 === this.props.otherPage1) {
+      this.props.pageChange(this.props.activePageNum1, this.props.activePage1 + 2, this.props.comparisonPage1);
+    }
+  }
+  pageForward2(){
+    if (this.props.activePage2 < this.props.userFavorites.length - 1 && this.props.activePage2 + 1 !== this.props.otherPage) {
+      this.props.pageChange(this.props.activePageNum2, this.props.activePage2 + 1, this.props.comparisonPage2);
+    } else if (this.props.activePage2 + 2 < this.props.userFavorites.length && this.props.activePage2 + 1 === this.props.otherPage2) {
+      this.props.pageChange(this.props.activePageNum2, this.props.activePage2 + 2, this.props.comparisonPage2);
+    }
+  }
+
+  pageBack1(){
+    if (this.props.activePage1 >= 0 &&  this.props.activePage1 - 1 !== this.props.otherPage1){
+      this.props.pageChange(this.props.activePageNum1, this.props.activePage1 - 1, this.props.comparisonPage1);
+    } else if (this.props.activePage1 - 2 >= 0 && this.props.activePage1 - 1 === this.props.otherPage1) {
+      this.props.pageChange(this.props.activePageNum1, this.props.activePage1 - 2, this.props.comparisonPage1);
+    }
+  }
+  pageBack2(){
+    if (this.props.activePage >= 0 &&  this.props.activePage2 - 1 !== this.props.otherPage2){
+      this.props.pageChange(this.props.activePageNum2, this.props.activePage2 - 1, this.props.comparisonPage2);
+    } else if (this.props.activePage2 - 2 >= 0 && this.props.activePage2 - 1 === this.props.otherPage2) {
+      this.props.pageChange(this.props.activePageNum2, this.props.activePage2 - 2, this.props.comparisonPage2);
+    }
+  }
+
+  render() {
+    const listing1 = this.props.listing1;
+    const listing2 = this.props.listing2;
+    const labels = [
       'Housing type',
       'Monthly Rent',
       'No. of Bedrooms',
@@ -20,50 +81,178 @@ class ContentTable extends React.Component {
       'Furnished space?',
       'Washer / Dryer',
       'Parking options',
-      'How many photos',
       'Are cats allowed',
       'Are dogs allowed',
       'Is smoking allowed',
       'Wheelchair accessibility',
       'Street Address',
+      'How many photos',
       'Description'
     ];
+    const fields = [
+      'housing',
+      'price',
+      'bedrooms',
+      'sqft',
+      'private_room',
+      'bath',
+      'furnished',
+      'laundry',
+      'parking',
+      'cat',
+      'dog',
+      'smoking',
+      'wheelchair_accessible',
+      'street_address',
+    ];
+
+    let pageBackCheck1 = true,
+        pageForwardCheck1 = true;
+
+    if (this.props.activePage1 === 1) {
+      pageBackCheck1 = !(this.props.otherPage1 === 0);
+    }
+
+    if (this.props.activePage1 === this.props.userFavorites.length - 2) {
+      pageForwardCheck1 = !(this.props.otherPage1 === this.props.userFavorites.length - 1)
+    }
+
+    let pageBackCheck2 = true,
+        pageForwardCheck2 = true;
+
+    if (this.props.activePage2 === 1) {
+      pageBackCheck2 = !(this.props.otherPage2 === 0);
+    }
+
+    if (this.props.activePage2 === this.props.userFavorites.length - 2) {
+      pageForwardCheck2 = !(this.props.otherPage2 === this.props.userFavorites.length - 1)
+    }
 
     return (
-      <div style={{
-        marginTop: '72px'
-      }}>
-        <div className='panel panel-default'>
-          <div style={{
-            margin: '0px 20px',
-            padding: '20px 0px'
-          }} className='panel-body'>
-            <Table striped bordered condensed hover>
-              <thead>
-                <tr>
-                  <th>
-                    <h2 style={{
-                      margin: '20px',
-                      height: '2em',
-                      textAlign: 'center'
-                    }}><MdCompare size="60"/></h2>
-                  </th>
-                </tr>
-              </thead>
-            </Table>
-            <Table>
-              <tbody style={{
-                textAlign: 'center'
-              }}>
-                {fields.map((field, idx) => <tr>
-                  <td>{field}</td>
-                </tr>)}
-              </tbody>
-            </Table>
-          </div>
-        </div>
+      <div>
+        <Pager style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          width: '100%'
+        }}>
+          <CondensedPager ternFn={this.props.activePage1 > 0 && pageBackCheck1} direction='previous' pageFn={this.pageBack1}/>
+          <p>Viewing {this.props.activePage1 + 1} out of {this.props.userFavorites.length}</p>
+          <CondensedPager ternFn={this.props.activePage1 < this.props.userFavorites.length - 1 && pageForwardCheck1} direction='next' pageFn={this.pageForward1}/>
+
+          <CondensedPager ternFn={this.props.activePage2 > 0 && pageBackCheck2} direction='previous' pageFn={this.pageBack2}/>
+          <p>Viewing {this.props.activePage2 + 1} out of {this.props.userFavorites.length}</p>
+          <CondensedPager ternFn={this.props.activePage2 < this.props.userFavorites.length - 1 && pageForwardCheck2} direction='next' pageFn={this.pageForward2}/>
+        </Pager>
+        <Table striped bordered condensed hover>
+          <thead>
+            <tr>
+              <th style={{textAlign: 'center'}}><MdCompare /></th>
+              <th>{titleize(listing1.title)}</th>
+              <th>{titleize(listing2.title)}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {fields.map((field, idx) =>
+              <tr>
+                <td>{labels[idx]}</td>
+                <td>{listing1[field]
+                  ? humanize(listing1[field])
+                  : <Blank/>}
+                </td>
+                <td>{listing2[field]
+                  ? humanize(listing2[field])
+                  : <Blank/>}
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </Table>
       </div>
     );
+  }
+}
+
+class CondensedPager extends React.Component {
+  constructor(props) {
+    super(props)
+  }
+
+  render() {
+    return (
+      <div>
+        <Pager.Item direction={this.props.direction} onSelect={this.props.pageFn} href="#" disabled={!this.props.ternFn}>
+          {this.props.direction === 'previous'? <span>&larr; {capitalize(this.props.direction)} Page</span>:<span>Next Page &rarr;</span>}
+        </Pager.Item>
+      </div>
+    )
+  }
+}
+
+class Favorites extends React.Component {
+  constructor(props) {
+    super(props)
+  }
+
+  render() {
+    console.log(this.props.userFavorites);
+    return (
+      <div>
+        <Table striped bordered condensed hover>
+          <thead>
+            <tr>
+              <td>
+                Favorites
+              </td>
+            </tr>
+          </thead>
+          <tbody>
+  {this.props.userFavorites.map((favorite) => {
+              <tr>
+                <td>
+                  {favorite.postDate}
+                  {favorite.housing} -
+                  {favorite.bedrooms} -
+                  ${favorite.price} -
+                  {favorite.title}
+                </td>
+              </tr>
+            })}
+          </tbody>
+        </Table>
+
+        <Table condensed hover>
+          <thead>
+            <tr>
+              <th style={{textAlign: 'center'}}>Favorites</th>
+            </tr>
+          </thead>
+          <tbody>
+            {this.props.userFavorites.map((favorite, idx) =>
+              <tr key={idx}>
+                <td>{favorite.postDate} -
+                  &nbsp;
+                {favorite.housing
+                  ? humanize(favorite.housing)
+                  : <Blank/>} -
+                  &nbsp;
+                {favorite.bedrooms
+                  ? humanize(favorite.bedrooms)
+                  : <Blank/>} -
+                  &nbsp;
+                {favorite.price
+                  ? humanize(favorite.price)
+                  : <Blank/>} -
+                &nbsp;
+                {favorite.title
+                  ? humanize(favorite.title)
+                  : <Blank/>}
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </Table>
+      </div>
+    )
   }
 }
 
@@ -100,50 +289,32 @@ export default class Compare extends React.Component {
         <Grid fluid style={{
           minWidth: '1000px'
         }}>
-          <Row style={{
-            display: 'flex',
-            justifyContent: 'center'
-          }}></Row>
-          {this.props.userFavorites.length > 0
-            ? <Row style={{
-                display: 'flex',
-                justifyContent: 'center'
-              }}>
-                <Col md={5} sm={5}>
-                  <Listing
-                    listing={this.props.comparison1}
-                    comparison={this.props.comparison1}
-                    activePage={this.props.activePage1}
-                    userFavorites={this.props.userFavorites}
-                    pageChange={this.props.pageChange}
-                    fetchAndFormatFavorites={this.props.fetchAndFormatFavorites}
-                    alignment='right'
-                    comparisonPage='comparison1'
-                    activePageNum='activePage1'
-                    otherPage={this.props.activePage2}
-                  />
-                </Col>
-                <Col md={2}>
-                  <ContentTable/>
-                </Col>
-                <Col md={5} sm={5}>
-                  <Listing
-                    listing={this.props.comparison2}
-                    comparison={this.props.comparison2}
-                    activePage={this.props.activePage2}
-                    userFavorites={this.props.userFavorites}
-                    pageChange={this.props.pageChange}
-                    fetchAndFormatFavorites={this.props.fetchAndFormatFavorites}
-                    alignment='left'
-                    comparisonPage='comparison2'
-                    activePageNum='activePage2'
-                    otherPage={this.props.activePage1}
-                  />
-                </Col>
-              </Row>
-            : <Row>
-              <Col><AddFavorites md={10}/></Col>
-            </Row>}
+          <Row>
+            <Col>
+              <TableRewritten
+                userFavorites={this.props.userFavorites}
+                fetchAndFormatFavorites={this.props.fetchAndFormatFavorites}
+                pageChange={this.props.pageChange}
+
+                listing1={this.props.comparison1}
+                comparison1={this.props.comparison1}
+                activePage1={this.props.activePage1}
+                comparisonPage1='comparison1'
+                activePageNum1='activePage1'
+                otherPage1={this.props.activePage2}
+
+                listing2={this.props.comparison2}
+                comparison2={this.props.comparison2}
+                activePage2={this.props.activePage2}
+                comparisonPage2='comparison2'
+                activePageNum2='activePage2'
+                otherPage2={this.props.activePage1}
+              />
+            </Col>
+            <Col>
+              <Favorites userFavorites={this.props.userFavorites}/>
+            </Col>
+          </Row>
         </Grid>
       </div>
     );

@@ -75,7 +75,7 @@ router.get('/scrape_total/:city', authorize, (req, res, next) => {
       try {
         let $ = cheerio.load(response);
         let pages = Math.ceil(Number($('.totalcount:first-of-type').text()) / 100);
-        let response = https.get(`/scrape/${city}/${pages]}`);
+        let response = https.get(`/scrape/${city}/${pages}`);
       } catch (err) {
         next(err)
       }
@@ -338,12 +338,12 @@ router.get('/scrape/:city/:pages', authorize, (req, res, next) => {
                           .catch(err => next(err));
                       });
 
-                      res.status(200).send([
+                      res.status(200).send({
                         insertedRows: insertedRows.length,
                         inserted: camelizeKeys(insertedRows),
                         voidedRows: voidedRows.length,
                         voided: camelieKeys(voidedRows)
-                      ])
+                      })
                     })
                     .catch(err => next(err));
                 }

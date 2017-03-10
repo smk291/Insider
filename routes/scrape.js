@@ -150,60 +150,60 @@ router.get('/scrape/:city', authorize, (req, res, next) => {
 
         // eslint-disable-next-line no-unused-vars
         const dispatcher = new CerealScraper.Dispatcher(cereallist).start().then(() => {
+          const listingEnums = {
+            housing: [
+              'apartment',
+              'condo',
+              'house',
+              'townhouse',
+              'duplex',
+              'land',
+              'in-law',
+              'cottage/cabin',
+            ],
+            laundry: [
+              'laundry on site',
+              'w/d in unit',
+              'laundry in bldg',
+            ],
+            parking: [
+              'off-street parking',
+              'detached garage',
+              'attached garage',
+              'valet parking',
+              'street parking',
+              'carport',
+              'no parking',
+            ],
+            bath: [
+              'private bath',
+              'no private bath',
+            ],
+            private_room: [
+              'private room',
+              'room not private',
+            ],
+            cat: [
+              'cats are OK - purrr',
+            ],
+            dog: [
+              'dogs are OK - wooof',
+            ],
+            furnished: [
+              'furnished',
+            ],
+            smoking: [
+              'no smoking',
+            ],
+            wheelchair: [
+              'wheelchair accessible',
+            ],
+          };
+
           if (scrapedRowsFromSearchPage.length === 0) {
             res.send([0,0])
           } else {
           for (let i = 0; i < scrapedRowsFromSearchPage.length; i += 1) {
-            const listingEnums = {
-              housing: [
-                'apartment',
-                'condo',
-                'house',
-                'townhouse',
-                'duplex',
-                'land',
-                'in-law',
-                'cottage/cabin',
-              ],
-              laundry: [
-                'laundry on site',
-                'w/d in unit',
-                'laundry in bldg',
-              ],
-              parking: [
-                'off-street parking',
-                'detached garage',
-                'attached garage',
-                'valet parking',
-                'street parking',
-                'carport',
-                'no parking',
-              ],
-              bath: [
-                'private bath',
-                'no private bath',
-              ],
-              private_room: [
-                'private room',
-                'room not private',
-              ],
-              cat: [
-                'cats are OK - purrr',
-              ],
-              dog: [
-                'dogs are OK - wooof',
-              ],
-              furnished: [
-                'furnished',
-              ],
-              smoking: [
-                'no smoking',
-              ],
-              wheelchair: [
-                'wheelchair accessible',
-              ],
-            };
-
             const cerealIndiv = new CerealScraper.Blueprint({
               requestTemplate: {
                 method: 'GET',
@@ -290,49 +290,58 @@ router.get('/scrape/:city', authorize, (req, res, next) => {
                   newListings.push(completeListing);
 
                   if (newListings.length === scrapedRowsFromSearchPage.length) {
-                    console.log(newListings.length);
-                    console.log(Object.keys(urlnums).length);
-                    console.log(Object.keys(listingsHash).length);
+                    console.log(`newlistings length: ${newListings.length}`);
+                    console.log(`urlnums keys length: ${Object.keys(urlnums).length}`);
+                    console.log(`listingsHash keys length: ${Object.keys(listingsHash).length}`);
 
                     let voidTheseListings = Object.assign({}, listingsHash);
-                    // let i = 0;
+                    let i = 0;
                     let j = 0;
 
+                    console.log(`voidTheseListings:`);
+                    console.log(voidTheseListings);
+                    console.log(`newListings:`);
+                    console.log(newListings);
+
                     Object.keys(listingsHash).map((urlnum) => {
-                      // i++;
+                      i++;
 
                       if (listingsHash[urlnum] === urlnums[urlnum]) {
                         j++;
-                        // console.log(urlnum);
-                        // console.log(`j: ${j}`);
+                        console.log(urlnum);
+                        console.log(`j: ${j}`);
                         delete voidTheseListings[urlnum];
                       }
 
-                      // console.log(`i: ${i}`);
+                      console.log(`i: ${i}`);
                     });
 
-                    // console.log(voidTheseListings);
-                    // console.log(`j: ${j}`);
-                    // console.log(Object.keys(voidTheseListings).length);
-                    knex('listings')
-                      .insert(decamelizeKeys(newListings))
-                      .returning('*')
-                      .then(insertedRows => res.send(camelizeKeys(insertedRows)))
-                      .then(() => {
-                        Object.keys(voidTheseListings).map((urlnum) => {
-                          knex('listings')
-                            .where('urlnum', urlnum)
-                            .update({void: true})
-                        //     .then(() => {
-                        //       console.log(`hi!`);
-                        //     })
-                        //     .catch(err => next(err));
-                        });
-                      })
-                      .then(() => {
-                        res.send([insertedRows.length, Object.keys(voidTheseListings).length])
-                      })
-                      .catch(err => next(err));
+                    let inserted = [];
+
+                    console.log(`j: ${j}`);
+                    console.log(`void these length: ${Object.keys(voidTheseListings).length}`);
+                    // knex('listings')
+                    //   .insert(decamelizeKeys(newListings))
+                    //   .returning('*')
+                    //   .then(insertedRows => {
+                    //     let inserted = insertedRows;
+                    //     console.log(insertedRows.length);
+                    //   })
+                    //   // .then(() => {
+                    //   //   res.send([insertedRows.length, Object.keys(voidTheseListings).length])
+                    //   // })
+                    //   .catch(err => next(err));
+
+                    // Object.keys(voidTheseListings).map((urlnum) => {
+                    //   knex('listings')
+                    //     .where('urlnum', urlnum)
+                    //     .update({void: true})
+                    //     .then(() => {
+                    //       console.log(`voided: ${Object.keys(voidTheseListings).length}`);
+                    //     })
+                    //     .catch(err => next(err));
+                    // });
+
                   }
                 });
               },
@@ -343,7 +352,6 @@ router.get('/scrape/:city', authorize, (req, res, next) => {
           }}
         });
       }).catch(err => next(err));
-
   });
 });
 

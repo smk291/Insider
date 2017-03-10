@@ -34,38 +34,42 @@ class TableRewritten extends React.Component {
     super(props);
     this.pageBack1 = this.pageBack1.bind(this);
     this.pageForward1 = this.pageForward1.bind(this);
-    this.pageB2ck1 = this.pageBack2.bind(this);
+    this.pageBack2 = this.pageBack2.bind(this);
     this.pageForward2 = this.pageForward2.bind(this);
+    this.pageForward = this.pageForward.bind(this);
+    this.pageBack = this.pageBack.bind(this);
+  }
+
+  pageForward(activePage, otherPage, favorites, activePageNum, comparisonPage) {
+    if (activePage < favorites.length - 1 && activePage + 1 !== otherPage) {
+      this.props.pageChange(activePageNum, activePage + 1, comparisonPage);
+    } else if (activePage + 2 < favorites.length && activePage + 1 === otherPage) {
+      this.props.pageChange(activePageNum, activePage + 2, comparisonPage);
+    }
   }
 
   pageForward1(){
-    if (this.props.activePage1 < this.props.userFavorites.length - 1 && this.props.activePage1 + 1 !== this.props.otherPage1) {
-      this.props.pageChange(this.props.activePageNum1, this.props.activePage1 + 1, this.props.comparisonPage1);
-    } else if (this.props.activePage1 + 2 < this.props.userFavorites.length && this.props.activePage1 + 1 === this.props.otherPage1) {
-      this.props.pageChange(this.props.activePageNum1, this.props.activePage1 + 2, this.props.comparisonPage1);
-    }
+    this.pageForward(this.props.activePage1, this.props.otherPage1, this.props.userFavorites, this.props.activePageNum1, this.props.comparisonPage1);
   }
+
   pageForward2(){
-    if (this.props.activePage2 < this.props.userFavorites.length - 1 && this.props.activePage2 + 1 !== this.props.otherPage) {
-      this.props.pageChange(this.props.activePageNum2, this.props.activePage2 + 1, this.props.comparisonPage2);
-    } else if (this.props.activePage2 + 2 < this.props.userFavorites.length && this.props.activePage2 + 1 === this.props.otherPage2) {
-      this.props.pageChange(this.props.activePageNum2, this.props.activePage2 + 2, this.props.comparisonPage2);
+    this.pageForward(this.props.activePage2, this.props.otherPage2, this.props.userFavorites, this.props.activePageNum2, this.props.comparisonPage2);
+  }
+
+  pageBack(activePage, otherpage, activePageNum, comparisonPage, otherPage){
+    if (activePage >= 0 && activePage - 1 !== otherPage){
+      this.props.pageChange(activePageNum, activePage - 1, comparisonPage);
+    } else if (activePage - 2 >= 0 && activePage - 1 === otherPage) {
+      this.props.pageChange(activePageNum, activePage - 2, comparisonPage);
     }
   }
 
   pageBack1(){
-    if (this.props.activePage1 >= 0 &&  this.props.activePage1 - 1 !== this.props.otherPage1){
-      this.props.pageChange(this.props.activePageNum1, this.props.activePage1 - 1, this.props.comparisonPage1);
-    } else if (this.props.activePage1 - 2 >= 0 && this.props.activePage1 - 1 === this.props.otherPage1) {
-      this.props.pageChange(this.props.activePageNum1, this.props.activePage1 - 2, this.props.comparisonPage1);
-    }
+    this.pageBack(this.props.activePage1, this.props.otherPage1, this.props.activePageNum1, this.props.comparisonPage1, this.props.otherPage1);
   }
+
   pageBack2(){
-    if (this.props.activePage >= 0 &&  this.props.activePage2 - 1 !== this.props.otherPage2){
-      this.props.pageChange(this.props.activePageNum2, this.props.activePage2 - 1, this.props.comparisonPage2);
-    } else if (this.props.activePage2 - 2 >= 0 && this.props.activePage2 - 1 === this.props.otherPage2) {
-      this.props.pageChange(this.props.activePageNum2, this.props.activePage2 - 2, this.props.comparisonPage2);
-    }
+    this.pageBack(this.props.activePage2, this.props.otherPage2, this.props.activePageNum2, this.props.comparisonPage2, this.props.otherPage2);
   }
 
   render() {
@@ -194,7 +198,6 @@ class Favorites extends React.Component {
   }
 
   render() {
-    console.log(this.props.userFavorites);
     return (
       <div>
         <Table striped bordered condensed hover>
@@ -206,7 +209,7 @@ class Favorites extends React.Component {
             </tr>
           </thead>
           <tbody>
-  {this.props.userFavorites.map((favorite) => {
+            {this.props.userFavorites.map((favorite) => {
               <tr>
                 <td>
                   {favorite.postDate}

@@ -170,7 +170,7 @@ export default class App extends Component {
       comparison2: {},
       userFavorites: [],
       activePage1: 0,
-      activePage2: 0,
+      activePage2: 1,
       maxScore: [],
       addedFavorite: false,
     }

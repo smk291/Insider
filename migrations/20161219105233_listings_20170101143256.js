@@ -1,7 +1,7 @@
 exports.up = knex => {
   return knex.schema.createTable('listings', table => {
     table.increments();
-    table.string('url').notNullable().unique();
+    table.string('url').notNullable();
     table.string('urlnum').notNullable().unique();
     table.string('post_date').notNullable().defaultTo('');
     table.string('title').notNullable().defaultTo('No title provided');

@@ -38,6 +38,81 @@ router.get('/scrape_total/', authorize, (req, res, next) => {
     })
 });
 
+router.get('/scrape_from_database/', authorize, (req, res, next) => {
+  knex('listings')
+    .where('void', null)
+    .then((activeListings) => {
+      let urls = [];
+
+      return Promise.all(activeListings.map((listing) => {
+        return new Promise((resolve, reject) => {
+          request.get(`https://seattle.craigslist.org/search/sub${listing.url}`, (rErr, rRes, rBody) => {
+            if (rErr) {
+              return reject(err);
+            }
+
+            resolve(rBody);
+          })
+        })
+      })
+      );
+    })
+    .then((results) => {
+      console.log(results);
+    })
+    .catch(err => next(err));
+});
+
+router.get('/scrape_get_results/:city', authorize, (req, res, next) => {
+  let { city } = req.params;
+
+  let results = new Promise((resolve, reject) => {
+    request.get(`https://${city}.craigslist.org/search/sub`, (err, response, body) => {
+      if (err) {
+        reject(err);
+      }
+
+      resolve(body)
+    });
+  });
+
+  results.then((body) => {
+    let $ = cheerio.load(body);
+    const pages = Math.floor($('.totalcount').first().text() / 100);
+
+    let pagesData = [];
+
+    return Promise.all((resolve, reject) => {
+      for (let i = 0; i < pages.length; i++) {
+        let suffix = '';
+        i > 0 ? suffix = `?s=${i}00`: suffix = '';
+        console.log(suffix);
+
+        return new Promise((resolve, reject) => {
+          request.get(`https://${city}.craigslist.org/search/sub${suffix}`, (err, response, body) => {
+            if (err) {
+              reject(err);
+            }
+
+            resolve(body);
+          });
+        });
+      }
+    });
+  })
+  .then((pagesData) => {
+    console.log(pagesData);
+  })
+  .catch(err => next(err));
+});
+
+// padmapper
+// abodo
+// hotpads
+// apartments
+// zumper
+// 206-650-2204, Rob
+
 router.get('/scrape/:city', authorize, (req, res, next) => {
   let { city } = req.params;
   const newListings = [];
@@ -320,27 +395,27 @@ router.get('/scrape/:city', authorize, (req, res, next) => {
 
                     console.log(`j: ${j}`);
                     console.log(`void these length: ${Object.keys(voidTheseListings).length}`);
-                    // knex('listings')
-                    //   .insert(decamelizeKeys(newListings))
-                    //   .returning('*')
-                    //   .then(insertedRows => {
-                    //     let inserted = insertedRows;
-                    //     console.log(insertedRows.length);
-                    //   })
-                    //   // .then(() => {
-                    //   //   res.send([insertedRows.length, Object.keys(voidTheseListings).length])
-                    //   // })
-                    //   .catch(err => next(err));
+                    knex('listings')
+                      .insert(decamelizeKeys(newListings))
+                      .returning('*')
+                      .then(insertedRows => {
+                        let inserted = insertedRows;
+                        console.log(insertedRows.length);
+                      })
+                      // .then(() => {
+                      //   res.send([insertedRows.length, Object.keys(voidTheseListings).length])
+                      // })
+                      .catch(err => next(err));
 
-                    // Object.keys(voidTheseListings).map((urlnum) => {
-                    //   knex('listings')
-                    //     .where('urlnum', urlnum)
-                    //     .update({void: true})
-                    //     .then(() => {
-                    //       console.log(`voided: ${Object.keys(voidTheseListings).length}`);
-                    //     })
-                    //     .catch(err => next(err));
-                    // });
+                    Object.keys(voidTheseListings).map((urlnum) => {
+                      knex('listings')
+                        .where('urlnum', urlnum)
+                        .update({void: true})
+                        .then(() => {
+                          console.log(`voided: ${Object.keys(voidTheseListings).length}`);
+                        })
+                        .catch(err => next(err));
+                    });
 
                   }
                 });

@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import {BrowserRouter, Route, browserHistory} from 'react-router';
+  import {BrowserRouter} from 'react-router-dom';
+import {Route, browserHistory} from 'react-router';
 import {Button, Grid, Jumbotron, Row, Col, Popover, Tooltip, Modal} from 'react-bootstrap';
 import Routing from './body/Routing'
 import Login from './body/auth/Login'
@@ -596,9 +597,6 @@ export default class App extends Component {
     return (
       <BrowserRouter>
         <div>
-          <p>Hi!</p>
-        </div>
-        }<div>
           <Grid fluid style={{
             minWidth: '1000px'
           }}>

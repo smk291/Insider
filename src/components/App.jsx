@@ -596,6 +596,9 @@ export default class App extends Component {
     return (
       <BrowserRouter>
         <div>
+          <p>Hi!</p>
+        </div>
+        }<div>
           <Grid fluid style={{
             minWidth: '1000px'
           }}>

@@ -50,16 +50,26 @@ module.exports = {
         loader: 'json-loader',
       }, {
         test: /\.(jpe?g|png|gif|svg)$/i,
-        loaders: ['file?hash=sha512&digest=hex&name=[hash].[ext]', 'image-webpack?bypassOnDebug&optimizationLevel=7&interlaced=false'],
+        loaders: ['file?hash=sha512&digest=hex&name=[hash].[ext]', 'image-webpack?bypassOnDebug'],
       }, {
         test: /\.less/,
         loader: 'style!css!less',
       }, {
-        test: /\.svg$/,
-        loader: 'svg-inline',
+        test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
+        loader: "url?limit=10000&mimetype=application/font-woff"
       }, {
-        test: /\.(woff2|woff|ttf|svg|eot)$/,
-        loader: 'file',
+        test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
+        loader: "url?limit=10000&mimetype=application/font-woff"
+      },  {
+        test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+        loader: "url?limit=10000&mimetype=application/octet-stream" },
+      {
+        test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
+        loader: "file" },
+      {
+        test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+        loader: "url?limit=10000&mimetype=image/svg+xml"
+      },
       },
     ],
   },

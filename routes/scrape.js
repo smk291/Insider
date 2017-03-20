@@ -352,7 +352,6 @@ router.get('/scrape/:city', authorize, (req, res, next) => {
                 const listingToFormat = detailedItem;
                 // eslint-disable-next-line no-unused-vars
                 return new Promise((resolve, _reject) => {
-                  resolve();
                   const { details } = listingToFormat;
                   const { coords } = listingToFormat;
 
@@ -365,59 +364,83 @@ router.get('/scrape/:city', authorize, (req, res, next) => {
                   newListings.push(completeListing);
 
                   if (newListings.length === scrapedRowsFromSearchPage.length) {
-                    console.log(`newlistings length: ${newListings.length}`);
-                    console.log(`urlnums keys length: ${Object.keys(urlnums).length}`);
-                    console.log(`listingsHash keys length: ${Object.keys(listingsHash).length}`);
-
                     let voidTheseListings = Object.assign({}, listingsHash);
-                    let i = 0;
-                    let j = 0;
-
-                    console.log(`voidTheseListings:`);
-                    console.log(voidTheseListings);
-                    console.log(`newListings:`);
-                    console.log(newListings);
 
                     Object.keys(listingsHash).map((urlnum) => {
-                      i++;
-
                       if (listingsHash[urlnum] === urlnums[urlnum]) {
-                        j++;
-                        console.log(urlnum);
-                        console.log(`j: ${j}`);
                         delete voidTheseListings[urlnum];
                       }
-
-                      console.log(`i: ${i}`);
                     });
 
                     let inserted = [];
 
-                    console.log(`j: ${j}`);
-                    console.log(`void these length: ${Object.keys(voidTheseListings).length}`);
-                    knex('listings')
-                      .insert(decamelizeKeys(newListings))
-                      .returning('*')
-                      .then(insertedRows => {
-                        let inserted = insertedRows;
-                        console.log(insertedRows.length);
-                      })
-                      // .then(() => {
-                      //   res.send([insertedRows.length, Object.keys(voidTheseListings).length])
-                      // })
-                      .catch(err => next(err));
+                    console.log(newListings);
 
-                    Object.keys(voidTheseListings).map((urlnum) => {
-                      knex('listings')
-                        .where('urlnum', urlnum)
-                        .update({void: true})
-                        .then(() => {
-                          console.log(`voided: ${Object.keys(voidTheseListings).length}`);
-                        })
-                        .catch(err => next(err));
+                    return new Promise((resolve, reject) => {
+                      newListings.map((listing) => {
+                        knex('listings')
+                          .where('urlnum', listing.urlnum)
+                          .first()
+                          .then(storedListing => {
+                            console.log(listing.urlnum);
+                            console.log(listingsHash[listing.urlnum]);
+
+                            if (listingsHash[listing.urlnum]) {
+                              knex('listings')
+                                .insert(decamelizeKeys(listing))
+                                .returning('*')
+                                .then(newListing => {
+                                  inserted.push(newListing);
+                                })
+                                .catch(err => next(err));
+                            }
+                          })
+                          .catch(err => next(err));
+                      });
+
+                      resolve();
                     });
 
+                    // let voidThese = function () {
+                    //   new Promise((resolve, reject) => {
+                    //     Object.keys(voidTheseListings).map((urlnum) => {
+                    //       knex('listings')
+                    //         .where('urlnum', urlnum)
+                    //         .update({void: true})
+                    //         .then(() => {
+                    //           console.log(`voided: ${Object.keys(voidTheseListings).length}`);
+                    //         })
+                    //         .catch(err => next(err));
+                    //     });
+                    //     resolve();
+                    //   });
+                    // }
+
+
+
+                    insert.then(() => {
+                      voidThese();
+                    })
+                    .then(() => {
+                      res.send([newListings.length, newListings, voidTheseListings.length, voidTheseListings]);
+                    });
+
+                    // knex('listings')
+                    //   .insert(decamelizeKeys(newListings))
+                    //   .returning('*')
+                    //   .then(insertedRows => {
+                    //     let inserted = insertedRows;
+                    //   })
+                    //   // .then(() => {
+                    //   //   res.send([insertedRows.length, Object.keys(voidTheseListings).length])
+                    //   // })
+                    //   .catch(err => next(err));
+
+
+
                   }
+
+                  resolve();
                 });
               },
             });

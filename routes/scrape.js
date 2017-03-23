@@ -63,45 +63,177 @@ router.get('/scrape_from_database/', authorize, (req, res, next) => {
     .catch(err => next(err));
 });
 
-router.get('/scrape_get_results/:city', authorize, (req, res, next) => {
+router.get('/results/:city', authorize, (req, res, next) => {
   let { city } = req.params;
 
-  let results = new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     request.get(`https://${city}.craigslist.org/search/sub`, (err, response, body) => {
       if (err) {
-        reject(err);
+        return reject(err);
       }
 
-      resolve(body)
-    });
-  });
-
-  results.then((body) => {
-    let $ = cheerio.load(body);
-    const pages = Math.floor($('.totalcount').first().text() / 100);
-
-    let pagesData = [];
-
-    return Promise.all((resolve, reject) => {
-      for (let i = 0; i < pages.length; i++) {
-        let suffix = '';
-        i > 0 ? suffix = `?s=${i}00`: suffix = '';
-        console.log(suffix);
-
-        return new Promise((resolve, reject) => {
-          request.get(`https://${city}.craigslist.org/search/sub${suffix}`, (err, response, body) => {
-            if (err) {
-              reject(err);
-            }
-
-            resolve(body);
-          });
-        });
-      }
+      let $ = cheerio.load(body);
+      resolve(Math.floor($('.totalcount').first().text() / 100));
     });
   })
-  .then((pagesData) => {
-    console.log(pagesData);
+  .then((searchResultsPage) => {
+    let allSearchResults = [];
+
+    for (var i = 0; i <= searchResultsPage; i++) {
+      let newPromise = new Promise((resolve, reject) => {
+        request.get(`https://${city}.craigslist.org/search/sub?s=${i * 120}`, (err, response, body) => {
+          if (err) {
+            reject(err);
+          }
+
+          resolve(body);
+        });
+      });
+
+      allSearchResults.push(newPromise);
+    }
+
+    console.log(allSearchResults.length);
+
+    let results = {};
+
+    Promise.all(allSearchResults)
+      .then(values => {
+        const listings = {};
+
+        values.map(eachPage => {
+          let $ = cheerio.load(eachPage)
+
+          $('.result-row').map((i, el) => {
+            const urlnum = $(el).data('pid');
+            listings[urlnum] = {
+              urlnum,
+              url: $('a', el).attr('href'),
+              photos: $('a', el).data('ids'),
+              price: $('a span.result-price', el).text(),
+              postDate: $('p time', el).attr('datetime'),
+              neighborhood: $('.result-hood', el).text(),
+            };
+          });
+        });
+
+        return listings;
+      })
+      .then(searchResults => {
+        const eachListing = Object.keys(searchResults).reduce((acc, listing, i) => {
+          if (i < 1) { //--------------------->
+            const promise = new Promise((resolve, reject) => {
+              request.get(`http://seattle.craigslist.org${searchResults[listing].url}`, (err, response, body) => {
+                if (err) {
+                  reject(err);
+                }
+
+                resolve(body);
+              })
+            });
+
+            acc.push(promise);
+            } // -------------------------->
+
+          return acc;
+        }, []);
+
+        return Promise.all(eachListing)
+          .then(completedRequests => {
+            return [searchResults, completedRequests];
+          })
+          .catch(err => next(err));
+      })
+      .then(allData => {
+        // console.log(allData);
+
+        const newListings = {};
+
+        let $ = cheerio.load(allData[1][0]);
+        console.log($('.postinginfos p:nth-child(1)').text().replace(/\D+/g, ''));
+
+        // let listingDetails = allData[1].reduce((acc, body, i) => {
+        //   if (i < 1) {
+        //     let $ = cheerio.load(body);
+        //
+        //     console.log($('.postinfos p:first-child').text())
+        //   }
+        // }, {})
+      })
+
+      // descr -- #postingbody: $('#postingbody').text();
+      // details -- '.mapAndAttrs .attrgroup:last-of-type': $('.mapAndAttrs .attrgroup:last-of-type')
+      // if it's length is longer than 0, compare against enumobject(?)
+      // bedrooms -- '.attrgroup span b': $('.attrgroup span b')
+        // $('.attrgroup').first()
+      // sqft -- '.attrgroup sup'
+      // coords -- '.mapbox'
+      // streetaddress -- '.mapbox'
+
+      //   descr: new TransformSelector('#postingbody', 0, el => {
+      //     if (el[0] && el.children && el[0].children[2]) {
+      //       return el[0].children[2].data;
+      //     }
+      //   }),
+      //   details: new TransformSelector('.mapAndAttrs .attrgroup:last-of-type', 0, el => {
+      //     const detailHash = {};
+      //
+      //     if (el[0] && el[0].children) {
+      //       const tempDetailStorage = [];
+      //
+      //       // eslint-disable-next-line array-callback-return
+      //       el[0].children.map(detail => {
+      //         if (detail.children && detail.children.length > 0) {
+      //           tempDetailStorage.push(detail.children[0].data);
+      //         }
+      //       });
+      //
+      //       for (let j = 0; j < tempDetailStorage.length; j += 1) {
+      //         // eslint-disable-next-line array-callback-return
+      //         Object.keys(listingEnums).map(field => {
+      //           if (listingEnums[field].indexOf(tempDetailStorage[j]) !== -1) {
+      //             detailHash[field] = tempDetailStorage[j];
+      //             delete listingEnums[field];
+      //           }
+      //         });
+      //       }
+      //     }
+      //
+      //     return detailHash;
+      //   }),
+      //   // eslint-disable-next-line array-callback-return, consistent-return
+      //   bedrooms: new TransformSelector('.attrgroup span b', 0, el => {
+      //     if (el[0] && el[0].children){
+      //       return el[0].children[0].data;
+      //     }
+      //   }),
+      //   sqft: new TransformSelector('.attrgroup sup', 0, el => {
+      //     // eslint-disable-next-line max-len
+      //     if (el && el[0] && el[0].prev && el[0].prev.prev && el[0].prev.prev.children[0].data) {
+      //       return el[0].prev.prev.children[0].data;
+      //     }
+      //   }),
+      //   // eslint-disable-next-line consistent-return
+      //   coords: new TransformSelector('.mapbox', 0, el => {
+      //     if (el[0] && el[0].children[1]) {
+      //       return {
+      //         lat: el[0].children[1].attribs['data-latitude'],
+      //         lon: el[0].children[1].attribs['data-longitude'],
+      //       };
+      //       // accuracy: el[0].children[1].attribs['data-accuracy']
+      //     }
+      //   }),
+      //   // eslint-disable-next-line consistent-return
+      //   streetAddress: new TransformSelector('.mapbox', 0, el => {
+      //     if (el[0] && el[0].children && el[0].children[3] && el[0].children[3].children) {
+      //       return el[0].children[3].children[0].data;
+      //     }
+      //   }),
+      // },
+      .catch(err => next(err));
+  })
+  .then(array => {
+
   })
   .catch(err => next(err));
 });

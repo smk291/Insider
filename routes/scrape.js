@@ -31,38 +31,6 @@ function authorize(req, res, next) {
   });
 }
 
-router.get('/scrape_total/', authorize, (req, res, next) => {
-  knex('listings')
-    .then((listings) => {
-      res.send(listings);
-    })
-});
-
-router.get('/scrape_from_database/', authorize, (req, res, next) => {
-  knex('listings')
-    .where('void', null)
-    .then((activeListings) => {
-      let urls = [];
-
-      return Promise.all(activeListings.map((listing) => {
-        return new Promise((resolve, reject) => {
-          request.get(`https://seattle.craigslist.org/search/sub${listing.url}`, (rErr, rRes, rBody) => {
-            if (rErr) {
-              return reject(err);
-            }
-
-            resolve(rBody);
-          })
-        })
-      })
-      );
-    })
-    .then((results) => {
-      console.log(results);
-    })
-    .catch(err => next(err));
-});
-
 router.get('/results/:city', authorize, (req, res, next) => {
   let { city } = req.params;
 
@@ -112,7 +80,7 @@ router.get('/results/:city', authorize, (req, res, next) => {
               photos: $('a', el).data('ids'),
               price: $('a span.result-price', el).text(),
               postDate: $('p time', el).attr('datetime'),
-              neighborhood: $('.result-hood', el).text(),
+              neighborhood: $('.result-hood', el).text().trim().replace(/[^\w|\s]/g, ''),
             };
           });
         });
@@ -146,90 +114,99 @@ router.get('/results/:city', authorize, (req, res, next) => {
       })
       .then(allData => {
         // console.log(allData);
-
-        const newListings = {};
+        const listingEnums = {
+          housing: [
+            'apartment',
+            'condo',
+            'house',
+            'townhouse',
+            'duplex',
+            'land',
+            'in-law',
+            'cottage/cabin',
+          ],
+          laundry: [
+            'laundry on site',
+            'w/d in unit',
+            'laundry in bldg',
+          ],
+          parking: [
+            'off-street parking',
+            'detached garage',
+            'attached garage',
+            'valet parking',
+            'street parking',
+            'carport',
+            'no parking',
+          ],
+          bath: [
+            'private bath',
+            'no private bath',
+          ],
+          private_room: [
+            'private room',
+            'room not private',
+          ],
+          cat: [
+            'cats are OK - purrr',
+          ],
+          dog: [
+            'dogs are OK - wooof',
+          ],
+          furnished: [
+            'furnished',
+          ],
+          smoking: [
+            'no smoking',
+          ],
+          wheelchair: [
+            'wheelchair accessible',
+          ],
+        };
+        let newListings = {};
 
         let $ = cheerio.load(allData[1][0]);
-        console.log($('.postinginfos p:nth-child(1)').text().replace(/\D+/g, ''));
 
-        // let listingDetails = allData[1].reduce((acc, body, i) => {
-        //   if (i < 1) {
-        //     let $ = cheerio.load(body);
-        //
-        //     console.log($('.postinfos p:first-child').text())
-        //   }
-        // }, {})
+        detailsCheerio = $('.mapAndAttrs .attrgroup:last-of-type span').map((i, el) => {
+          return ($(el).text());
+        });
+
+        detailsText = [];
+
+        for (let i = 0; i < detailsCheerio.length; i++) {
+          detailsText.push(detailsCheerio[i]);
+        };
+
+        const detailHash = {};
+
+        for (let j = 0; j < detailsText.length; j += 1) {
+          // eslint-disable-next-line array-callback-return
+          Object.keys(listingEnums).map(field => {
+            if (listingEnums[field].indexOf(detailsText[j]) !== -1) {
+              detailHash[field] = detailsText[j];
+              delete listingEnums[field];
+            }
+          });
+        }
+
+        newListings = {
+          [$('.postinginfos p:nth-child(1)').text().replace(/\D+/g, '')]: {
+            urlnum: $('.postinginfos p:nth-child(1)').text().replace(/\D+/g, ''),
+            descr: $('#postingbody').text().trim(),
+            title: $('#titletextonly').text(),
+            bedrooms: $('.attrgroup span b').first().text(),
+            rent: $('.postingtitletext .price').text(),
+            sqft: $('.postingtitletext .housing').text().replace(/^[0-9]br - /, ''),
+            lat: $('.mapbox .viewposting').data('latitude'),
+            lon: $('.mapbox .viewposting').data('longitude'),
+            streetAddress: $('.mapbox div.mapaddress').first().text(),
+          }
+        };
+
+        res.send([allData[0][$('.postinginfos p:nth-child(1)').text().replace(/\D+/g, '')], newListings, detailHash])
       })
 
-      // descr -- #postingbody: $('#postingbody').text();
-      // details -- '.mapAndAttrs .attrgroup:last-of-type': $('.mapAndAttrs .attrgroup:last-of-type')
-      // if it's length is longer than 0, compare against enumobject(?)
-      // bedrooms -- '.attrgroup span b': $('.attrgroup span b')
-        // $('.attrgroup').first()
-      // sqft -- '.attrgroup sup'
-      // coords -- '.mapbox'
-      // streetaddress -- '.mapbox'
-
-      //   descr: new TransformSelector('#postingbody', 0, el => {
-      //     if (el[0] && el.children && el[0].children[2]) {
-      //       return el[0].children[2].data;
-      //     }
-      //   }),
-      //   details: new TransformSelector('.mapAndAttrs .attrgroup:last-of-type', 0, el => {
-      //     const detailHash = {};
-      //
-      //     if (el[0] && el[0].children) {
-      //       const tempDetailStorage = [];
-      //
-      //       // eslint-disable-next-line array-callback-return
-      //       el[0].children.map(detail => {
-      //         if (detail.children && detail.children.length > 0) {
-      //           tempDetailStorage.push(detail.children[0].data);
-      //         }
-      //       });
-      //
-      //       for (let j = 0; j < tempDetailStorage.length; j += 1) {
-      //         // eslint-disable-next-line array-callback-return
-      //         Object.keys(listingEnums).map(field => {
-      //           if (listingEnums[field].indexOf(tempDetailStorage[j]) !== -1) {
-      //             detailHash[field] = tempDetailStorage[j];
-      //             delete listingEnums[field];
-      //           }
-      //         });
-      //       }
-      //     }
-      //
-      //     return detailHash;
-      //   }),
-      //   // eslint-disable-next-line array-callback-return, consistent-return
-      //   bedrooms: new TransformSelector('.attrgroup span b', 0, el => {
-      //     if (el[0] && el[0].children){
-      //       return el[0].children[0].data;
-      //     }
-      //   }),
-      //   sqft: new TransformSelector('.attrgroup sup', 0, el => {
-      //     // eslint-disable-next-line max-len
-      //     if (el && el[0] && el[0].prev && el[0].prev.prev && el[0].prev.prev.children[0].data) {
-      //       return el[0].prev.prev.children[0].data;
-      //     }
-      //   }),
-      //   // eslint-disable-next-line consistent-return
-      //   coords: new TransformSelector('.mapbox', 0, el => {
-      //     if (el[0] && el[0].children[1]) {
-      //       return {
-      //         lat: el[0].children[1].attribs['data-latitude'],
-      //         lon: el[0].children[1].attribs['data-longitude'],
-      //       };
-      //       // accuracy: el[0].children[1].attribs['data-accuracy']
-      //     }
-      //   }),
-      //   // eslint-disable-next-line consistent-return
-      //   streetAddress: new TransformSelector('.mapbox', 0, el => {
-      //     if (el[0] && el[0].children && el[0].children[3] && el[0].children[3].children) {
-      //       return el[0].children[3].children[0].data;
-      //     }
-      //   }),
-      // },
+      // To do -- extend to loop through all (new) listings
       .catch(err => next(err));
   })
   .then(array => {
@@ -357,55 +334,6 @@ router.get('/scrape/:city', authorize, (req, res, next) => {
 
         // eslint-disable-next-line no-unused-vars
         const dispatcher = new CerealScraper.Dispatcher(cereallist).start().then(() => {
-          const listingEnums = {
-            housing: [
-              'apartment',
-              'condo',
-              'house',
-              'townhouse',
-              'duplex',
-              'land',
-              'in-law',
-              'cottage/cabin',
-            ],
-            laundry: [
-              'laundry on site',
-              'w/d in unit',
-              'laundry in bldg',
-            ],
-            parking: [
-              'off-street parking',
-              'detached garage',
-              'attached garage',
-              'valet parking',
-              'street parking',
-              'carport',
-              'no parking',
-            ],
-            bath: [
-              'private bath',
-              'no private bath',
-            ],
-            private_room: [
-              'private room',
-              'room not private',
-            ],
-            cat: [
-              'cats are OK - purrr',
-            ],
-            dog: [
-              'dogs are OK - wooof',
-            ],
-            furnished: [
-              'furnished',
-            ],
-            smoking: [
-              'no smoking',
-            ],
-            wheelchair: [
-              'wheelchair accessible',
-            ],
-          };
 
           if (scrapedRowsFromSearchPage.length === 0) {
             res.send([0,0])

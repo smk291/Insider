@@ -1,171 +1,171 @@
 <body class="posting en desktop w1024">
-      <div id="afd"></div>
-      <script type="text/javascript">
-            <!--
-            function C(k) {
-              return (document.cookie.match('(^|; )' + k + '=([^;]*)') || 0)[2]
-            }
-            var pagetype, pagemode;
-            (function () {
-              var h = document.documentElement;
-              h.className = h.className.replace('no-js', 'js');
-              var b = document.body;
-              var bodyClassList = b.className.split(/\s+/);;
-              pagetype = bodyClassList[0]; // dangerous assumption
-              var fmt = C('cl_fmt');
-              if (fmt === 'regular' || fmt === 'mobile') {
-                pagemode = fmt;
-              } else if (screen.width <= 480) {
-                pagemode = 'mobile';
-              } else {
-                pagemode = 'regular';
-              }
-              pagemode = pagemode === 'mobile' ? 'mobile' : 'desktop';
-              bodyClassList.push(pagemode);
-              if (C('hidesearch') === '1' && pagemode !== 'mobile') {
-                bodyClassList.push('hide-search');
-              }
-              var width = window.innerWidth || document.documentElement.clientWidth;
-              if (width > 1000) {
-                bodyClassList.push('w1024');
-              }
-              if (typeof window.sectionBase !== 'undefined') {
-                var mode = (decodeURIComponent(C('cl_tocmode') || '').match(new RegExp(window.sectionBase + ':([^,]+)', 'i')) || {})[1] || window.defaultView;
-                if (mode) {
-                  bodyClassList.push(mode);
-                }
-              }
-              b.className = bodyClassList.join(' ');
-            }());
-            -->
-      </script>
+  <div id="afd"></div>
+  <script type="text/javascript">
+    <!--
+    function C(k) {
+      return (document.cookie.match('(^|; )' + k + '=([^;]*)') || 0)[2]
+    }
+    var pagetype, pagemode;
+    (function () {
+      var h = document.documentElement;
+      h.className = h.className.replace('no-js', 'js');
+      var b = document.body;
+      var bodyClassList = b.className.split(/\s+/);;
+      pagetype = bodyClassList[0]; // dangerous assumption
+      var fmt = C('cl_fmt');
+      if (fmt === 'regular' || fmt === 'mobile') {
+        pagemode = fmt;
+      } else if (screen.width <= 480) {
+        pagemode = 'mobile';
+      } else {
+        pagemode = 'regular';
+      }
+      pagemode = pagemode === 'mobile' ? 'mobile' : 'desktop';
+      bodyClassList.push(pagemode);
+      if (C('hidesearch') === '1' && pagemode !== 'mobile') {
+        bodyClassList.push('hide-search');
+      }
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      if (width > 1000) {
+        bodyClassList.push('w1024');
+      }
+      if (typeof window.sectionBase !== 'undefined') {
+        var mode = (decodeURIComponent(C('cl_tocmode') || '').match(new RegExp(window.sectionBase + ':([^,]+)', 'i')) || {})[1] || window.defaultView;
+        if (mode) {
+          bodyClassList.push(mode);
+        }
+      }
+      b.className = bodyClassList.join(' ');
+    }());
+    -->
+  </script>
 
-      <section class="page-container">
-            <div class="bglogo"></div>
-            <header class="global-header">
-                  <a class="header-logo" href="/">CL</a>
+  <section class="page-container">
+    <div class="bglogo"></div>
+    <header class="global-header">
+      <a class="header-logo" href="/">CL</a>
 
-                  <nav class="breadcrumbs-container">
+      <nav class="breadcrumbs-container">
 
-                        <ul class="breadcrumbs">
-                              <li class="crumb area">
-                                    <p>
-                                          <a href="/">seattle</a>
+        <ul class="breadcrumbs">
+          <li class="crumb area">
+            <p>
+              <a href="/">seattle</a>
 
-                                          <span class="breadcrumb-arrow">&gt;</span>
-                                    </p>
-                              </li>
+              <span class="breadcrumb-arrow">&gt;</span>
+            </p>
+          </li>
 
-                              <li class="crumb subarea">
-                                    <p>
-                                          <a href="/see/">seattle</a>
-                                          <span class="breadcrumb-arrow">&gt;</span>
-                                    </p>
-                              </li>
+          <li class="crumb subarea">
+            <p>
+              <a href="/see/">seattle</a>
+              <span class="breadcrumb-arrow">&gt;</span>
+            </p>
+          </li>
 
-                              <li class="crumb section">
-                                    <p>
-                                          <a href="/search/see/hhh">housing</a>
+          <li class="crumb section">
+            <p>
+              <a href="/search/see/hhh">housing</a>
 
-                                          <span class="breadcrumb-arrow">&gt;</span>
-                                    </p>
-                              </li>
+              <span class="breadcrumb-arrow">&gt;</span>
+            </p>
+          </li>
 
-                              <li class="crumb category">
-                                    <p>
-                                          <a href="/search/see/sub">sublets &amp; temporary</a>
+          <li class="crumb category">
+            <p>
+              <a href="/search/see/sub">sublets &amp; temporary</a>
 
-                                    </p>
-                              </li>
+            </p>
+          </li>
 
-                              <li class="crumb no-js">
-                                    <input type="submit" value="go">
-                              </li>
-                        </ul>
-                  </nav>
+          <li class="crumb no-js">
+            <input type="submit" value="go">
+          </li>
+        </ul>
+      </nav>
 
-                  <div class="userlinks">
-                        <ul class="user-actions">
-                              <li class="user post">
-                                    <a href="https://post.craigslist.org/c/sea">post</a>
-                              </li>
-                              <li class="user account">
-                                    <a href="https://accounts.craigslist.org/login/home">account</a>
-                              </li>
-                        </ul>
-                        <ul class="user-favs-discards">
-                              <li class="user">
-                                    <div class="favorites off">
-                                          <a href="#" class="favlink">
-                                                <span class="icon icon-star fav" aria-hidden="true"></span>
-                                                <span class="fav-number">0</span>
-                                                <span class="fav-label"> favorites</span>
-                                          </a>
-                                    </div>
-                              </li>
-                              <li class="user discards">
-                                    <form class="unfavform js-only" method="POST" action="/favorites">
-                                          <div class="to-banish-page">
-                                                <input type="hidden" class="lastLink" name="lastLink" value="/see/sub/6055870760.html">
-                                                <input type="hidden" class="lastTitle" name="lastTitle" value="Subletting Bedroom 10 minute walk from UW Campus">
-                                                <input type="hidden" class="unfaves" name="fl" value="eHI2amtlbWo6">
-                                                <input type="hidden" name="uf" value="1">
-                                                <a href="#" class="to-banish-page-link">
-                                                      <span class="icon icon-trash red" aria-hidden="true"></span>
-                                                      <span class="banished_count">0</span>
-                                                      <span class="discards-label"> hidden</span>
-                                                </a>
-                                          </div>
-                                    </form>
-                              </li>
-                        </ul>
-                  </div>
-            </header>
-            <section class="body">
-                  <header class="dateReplyBar">
+      <div class="userlinks">
+        <ul class="user-actions">
+          <li class="user post">
+            <a href="https://post.craigslist.org/c/sea">post</a>
+          </li>
+          <li class="user account">
+            <a href="https://accounts.craigslist.org/login/home">account</a>
+          </li>
+        </ul>
+        <ul class="user-favs-discards">
+          <li class="user">
+            <div class="favorites off">
+              <a href="#" class="favlink">
+                <span class="icon icon-star fav" aria-hidden="true"></span>
+                <span class="fav-number">0</span>
+                <span class="fav-label"> favorites</span>
+              </a>
+            </div>
+          </li>
+          <li class="user discards">
+            <form class="unfavform js-only" method="POST" action="/favorites">
+              <div class="to-banish-page">
+                <input type="hidden" class="lastLink" name="lastLink" value="/see/sub/6055870760.html">
+                <input type="hidden" class="lastTitle" name="lastTitle" value="Subletting Bedroom 10 minute walk from UW Campus">
+                <input type="hidden" class="unfaves" name="fl" value="eHI2amtlbWo6">
+                <input type="hidden" name="uf" value="1">
+                <a href="#" class="to-banish-page-link">
+                  <span class="icon icon-trash red" aria-hidden="true"></span>
+                  <span class="banished_count">0</span>
+                  <span class="discards-label"> hidden</span>
+                </a>
+              </div>
+            </form>
+          </li>
+        </ul>
+      </div>
+    </header>
+    <section class="body">
+      <header class="dateReplyBar">
 
-                        <script type="text/javascript">
-                              <!--
-                              var bestOf = "";
-                              var buttonPostingID = "6055870760";
-                              var isPreview = "";
-                              -->
-                        </script>
+        <script type="text/javascript">
+          <!--
+          var bestOf = "";
+          var buttonPostingID = "6055870760";
+          var isPreview = "";
+          -->
+        </script>
 
-                        <button class="reply_button js-only">reply
+        <button class="reply_button js-only">reply
                               <span class="envelope">✉</span>
                               <span class="phone">☎</span>
                         </button>
-                        <span class="replylink"><a id="replylink" href="/reply/sea/sub/6055870760">reply</a></span>
+        <span class="replylink"><a id="replylink" href="/reply/sea/sub/6055870760">reply</a></span>
 
-                        <div class="returnemail js-only" style="display: none;"></div>
+        <div class="returnemail js-only" style="display: none;"></div>
 
-                        <aside class="flags">
-                              <a class="flaglink" data-flag="28" href="https://post.craigslist.org/flag?flagCode=28&amp;postingID=6055870760&amp;cat=sub&amp;area=sea" title="flag as prohibited / spam / miscategorized">
-                                    <span class="flag">x</span>
-                                    <span class="flagtext">prohibited</span>
-                              </a><sup>[<a href="http://www.craigslist.org/about/prohibited">?</a>]</sup>
-                        </aside>
-                        <p id="display-date" class="postinginfo" style="opacity: 1;">Posted
-                              <time class="timeago" datetime="2017-03-22T16:43:08-0700" title="2017-03-22  4:43pm">25 minutes ago</time>
-                        </p>
+        <aside class="flags">
+          <a class="flaglink" data-flag="28" href="https://post.craigslist.org/flag?flagCode=28&amp;postingID=6055870760&amp;cat=sub&amp;area=sea" title="flag as prohibited / spam / miscategorized">
+            <span class="flag">x</span>
+            <span class="flagtext">prohibited</span>
+          </a><sup>[<a href="http://www.craigslist.org/about/prohibited">?</a>]</sup>
+        </aside>
+        <p id="display-date" class="postinginfo" style="opacity: 1;">Posted
+          <time class="timeago" datetime="2017-03-22T16:43:08-0700" title="2017-03-22  4:43pm">25 minutes ago</time>
+        </p>
 
-                        <p class="print-information print-contact">
-                              Contact Information:
-                              <span class="print-email"></span>
-                              <span class="print-phone"></span>
-                        </p>
+        <p class="print-information print-contact">
+          Contact Information:
+          <span class="print-email"></span>
+          <span class="print-phone"></span>
+        </p>
 
-                        <a href="#" id="printme">print</a>
-                        <div class="prevnext js-only show-prevnext">
-                              <a class="prev">◀  prev </a>
-                              <a class="backup" title="back to search" href="//seattle.craigslist.org/search/sub">▲</a>
-                              <a class="next" href="//seattle.craigslist.org/see/sub/6050817831.html"> next ▶ </a>
-                        </div>
+        <a href="#" id="printme">print</a>
+        <div class="prevnext js-only show-prevnext">
+          <a class="prev">◀  prev </a>
+          <a class="backup" title="back to search" href="//seattle.craigslist.org/search/sub">▲</a>
+          <a class="next" href="//seattle.craigslist.org/see/sub/6050817831.html"> next ▶ </a>
+        </div>
 
-                  </header>
+      </header>
 
-                  <h2 class="postingtitle">
+      <h2 class="postingtitle">
                         <span class="icon icon-star" role="button">
                               <span class="screen-reader-text">favorite this post</span>
                         </span>
@@ -186,191 +186,193 @@
                               </span>
                         </span>
                   </h2>
-                  <section class="userbody">
+      <section class="userbody">
 
-                        <div class="mapAndAttrs">
-                              <div class="mapbox">
-                                    <div id="map" class="viewposting leaflet-container leaflet-retina leaflet-fade-anim" data-latitude="47.656400" data-longitude="-122.304800" data-accuracy="22" tabindex="0">
-                                          <div class="leaflet-map-pane" style="transform: translate3d(-10px, 0px, 0px);">
-                                                <div class="leaflet-tile-pane">
-                                                      <div class="leaflet-layer">
-                                                            <div class="leaflet-tile-container"></div>
-                                                            <div class="leaflet-tile-container leaflet-zoom-animated">
-                                                                  <img class="leaflet-tile leaflet-tile-loaded" src="//map0.craigslist.org/t09/13/1312/2858.png" style="height: 256px; width: 256px; left: -68px; top: -184px;">
-                                                                  <img class="leaflet-tile leaflet-tile-loaded" src="//map1.craigslist.org/t09/13/1313/2858.png" style="height: 256px; width: 256px; left: 188px; top: -184px;">
-                                                                  <img class="leaflet-tile leaflet-tile-loaded" src="//map1.craigslist.org/t09/13/1312/2859.png" style="height: 256px; width: 256px; left: -68px; top: 72px;">
-                                                                  <img class="leaflet-tile leaflet-tile-loaded" src="//map2.craigslist.org/t09/13/1313/2859.png" style="height: 256px; width: 256px; left: 188px; top: 72px;">
-                                                            </div>
-                                                      </div>
-                                                </div>
-                                                <div class="leaflet-objects-pane">
-                                                      <div class="leaflet-shadow-pane"></div>
-                                                      <div class="leaflet-overlay-pane">
-                                                            <svg class="leaflet-zoom-animated" width="372" height="374" viewBox="-27 -37 372 374" style="transform: translate3d(-27px, -37px, 0px);">
+        <div class="mapAndAttrs">
+          <div class="mapbox">
+            <div id="map" class="viewposting leaflet-container leaflet-retina leaflet-fade-anim" data-latitude="47.656400" data-longitude="-122.304800" data-accuracy="22" tabindex="0">
+              <div class="leaflet-map-pane" style="transform: translate3d(-10px, 0px, 0px);">
+                <div class="leaflet-tile-pane">
+                  <div class="leaflet-layer">
+                    <div class="leaflet-tile-container"></div>
+                    <div class="leaflet-tile-container leaflet-zoom-animated">
+                      <img class="leaflet-tile leaflet-tile-loaded" src="//map0.craigslist.org/t09/13/1312/2858.png" style="height: 256px; width: 256px; left: -68px; top: -184px;">
+                      <img class="leaflet-tile leaflet-tile-loaded" src="//map1.craigslist.org/t09/13/1313/2858.png" style="height: 256px; width: 256px; left: 188px; top: -184px;">
+                      <img class="leaflet-tile leaflet-tile-loaded" src="//map1.craigslist.org/t09/13/1312/2859.png" style="height: 256px; width: 256px; left: -68px; top: 72px;">
+                      <img class="leaflet-tile leaflet-tile-loaded" src="//map2.craigslist.org/t09/13/1313/2859.png" style="height: 256px; width: 256px; left: 188px; top: 72px;">
+                    </div>
+                  </div>
+                </div>
+                <div class="leaflet-objects-pane">
+                  <div class="leaflet-shadow-pane"></div>
+                  <div class="leaflet-overlay-pane">
+                    <svg class="leaflet-zoom-animated" width="372" height="374" viewBox="-27 -37 372 374" style="transform: translate3d(-27px, -37px, 0px);">
                                                                   <g>
                                                                         <path stroke-linejoin="round" stroke-linecap="round" fill-rule="evenodd" stroke="#770091" stroke-opacity="0.5" stroke-width="1" fill="#770091" fill-opacity="0.1" class="leaflet-clickable" d="M159,33A117,117,0,1,1,158.9,33 z"></path>
                                                                   </g>
                                                             </svg>
-                                                      </div>
-                                                      <div class="leaflet-marker-pane"></div>
-                                                      <div class="leaflet-popup-pane"></div>
-                                                </div>
-                                          </div>
-                                          <div class="leaflet-control-container">
-                                                <div class="leaflet-top leaflet-left">
-                                                      <div class="leaflet-control-zoom leaflet-bar leaflet-control">
-                                                            <a class="leaflet-control-fullscreen leaflet-bar-part leaflet-bar-part-top" href="#" title="Toggle Full Screen"></a>
-                                                            <a class="leaflet-control-zoom-in leaflet-bar-part " href="#" title="Zoom in"></a>
-                                                            <a class="leaflet-control-zoom-out leaflet-bar-part leaflet-bar-part-bottom" href="#" title="Zoom out"></a>
-                                                      </div>
-                                                </div>
-                                                <div class="leaflet-top leaflet-right"></div>
-                                                <div class="leaflet-bottom leaflet-left"></div>
-                                                <div class="leaflet-bottom leaflet-right">
-                                                      <div class="leaflet-control-attribution leaflet-control">© craigslist - Map data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a></div>
-                                                </div>
-                                          </div>
-                                    </div>
+                  </div>
+                  <div class="leaflet-marker-pane"></div>
+                  <div class="leaflet-popup-pane"></div>
+                </div>
+              </div>
+              <div class="leaflet-control-container">
+                <div class="leaflet-top leaflet-left">
+                  <div class="leaflet-control-zoom leaflet-bar leaflet-control">
+                    <a class="leaflet-control-fullscreen leaflet-bar-part leaflet-bar-part-top" href="#" title="Toggle Full Screen"></a>
+                    <a class="leaflet-control-zoom-in leaflet-bar-part " href="#" title="Zoom in"></a>
+                    <a class="leaflet-control-zoom-out leaflet-bar-part leaflet-bar-part-bottom" href="#" title="Zoom out"></a>
+                  </div>
+                </div>
+                <div class="leaflet-top leaflet-right"></div>
+                <div class="leaflet-bottom leaflet-left"></div>
+                <div class="leaflet-bottom leaflet-right">
+                  <div class="leaflet-control-attribution leaflet-control">© craigslist - Map data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a></div>
+                </div>
+              </div>
+            </div>
 
-                                    <p class="mapaddress">
-                                          <small>
+            <p class="mapaddress">
+              <small>
                                                 (<a target="_blank" href="https://maps.google.com/maps/preview/@47.656400,-122.304800,16z">google map</a>)
                                           </small>
-                                    </p>
-                              </div>
-                              <p class="attrgroup">
-                                    <span><b>1BR</b> / <b>1.5Ba</b></span>
-                                    <span><b>830</b>ft<sup>2</sup></span>
-                                    <span class="housing_movein_now property_date" data-date="2017-04-01" data-today_msg="available now">available apr 1</span>
-                              </p>
-                              <p class="attrgroup">
-                                    <span>apartment</span>
-                                    <br>
-                                    <span>laundry in bldg</span>
-                                    <br>
-                                    <span>attached garage</span>
-                                    <br>
-                                    <span>no private bath</span>
-                                    <br>
-                                    <span>private room</span>
-                                    <br>
-                              </p>
-                        </div>
+            </p>
+          </div>
+          <p class="attrgroup">
+            <span><b>1BR</b> / <b>1.5Ba</b></span>
+            <span><b>830</b>ft<sup>2</sup></span>
+            <span class="housing_movein_now property_date" data-date="2017-04-01" data-today_msg="available now">available apr 1</span>
+          </p>
+          <p class="attrgroup">
+            <span>apartment</span>
+            <br>
+            <span>laundry in bldg</span>
+            <br>
+            <span>attached garage</span>
+            <br>
+            <span>no private bath</span>
+            <br>
+            <span>private room</span>
+            <br>
+          </p>
+        </div>
 
-                        <section id="postingbody">
-                              <div class="print-information print-qrcode-container">
-                                    <p class="print-qrcode-label">QR Code Link to This Post</p>
-                                    <div class="print-qrcode" data-location="http://seattle.craigslist.org/see/sub/6055870760.html">
-                                          <canvas width="200" height="200"></canvas>
-                                    </div>
-                              </div>
-                              Subletting a room in a 3-bedroom apartment on 43rd and 7th from April-August.
-                              <br>
-                              <br> The apartment is a short 10 minute walk from campus and close to Trader Joes, Safeway, The Ave, and the U-District farmer's market. It is also just one block away from the 76 and 355 bus lines which take about 15 minutes to reach downtown, making the apartment ideal for summer quarter students or interns looking for quick access to downtown.
-                              <br>
-                              <br> The room is fully furnished with a bed and desk. The apartment includes 1.5 bathrooms, a common area with a TV, and a kitchen with an oven, dishwasher, microwave, and refrigerator. Laundry machines are available in the building. The space is shared by 2 guys and 1 girl, all of whom are current students or recent graduates.
-                              <br>
-                              <br> Rent and utilities total $550 a month, cable and electricity total around $25/month in addition to rent. Parking in a secured garage is available for an additional $100/month, but street parking is free. Move-in date is flexible!
-                              <br>
-                              <br> Please comment or message me for additional details, photos, and/or tours! </section>
+        <section id="postingbody">
+          <div class="print-information print-qrcode-container">
+            <p class="print-qrcode-label">QR Code Link to This Post</p>
+            <div class="print-qrcode" data-location="http://seattle.craigslist.org/see/sub/6055870760.html">
+              <canvas width="200" height="200"></canvas>
+            </div>
+          </div>
+          Subletting a room in a 3-bedroom apartment on 43rd and 7th from April-August.
+          <br>
+          <br> The apartment is a short 10 minute walk from campus and close to Trader Joes, Safeway, The Ave, and the U-District farmer's market. It is also just one block away from the 76 and 355 bus lines which take about 15 minutes to reach downtown,
+          making the apartment ideal for summer quarter students or interns looking for quick access to downtown.
+          <br>
+          <br> The room is fully furnished with a bed and desk. The apartment includes 1.5 bathrooms, a common area with a TV, and a kitchen with an oven, dishwasher, microwave, and refrigerator. Laundry machines are available in the building. The space
+          is shared by 2 guys and 1 girl, all of whom are current students or recent graduates.
+          <br>
+          <br> Rent and utilities total $550 a month, cable and electricity total around $25/month in addition to rent. Parking in a secured garage is available for an additional $100/month, but street parking is free. Move-in date is flexible!
+          <br>
+          <br> Please comment or message me for additional details, photos, and/or tours! </section>
 
-                        <ul class="notices">
-                              <li>do NOT contact me with unsolicited services or offers</li>
-                        </ul>
+        <ul class="notices">
+          <li>do NOT contact me with unsolicited services or offers</li>
+        </ul>
 
-                        <div class="postinginfos">
-                              <p class="postinginfo">post id: 6055870760</p>
+        <div class="postinginfos">
+          <p class="postinginfo">post id: 6055870760</p>
 
-                              <p class="postinginfo" style="opacity: 1;">posted:
-                                    <time class="timeago" datetime="2017-03-22T16:43:08-0700" title="2017-03-22  4:43pm">25 minutes ago</time>
-                              </p>
+          <p class="postinginfo" style="opacity: 1;">posted:
+            <time class="timeago" datetime="2017-03-22T16:43:08-0700" title="2017-03-22  4:43pm">25 minutes ago</time>
+          </p>
 
-                              <p class="postinginfo">
-                                    <a href="https://accounts.craigslist.org/eaf?postingID=6055870760&amp;token=U2FsdGVkX18yODE2NzI4Me882QKvicuF_AIh4yzlXWRq9Ltkpe9yoiNwJkRJwvGx5Q7OFLZMY2_vVSRjQ1T_Bdl-dPip4I7P" class="email-friend">email to friend</a>
-                              </p>
-                              <p class="postinginfo">
-                                    <a class="bestof-link" data-flag="9" href="https://post.craigslist.org/flag?flagCode=9&amp;postingID=6055870760" title="nominate for best-of-CL">
-                                          <span class="bestof-icon">♥ </span>
-                                          <span class="bestof-text">best of</span>
-                                    </a> <sup>[<a href="https://www.craigslist.org/about/best-of-craigslist">?</a>]</sup>
-                              </p>
+          <p class="postinginfo">
+            <a href="https://accounts.craigslist.org/eaf?postingID=6055870760&amp;token=U2FsdGVkX18yODE2NzI4Me882QKvicuF_AIh4yzlXWRq9Ltkpe9yoiNwJkRJwvGx5Q7OFLZMY2_vVSRjQ1T_Bdl-dPip4I7P" class="email-friend">email to friend</a>
+          </p>
+          <p class="postinginfo">
+            <a class="bestof-link" data-flag="9" href="https://post.craigslist.org/flag?flagCode=9&amp;postingID=6055870760" title="nominate for best-of-CL">
+              <span class="bestof-icon">♥ </span>
+              <span class="bestof-text">best of</span>
+            </a> <sup>[<a href="https://www.craigslist.org/about/best-of-craigslist">?</a>]</sup>
+          </p>
 
-                        </div>
+        </div>
 
-                        <div class="print-information print-pics"></div>
+        <div class="print-information print-pics"></div>
 
-                  </section>
-
-                  <div class="psa-box">
-                  </div>
-
-                  <div class="avoid-scams">
-                        <aside class="tsb">
-                              Please flag
-                              <a href="https://www.craigslist.org/about/FHA">discriminatory housing ads</a>
-                        </aside>
-
-                        <aside class="tsb">
-                              <a href="https://www.craigslist.org/about/scams">Avoid scams, deal locally!</a>
-
-                              <em>DO NOT wire funds (e.g. Western Union)</em>, or buy/rent sight unseen
-                        </aside>
-                  </div>
-
-            </section>
-            <footer>
-                  <ul class="clfooter">
-                        <li>©
-                              <span class="desktop">craigslist</span>
-                              <span class="mobile">CL</span>
-                        </li>
-                        <li><a href="https://www.craigslist.org/about/help/">help</a></li>
-                        <li><a href="https://www.craigslist.org/about/scams">safety</a></li>
-                        <li class="desktop"><a href="https://www.craigslist.org/about/privacy.policy">privacy</a></li>
-                        <li class="desktop"><a href="https://forums.craigslist.org/?forumID=8">feedback</a></li>
-                        <li class="desktop"><a href="https://www.craigslist.org/about/craigslist_is_hiring">cl jobs</a></li>
-                        <li><a href="//www.craigslist.org/about/terms.of.use.en">terms</a></li>
-                        <li><a href="https://www.craigslist.org/about/">about</a></li>
-                        <li class="fsel desktop linklike" data-mode="mobile">mobile</li>
-                        <li class="fsel mobile linklike" data-mode="regular">desktop</li>
-                  </ul>
-            </footer>
       </section>
 
-      <script type="text/javascript">
-            <!--
-            var countOfTotalText = "image {count} of {total}";
-            var imageConfig = {
-              "1": {
-                "hostname": "https://images.craigslist.org",
-                "sizes": ["50x50c", "300x300", "600x450", "1200x900"]
-              },
-              "0": {
-                "hostname": "https://images.craigslist.org",
-                "sizes": ["50x50c", "300x300", "600x450"]
-              },
-              "2": {
-                "hostname": "https://images.craigslist.org",
-                "sizes": ["50x50c", "300x300", "600x450", "1200x900"]
-              }
-            };
-            var maptileBaseUrl = "//map{s}.craigslist.org/t09/{z}/{x}/{y}.png";
-            var pID = "6055870760";
-            -->
-      </script>
+      <div class="psa-box">
+      </div>
 
-      <script src="//www.craigslist.org/js/general-concat.min.js?v=f68381e9a7dcb2b6be833db04e59afd1" type="text/javascript"></script>
-      <script type="text/javascript">
-            <!--
-            var iframe = document.createElement('iframe');
-            iframe.style.display = 'none';
-            iframe.src = '//www.' + CL.url.baseDomain + '/static/localstorage.html?v=51a29e41f8e978141e4085ed4a77d170';
-            document.body.insertBefore(iframe, null);
-            -->
-      </script>
-      <iframe src="//www.craigslist.org/static/localstorage.html?v=51a29e41f8e978141e4085ed4a77d170" style="display: none;"></iframe>
-      <script src="//www.craigslist.org/js/leaflet-concat.min.js?v=a8604eb93716bccb90bfb4f1ca07b38c" type="text/javascript"></script>
+      <div class="avoid-scams">
+        <aside class="tsb">
+          Please flag
+          <a href="https://www.craigslist.org/about/FHA">discriminatory housing ads</a>
+        </aside>
 
-      <script src="//www.craigslist.org/js/postings-concat.min.js?v=170f3f92ef775bd0c89d3188124e5a95" type="text/javascript"></script>
+        <aside class="tsb">
+          <a href="https://www.craigslist.org/about/scams">Avoid scams, deal locally!</a>
+
+          <em>DO NOT wire funds (e.g. Western Union)</em>, or buy/rent sight unseen
+        </aside>
+      </div>
+
+    </section>
+    <footer>
+      <ul class="clfooter">
+        <li>©
+          <span class="desktop">craigslist</span>
+          <span class="mobile">CL</span>
+        </li>
+        <li><a href="https://www.craigslist.org/about/help/">help</a></li>
+        <li><a href="https://www.craigslist.org/about/scams">safety</a></li>
+        <li class="desktop"><a href="https://www.craigslist.org/about/privacy.policy">privacy</a></li>
+        <li class="desktop"><a href="https://forums.craigslist.org/?forumID=8">feedback</a></li>
+        <li class="desktop"><a href="https://www.craigslist.org/about/craigslist_is_hiring">cl jobs</a></li>
+        <li><a href="//www.craigslist.org/about/terms.of.use.en">terms</a></li>
+        <li><a href="https://www.craigslist.org/about/">about</a></li>
+        <li class="fsel desktop linklike" data-mode="mobile">mobile</li>
+        <li class="fsel mobile linklike" data-mode="regular">desktop</li>
+      </ul>
+    </footer>
+  </section>
+
+  <script type="text/javascript">
+    <!--
+    var countOfTotalText = "image {count} of {total}";
+    var imageConfig = {
+      "1": {
+        "hostname": "https://images.craigslist.org",
+        "sizes": ["50x50c", "300x300", "600x450", "1200x900"]
+      },
+      "0": {
+        "hostname": "https://images.craigslist.org",
+        "sizes": ["50x50c", "300x300", "600x450"]
+      },
+      "2": {
+        "hostname": "https://images.craigslist.org",
+        "sizes": ["50x50c", "300x300", "600x450", "1200x900"]
+      }
+    };
+    var maptileBaseUrl = "//map{s}.craigslist.org/t09/{z}/{x}/{y}.png";
+    var pID = "6055870760";
+    -->
+  </script>
+
+  <script src="//www.craigslist.org/js/general-concat.min.js?v=f68381e9a7dcb2b6be833db04e59afd1" type="text/javascript"></script>
+  <script type="text/javascript">
+    <!--
+    var iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    iframe.src = '//www.' + CL.url.baseDomain + '/static/localstorage.html?v=51a29e41f8e978141e4085ed4a77d170';
+    document.body.insertBefore(iframe, null);
+    -->
+  </script>
+  <iframe src="//www.craigslist.org/static/localstorage.html?v=51a29e41f8e978141e4085ed4a77d170" style="display: none;"></iframe>
+  <script src="//www.craigslist.org/js/leaflet-concat.min.js?v=a8604eb93716bccb90bfb4f1ca07b38c" type="text/javascript"></script>
+
+  <script src="//www.craigslist.org/js/postings-concat.min.js?v=170f3f92ef775bd0c89d3188124e5a95" type="text/javascript"></script>
 
 </body>

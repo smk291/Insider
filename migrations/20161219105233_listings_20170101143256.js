@@ -1,4 +1,4 @@
-exports.up = knex => {
+  exports.up = knex => {
   return knex.schema.createTable('listings', table => {
     table.increments();
     table.string('url').notNullable();

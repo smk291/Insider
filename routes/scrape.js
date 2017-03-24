@@ -191,8 +191,6 @@ function createCompleteListing(scrapedResults, scrapedListings) {
       });
     }
 
-    console.log(detailsHash);
-
     let sqft = null;
     const sqftRegex = $('.postingtitletext .housing').text().replace(/[\d]br|\s|\-|\/|ft2/g, "");
 
@@ -236,6 +234,12 @@ router.get('/results/:city', authorize, (req, res, next) => {
     return scrapeListings(searchResults);
   }).then(allData => {
     res.send(createCompleteListing(allData[0], allData[1]));
+
+    // To do:
+    // Fix seeds so that urlnums are numbers
+    // Fix so that "" becomes null
+    // Let scraper scrape all new listings
+    // Prevent scraper from scraping listings already present in the database
   })
   .catch(err => next(err));
 });

@@ -190,20 +190,20 @@ router.get('/results/:city', authorize, (req, res, next) => {
         }
 
         newListings = {
-          [$('.postinginfos p:nth-child(1)').text().replace(/\D+/g, '')]: {
+          // [$('.postinginfos p:nth-child(1)').text().replace(/\D+/g, '')]: {
             urlnum: $('.postinginfos p:nth-child(1)').text().replace(/\D+/g, ''),
             descr: $('#postingbody').text().trim(),
             title: $('#titletextonly').text(),
             bedrooms: $('.attrgroup span b').first().text(),
-            rent: $('.postingtitletext .price').text(),
-            sqft: $('.postingtitletext .housing').text().replace(/^[0-9]br - /, ''),
+            price: $('.postingtitletext .price').text(),
+            sqft: $('.postingtitletext .housing').text().replace(/[\d]br|\s|\-|\//g, ""),
             lat: $('.mapbox .viewposting').data('latitude'),
             lon: $('.mapbox .viewposting').data('longitude'),
             streetAddress: $('.mapbox div.mapaddress').first().text(),
-          }
+          // }
         };
 
-        res.send([allData[0][$('.postinginfos p:nth-child(1)').text().replace(/\D+/g, '')], newListings, detailHash])
+        res.send(Object.assign({}, allData[0][$('.postinginfos p:nth-child(1)').text().replace(/\D+/g, '')], newListings, detailHash))
       })
 
       // To do -- extend to loop through all (new) listings

@@ -31,9 +31,7 @@ function authorize(req, res, next) {
   });
 }
 
-router.get('/results/:city', authorize, (req, res, next) => {
-  let { city } = req.params;
-
+function getNumberOfPages(city) {
   return new Promise((resolve, reject) => {
     request.get(`https://${city}.craigslist.org/search/sub`, (err, response, body) => {
       if (err) {
@@ -44,173 +42,200 @@ router.get('/results/:city', authorize, (req, res, next) => {
       resolve(Math.floor($('.totalcount').first().text() / 100));
     });
   })
-  .then((searchResultsPage) => {
-    let allSearchResults = [];
+}
 
-    for (var i = 0; i <= searchResultsPage; i++) {
-      let newPromise = new Promise((resolve, reject) => {
-        request.get(`https://${city}.craigslist.org/search/sub?s=${i * 120}`, (err, response, body) => {
+function getPromisesForResultsPages(city, numOfPages){
+  let searchResultsPromises = [];
+
+  for (var i = 0; i <= numOfPages; i++) {
+    let newPromise = new Promise((resolve, reject) => {
+      request.get(`https://${city}.craigslist.org/search/sub?s=${i * 120}`, (err, response, body) => {
+        if (err) {
+          reject(err);
+        }
+
+        resolve(body);
+      });
+    });
+
+    searchResultsPromises.push(newPromise);
+  }
+
+  return searchResultsPromises;
+}
+
+function scrapeResults(searchResults) {
+  return Promise.all(searchResults)
+    .then(values => {
+      const listings = {};
+
+      values.map(eachPage => {
+        let $ = cheerio.load(eachPage)
+        $('.result-row').map((i, el) => {
+          let bedrooms = null
+          const bedroomNum = $('.housing', el).text().replace(/(\dbr)|[^]/g, '$1').replace(/br/, '');
+
+          if ($('.housing', el).text().replace(/(\dbr)|[^]/g, '$1').replace(/br/, '') !== '') {
+            bedrooms = Number($('.housing', el).text().replace(/(\dbr)|[^]/g, '$1').replace(/br/, ''))
+          }
+
+          const urlnum = $(el).data('pid');
+          // If the urlnum isn't already present in the database...
+
+          listings[urlnum] = {
+            bedrooms,
+            urlnum,
+            url: $('a', el).attr('href'),
+            photos: $('a', el).data('ids'),
+            price: Number($('a span.result-price', el).text().replace(/\$/, '')),
+            postDate: $('p time', el).attr('datetime'),
+            neighborhood: $('.result-hood', el).text().trim().replace(/[^\w|\s]/g, ''),
+          };
+        });
+      });
+
+      return listings;
+    })
+}
+
+function scrapeListings(results){
+  const requestListings = Object.keys(results).reduce((acc, listing, i) => {
+    if (i < 3) { //--------------------->
+      const promise = new Promise((resolve, reject) => {
+        request.get(`http://seattle.craigslist.org${results[listing].url}`, (err, response, body) => {
           if (err) {
             reject(err);
           }
 
           resolve(body);
-        });
+        })
       });
 
-      allSearchResults.push(newPromise);
+      acc.push(promise);
+    } // -------------------------->
+
+    return acc;
+  }, []);
+
+  return Promise.all(requestListings).then(completedRequests => {
+    return [results, completedRequests];
+  });
+}
+
+function createCompleteListing(scrapedResults, scrapedListings) {
+  return scrapedListings.reduce((acc, el, i) => {
+    const $ = cheerio.load(el);
+    const currentUrlnum = $('.postinginfos p:nth-child(1)').text().replace(/\D+/g, '');
+    const dataCategories = {
+      housing: [
+        'apartment',
+        'condo',
+        'house',
+        'townhouse',
+        'duplex',
+        'land',
+        'in-law',
+        'cottage/cabin'
+      ],
+      laundry: [
+        'laundry on site',
+        'w/d in unit',
+        'laundry in bldg'
+      ],
+      parking: [
+        'off-street parking',
+        'detached garage',
+        'attached garage',
+        'valet parking',
+        'street parking',
+        'carport',
+        'no parking'
+      ],
+      bath: [
+        'private bath',
+        'no private bath'
+      ],
+      privateRoom: [
+        'private room',
+        'room not private'
+      ],
+      cat: [
+        'cats are OK - purrr'
+      ],
+      dog: [
+        'dogs are OK - wooof'
+      ],
+      furnished: [
+        'furnished'
+      ],
+      smoking: [
+        'no smoking'
+      ],
+      wheelchair: [
+        'wheelchair accessible'
+      ]
+    };
+
+    let detailsCheerio = $('.mapAndAttrs .attrgroup:last-of-type span').map((i, el) => {
+      return ($(el).text());
+    });
+
+    const detailsHash = {}
+
+    for (let i = 0; i < detailsCheerio.length; i++){
+      Object.keys(dataCategories).map(category => {
+        if (dataCategories[category].indexOf(detailsCheerio[i]) !== -1) {
+          detailsHash[category] = detailsCheerio[i];
+          delete dataCategories[category];
+        }
+      });
     }
 
-    console.log(allSearchResults.length);
+    console.log(detailsHash);
 
-    let results = {};
+    let sqft = null;
+    const sqftRegex = $('.postingtitletext .housing').text().replace(/[\d]br|\s|\-|\/|ft2/g, "");
 
-    Promise.all(allSearchResults)
-      .then(values => {
-        const listings = {};
+    if ($('.postingtitletext .housing').text().replace(/[\d]br|\s|\-|\/|ft2/g, "") !== '') {
+      sqft = Number($('.postingtitletext .housing').text().replace(/[\d]br|\s|\-|\/|ft2/g, ""));
+    }
 
-        values.map(eachPage => {
-          let $ = cheerio.load(eachPage)
+    const newListingData = {
+      urlnum: Number(currentUrlnum),
+      descr: $('#postingbody').text().trim(),
+      title: $('#titletextonly').text(),
+      // bedrooms: $('.attrgroup span b').first().text(),
+      price: Number($('.postingtitletext .price').text().replace(/\$/, '')),
+      sqft,
+      lat: $('.mapbox .viewposting').data('latitude'),
+      lon: $('.mapbox .viewposting').data('longitude'),
+      streetAddress: $('.mapbox div.mapaddress').first().text(),
+    };
 
-          $('.result-row').map((i, el) => {
-            const urlnum = $(el).data('pid');
-            listings[urlnum] = {
-              urlnum,
-              url: $('a', el).attr('href'),
-              photos: $('a', el).data('ids'),
-              price: $('a span.result-price', el).text(),
-              postDate: $('p time', el).attr('datetime'),
-              neighborhood: $('.result-hood', el).text().trim().replace(/[^\w|\s]/g, ''),
-            };
-          });
-        });
+    acc[currentUrlnum] = Object.assign(
+      {},
+      scrapedResults[$('.postinginfos p:nth-child(1)').text().replace(/\D+/g, '')],
+      newListingData,
+      detailsHash
+    );
 
-        return listings;
-      })
-      .then(searchResults => {
-        const eachListing = Object.keys(searchResults).reduce((acc, listing, i) => {
-          if (i < 1) { //--------------------->
-            const promise = new Promise((resolve, reject) => {
-              request.get(`http://seattle.craigslist.org${searchResults[listing].url}`, (err, response, body) => {
-                if (err) {
-                  reject(err);
-                }
+    return acc
+  }, {})
+}
 
-                resolve(body);
-              })
-            });
+router.get('/results/:city', authorize, (req, res, next) => {
+  let { city } = req.params;
+  const getNumOfResultsPages = getNumberOfPages(city);
 
-            acc.push(promise);
-            } // -------------------------->
+  getNumOfResultsPages.then((pagesOfResults) => {
+    const searchResultsPromises = getPromisesForResultsPages(city, pagesOfResults);
 
-          return acc;
-        }, []);
-
-        return Promise.all(eachListing)
-          .then(completedRequests => {
-            return [searchResults, completedRequests];
-          })
-          .catch(err => next(err));
-      })
-      .then(allData => {
-        // console.log(allData);
-        const listingEnums = {
-          housing: [
-            'apartment',
-            'condo',
-            'house',
-            'townhouse',
-            'duplex',
-            'land',
-            'in-law',
-            'cottage/cabin',
-          ],
-          laundry: [
-            'laundry on site',
-            'w/d in unit',
-            'laundry in bldg',
-          ],
-          parking: [
-            'off-street parking',
-            'detached garage',
-            'attached garage',
-            'valet parking',
-            'street parking',
-            'carport',
-            'no parking',
-          ],
-          bath: [
-            'private bath',
-            'no private bath',
-          ],
-          private_room: [
-            'private room',
-            'room not private',
-          ],
-          cat: [
-            'cats are OK - purrr',
-          ],
-          dog: [
-            'dogs are OK - wooof',
-          ],
-          furnished: [
-            'furnished',
-          ],
-          smoking: [
-            'no smoking',
-          ],
-          wheelchair: [
-            'wheelchair accessible',
-          ],
-        };
-        let newListings = {};
-
-        let $ = cheerio.load(allData[1][0]);
-
-        detailsCheerio = $('.mapAndAttrs .attrgroup:last-of-type span').map((i, el) => {
-          return ($(el).text());
-        });
-
-        detailsText = [];
-
-        for (let i = 0; i < detailsCheerio.length; i++) {
-          detailsText.push(detailsCheerio[i]);
-        };
-
-        const detailHash = {};
-
-        for (let j = 0; j < detailsText.length; j += 1) {
-          // eslint-disable-next-line array-callback-return
-          Object.keys(listingEnums).map(field => {
-            if (listingEnums[field].indexOf(detailsText[j]) !== -1) {
-              detailHash[field] = detailsText[j];
-              delete listingEnums[field];
-            }
-          });
-        }
-
-        newListings = {
-          // [$('.postinginfos p:nth-child(1)').text().replace(/\D+/g, '')]: {
-            urlnum: $('.postinginfos p:nth-child(1)').text().replace(/\D+/g, ''),
-            descr: $('#postingbody').text().trim(),
-            title: $('#titletextonly').text(),
-            bedrooms: $('.attrgroup span b').first().text(),
-            price: $('.postingtitletext .price').text(),
-            sqft: $('.postingtitletext .housing').text().replace(/[\d]br|\s|\-|\//g, ""),
-            lat: $('.mapbox .viewposting').data('latitude'),
-            lon: $('.mapbox .viewposting').data('longitude'),
-            streetAddress: $('.mapbox div.mapaddress').first().text(),
-          // }
-        };
-
-        res.send(Object.assign({}, allData[0][$('.postinginfos p:nth-child(1)').text().replace(/\D+/g, '')], newListings, detailHash))
-      })
-
-      // To do -- extend to loop through all (new) listings
-      .catch(err => next(err));
+    return scrapeResults(searchResultsPromises)
   })
-  .then(array => {
-
+  .then(searchResults => {
+    return scrapeListings(searchResults);
+  }).then(allData => {
+    res.send(createCompleteListing(allData[0], allData[1]));
   })
   .catch(err => next(err));
 });

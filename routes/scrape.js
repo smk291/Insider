@@ -75,27 +75,80 @@ function scrapeResults(searchResults) {
           let bedrooms = null
           const bedroomNum = $('.housing', el).text().replace(/(\dbr)|[^]/g, '$1').replace(/br/, '');
 
-          if ($('.housing', el).text().replace(/(\dbr)|[^]/g, '$1').replace(/br/, '') !== '') {
-            bedrooms = Number($('.housing', el).text().replace(/(\dbr)|[^]/g, '$1').replace(/br/, ''))
+          if (bedroomNum !== '') {
+            bedrooms = Number(bedroomNum)
           }
 
           const urlnum = $(el).data('pid');
           // If the urlnum isn't already present in the database...
 
+          let price = $('a span.result-price', el).text().replace(/\$/, '');
+
+          if (price === '') {
+            price = null;
+          }
+
+          let photos = $('a', el).data('ids');
+
+          if (!photos || photos.length === 0) {
+            photos = null;
+          } else {
+            photos = photos.split(',');
+            photos = photos.map(partialPath => partialPath.slice(2))
+          }
+
+          let neighborhood = $('.result-hood', el).text().trim().replace(/^\(|\)$/g, '');
+
+          if (neighborhood.length === 0) {
+            neighborhood = null;
+          }
+
+          const url = $('.result-row a', el).attr('href');
+
+          // console.log(url);
+
           listings[urlnum] = {
             bedrooms,
             urlnum,
-            url: $('a', el).attr('href'),
-            photos: $('a', el).data('ids'),
-            price: Number($('a span.result-price', el).text().replace(/\$/, '')),
+            url,
+            photos,
+            price,
             postDate: $('p time', el).attr('datetime'),
-            neighborhood: $('.result-hood', el).text().trim().replace(/[^\w|\s]/g, ''),
+            neighborhood,
           };
         });
       });
 
+      // let keys = Object.keys(listings)
+      // console.log('********scrapeResults********')
+      // console.log(listings[keys[0]].urlnum);
+      // console.log(listings[keys[1]].urlnum);
+      // console.log(listings[keys[2]].urlnum);
+
       return listings;
     })
+}
+
+function checkForDuplicates(next, searchResults) {
+  let filterSearchResults = new Promise((resolve, reject) => {
+    knex('listings')
+      .select('urlnum')
+      .where('void', null)
+      .then(urlnums => {
+        urlnums.map(urlnum => {
+          if (searchResults[urlnum.urlnum] !== undefined) {
+            delete searchResults[urlnum.urlnum];
+          }
+        });
+
+        resolve(searchResults);
+      })
+      .catch(err => reject(err));
+  });
+
+  return filterSearchResults.then(filteredListings => {
+    return filteredListings;
+  });
 }
 
 function scrapeListings(results){
@@ -122,7 +175,25 @@ function scrapeListings(results){
   });
 }
 
-function createCompleteListing(scrapedResults, scrapedListings) {
+function createCompleteListings(scrapedResults, scrapedListings) {
+  let keys = Object.keys(scrapedResults);
+  let listingskeys = Object.keys(scrapedListings);
+
+  // console.log('********createcompeltelistings-scrapedResults*******');
+  // console.log(scrapedResults[keys[0]]);
+  // console.log(scrapedResults[keys[1]]);
+  // console.log(scrapedResults[keys[2]]);
+
+  //
+  // console.log('********createcompeltelistings******');
+  // console.log('********Scraped Listings******');
+  // console.log(scrapedListings[listingskeys[0]]);
+  // console.log(scrapedListings[listingskeys[1]]);
+  // console.log(scrapedListings[listingskeys[2]]);
+
+
+
+
   return scrapedListings.reduce((acc, el, i) => {
     const $ = cheerio.load(el);
     const currentUrlnum = $('.postinginfos p:nth-child(1)').text().replace(/\D+/g, '');
@@ -194,8 +265,38 @@ function createCompleteListing(scrapedResults, scrapedListings) {
     let sqft = null;
     const sqftRegex = $('.postingtitletext .housing').text().replace(/[\d]br|\s|\-|\/|ft2/g, "");
 
-    if ($('.postingtitletext .housing').text().replace(/[\d]br|\s|\-|\/|ft2/g, "") !== '') {
-      sqft = Number($('.postingtitletext .housing').text().replace(/[\d]br|\s|\-|\/|ft2/g, ""));
+    if (sqftRegex !== '') {
+      sqft = Number(sqftRegex);
+    }
+
+    let streetAddress = $('.mapbox div.mapaddress').first().text();
+
+    if (streetAddress === '') {
+      streetAddress = null;
+    }
+
+    let lat = $('.mapbox .viewposting').data('latitude');
+
+    if (lat === undefined) {
+      lat = null;
+    } else {
+      lat = Number(lat);
+    }
+
+    let lon = $('.mapbox .viewposting').data('longitude');
+
+    if (lon === undefined) {
+      lon = null;
+    } else {
+      long = Number(lon);
+    }
+
+    let price = $('.postingtitletext .price').text().replace(/\$/, '');
+
+    if (price === '') {
+      price = null;
+    } else {
+      price = Number(price);
     }
 
     const newListingData = {
@@ -203,12 +304,14 @@ function createCompleteListing(scrapedResults, scrapedListings) {
       descr: $('#postingbody').text().trim(),
       title: $('#titletextonly').text(),
       // bedrooms: $('.attrgroup span b').first().text(),
-      price: Number($('.postingtitletext .price').text().replace(/\$/, '')),
+      price,
       sqft,
-      lat: $('.mapbox .viewposting').data('latitude'),
-      lon: $('.mapbox .viewposting').data('longitude'),
-      streetAddress: $('.mapbox div.mapaddress').first().text(),
+      lat,
+      lon,
+      streetAddress
     };
+
+    // console.log(scrapedResults[$('.postinginfos p:nth-child(1)').text().replace(/\D+/g, '')]);
 
     acc[currentUrlnum] = Object.assign(
       {},
@@ -221,6 +324,22 @@ function createCompleteListing(scrapedResults, scrapedListings) {
   }, {})
 }
 
+function insertNewListings(next, newListings) {
+  const listingsForInsertion = Object.keys(newListings).map(listing => {
+      return newListings[listing];
+  });
+
+  return new Promise((resolve, reject) => {
+    knex('listings')
+      .insert(decamelizeKeys(listingsForInsertion), '*')
+      .then(newListings => {
+        console.log(newListings);
+        resolve(camelizeKeys(newListings));
+      })
+      .catch(err => reject(err));
+  });
+}
+
 router.get('/results/:city', authorize, (req, res, next) => {
   let { city } = req.params;
   const getNumOfResultsPages = getNumberOfPages(city);
@@ -228,18 +347,21 @@ router.get('/results/:city', authorize, (req, res, next) => {
   getNumOfResultsPages.then((pagesOfResults) => {
     const searchResultsPromises = getPromisesForResultsPages(city, pagesOfResults);
 
-    return scrapeResults(searchResultsPromises)
+    return scrapeResults(searchResultsPromises);
   })
   .then(searchResults => {
-    return scrapeListings(searchResults);
+    return checkForDuplicates(next, searchResults);
+  })
+  .then(filteredResults => {
+    return scrapeListings(filteredResults);
   }).then(allData => {
-    res.send(createCompleteListing(allData[0], allData[1]));
+    const toInsert = createCompleteListings(allData[0], allData[1]);
 
-    // To do:
-    // Fix seeds so that urlnums are numbers
-    // Fix so that "" becomes null
-    // Let scraper scrape all new listings
-    // Prevent scraper from scraping listings already present in the database
+    const inserted = insertNewListings(next, toInsert)
+
+    inserted.then(insertedListings => {
+      res.send(insertedListings)
+    })
   })
   .catch(err => next(err));
 });

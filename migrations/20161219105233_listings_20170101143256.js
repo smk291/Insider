@@ -1,19 +1,19 @@
   exports.up = knex => {
   return knex.schema.createTable('listings', table => {
     table.increments();
-    table.string('bedrooms');
+    table.integer('bedrooms');
     table.text('descr', 'utf-8');
-    table.string('lat').defaultTo('');
-    table.string('lon').defaultTo('');
-    table.string('neighborhood').notNullable();
-    table.jsonb('photos');
-    table.string('post_date').notNullable().defaultTo('');
-    table.float('price');
-    table.float('sqft').defaultTo(null);
+    table.decimal('lat', 10, 7);
+    table.decimal('lon', 10, 7);
+    table.string('neighborhood');
+    table.specificType('photos', 'text[]');
+    table.timestamp('post_date').notNullable();
+    table.integer('price');
+    table.integer('sqft');
     table.string('street_address').defaultTo('');
     table.string('title').notNullable().defaultTo('No title provided');
     table.string('url').notNullable();
-    table.integer('urlnum').defaultTo(null);
+    table.bigInteger('urlnum').defaultTo(null).notNullable().unique();
     table.boolean('void');
     table.enu('housing', ['apartment', 'condo', 'house', 'townhouse', 'duplex', 'land', 'in-law', 'cottage/cabin']);
     table.enu('laundry', ['laundry on site', 'w/d in unit', 'laundry in bldg', null]).defaultTo(null);

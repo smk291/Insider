@@ -41,7 +41,7 @@ function getNumberOfPages(city) {
   })
 }
 
-function getPromisesForResultsPages(city, numOfPages){
+function getPromisesForResultsPages(next, city, numOfPages){
   let searchResultsPromises = [];
 
   for (var i = 0; i <= numOfPages; i++) {
@@ -102,8 +102,6 @@ function scrapeResults(searchResults) {
 
           const url = $('.result-row a', el).attr('href');
 
-          // console.log(url);
-
           listings[urlnum] = {
             bedrooms,
             urlnum,
@@ -116,11 +114,37 @@ function scrapeResults(searchResults) {
         });
       });
 
-      // let keys = Object.keys(listings)
-      // console.log('********scrapeResults********')
-      // console.log(listings[keys[0]].urlnum);
-      // console.log(listings[keys[1]].urlnum);
-      // console.log(listings[keys[2]].urlnum);
+      // let void404 = new Promise((resolve, reject) => {
+      //   knex('listings')
+      //     .select('urlnum')
+      //     .where('void', null)
+      //     .then(activeUrlnums => {
+      //       // console.log(activeUrlnums);
+      //       let activeUrlnums2 = activeUrlnums.reduce((acc, urlnum) => {
+      //         acc[urlnum.urlnum] = true;
+      //         return acc;
+      //       }, {});
+      //
+      //       console.log(Object.keys(activeUrlnums2).length);
+      //       console.log(Object.keys(listings).length);
+      //
+      //       Object.keys(activeUrlnums2).map(urlnum => {
+      //         console.log(urlnum);
+      //         console.log(listings[urlnum]);
+      //
+      //         // if (!searchResults[urlnum.urlnum]) {
+      //         //   knex('listings')
+      //         //     .where('urlnum', urlnum.urlnum)
+      //         //     .update('void', true)
+      //         //     .returning('*')
+      //         //     .then(voidedRow => {
+      //         //       console.log(voidedRow);
+      //         //     })
+      //         // }
+      //       })
+      //     })
+      //     .catch(err => next(err));
+      // })
 
       return listings;
     })
@@ -313,7 +337,7 @@ function insertNewListings(req, res, next, newListings) {
       .where('urlnum', urlnum)
       .first()
       .then(listing => {
-        console.log(listing === undefined);
+        // console.log(listing === undefined);
       })
   })
 
@@ -332,7 +356,7 @@ router.get('/results/:city', authorize, (req, res, next) => {
   const getNumOfResultsPages = getNumberOfPages(city);
 
   getNumOfResultsPages.then((pagesOfResults) => {
-    const searchResultsPromises = getPromisesForResultsPages(city, pagesOfResults);
+    const searchResultsPromises = getPromisesForResultsPages(next, city, pagesOfResults);
 
     return scrapeResults(searchResultsPromises);
   })

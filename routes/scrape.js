@@ -7,11 +7,7 @@ const Promise = require('bluebird');
 const https = require('https');
 const cheerio = require('cheerio');
 const request = require('request');
-// const request = Promise.promisify(require('request'))
-// const ev = require('express-validation');
-// const validations = require('../validations/token');
 
-// eslint-disable-next-line babel/new-cap
 const router = express.Router();
 
 function authorize(req, res, next) {
@@ -99,35 +95,37 @@ function scrapeResults(searchResults) {
 }
 
 function checkForDuplicates(next, searchData) {
-  const partialListings = searchData[0];
+  const partialListingsToAdd = searchData[0];
   const urlnumsFromSearch = searchData[1];
 
   let minUrlnumFromSearch = Math.min(urlnumsFromSearch);
   let urlnumsToVoidInTable = [];
 
-  // What about reactivated listings?
-
   let filterSearchResults = new Promise((resolve, reject) => {
     knex('listings')
       .select('urlnum')
-      // .where('void', null)
+      .whereNot('void', true)
       .orderBy('urlnum', 'desc')
       .then(output => {
         let urlnumsFromTable = output.map(el => el.urlnum);
         let maxUrlnumFromTable = Math.max(urlnumsFromTable);
+        let i = 0;
 
         if (maxUrlnumFromTable < minUrlnumFromSearch) {
           urlnumsToVoidInTable = urlnumsFromTable;
         } else {
           urlnumsFromTable.map(numFromTable => {
-            if (partialListings[numFromTable] !== undefined) {
-              delete partialListings[numFromTable];
+            if (partialListingsToAdd[numFromTable] !== undefined) {
+              i++;
+              delete partialListingsToAdd[numFromTable];
             } else {
+              i++;
               urlnumsToVoidInTable.push(numFromTable);
             }
           });
         }
 
+        console.log(`i: ${i}`);
         resolve([partialListingsToAdd, urlnumsToVoidInTable]);
       })
       .catch(err => reject(err));
@@ -148,7 +146,6 @@ function checkForDuplicates(next, searchData) {
     });
 
     return voidingListings.then(voided => {
-      console.log(voided);
       return partialListingsToAdd;
     });
   });
@@ -227,7 +224,7 @@ function createCompleteListings(scrapedResults, scrapedListings) {
     newListingFormatted = Object.keys(newListing).reduce((nL, el, i) => {
       nL[el] = newListing[el];
 
-      if (nL[el] === undefined || nL[el] === '' || nL[el].length === 0) {
+      if (nL[el] === null || nL[el] === undefined || nL[el] === '' || nL[el].length === 0) {
         nL[el] = null;
       } else if (Number(nL[el])) {
         nL[el] = Number(nL[el]);
@@ -246,20 +243,11 @@ function insertNewListings(req, res, next, newListings) {
       return newListings[listing];
   });
 
-  Object.keys(newListings).map(urlnum => {
-    knex('listings')
-      .where('urlnum', urlnum)
-      .first()
-      .then(listing => {
-        // console.log(listing === undefined);
-      })
-  })
-
   return new Promise((resolve, reject) => {
     knex('listings')
       .insert(decamelizeKeys(listingsForInsertion), '*')
-      .then(newListings => {
-        resolve(camelizeKeys(newListings));
+      .then(newRows => {
+        resolve(camelizeKeys(newRows));
       })
       .catch(err => next(err));
   });
@@ -288,36 +276,14 @@ router.get('/results/:city', authorize, (req, res, next) => {
       res.send('No new listings');
     } else {
       const toInsert = createCompleteListings(allData[0], allData[1]);
-      // const inserted = insertNewListings(req, res, next, toInsert)
+      const inserted = insertNewListings(req, res, next, toInsert)
 
-      res.send(toInsert);
-      // inserted.then(insertedListings => {
-        // res.send(insertedListings)
-      // })
+      inserted.then(insertedListings => {
+        res.send([insertedListings, insertedListings.length])
+      })
     }
   })
   .catch(err => next(err));
 });
-
-// padmapper
-// abodo
-// hotpads
-// apartments
-// zumper
-// 206-650-2204, Rob
-
-
-// Tasks:
-// 1: Loop through the urls and check whether each is present in the database.
-// 2: If it's present, delete it from the list of those to be inserted.
-// 3: Insert the rest.
-
-// 1: Check whether it's present in the database AND not present in the list of results.
-// 2: If both are true, change its listing in the database to "void"
-
-// So, to rewrite:
-//  1: Get all non-void urls
-//  2: If an entry is present in the list of results urls, delete it from the list of results urls
-//  3: If it isn't present, update it; make it void in the table
 
 module.exports = router;

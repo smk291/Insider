@@ -64,13 +64,16 @@ function getPromisesForResultsPages(next, city, numOfPages){
 function scrapeResults(searchResults) {
   return Promise.all(searchResults)
     .then(values => {
-      const listings = {};
+      const partialListings = {};
+      const urlnumsFromSearch = [];
 
       values.map(eachPage => {
         let $ = cheerio.load(eachPage)
         $('.result-row').map((i, el) => {
           const urlnum = $(el).data('pid');
           let photos = $('a', el).data('ids');
+
+          urlnumsFromSearch.push(urlnum);
 
           if (!photos || photos.length === 0) {
             photos = null;
@@ -79,7 +82,7 @@ function scrapeResults(searchResults) {
             photos = photos.map(partialPath => partialPath.slice(2))
           }
 
-          listings[urlnum] = {
+          partialListings[urlnum] = {
             bedrooms: $('.housing', el).text().replace(/(\dbr)|[^]/g, '$1').replace(/br/, ''),
             urlnum,
             url: $('.result-row a', el).attr('href'),
@@ -91,33 +94,63 @@ function scrapeResults(searchResults) {
         });
       });
 
-      return listings;
+      return [partialListings, urlnumsFromSearch];
     })
 }
 
-function checkForDuplicates(next, searchResults) {
-  // let minNew = Math.min(Object.keys(searchResults));
+function checkForDuplicates(next, searchData) {
+  const partialListings = searchData[0];
+  const urlnumsFromSearch = searchData[1];
+
+  let minUrlnumFromSearch = Math.min(urlnumsFromSearch);
+  let urlnumsToVoidInTable = [];
+
+  // What about reactivated listings?
+
   let filterSearchResults = new Promise((resolve, reject) => {
     knex('listings')
       .select('urlnum')
-      // .orderBy('urlnum', 'desc')
-      .then(urlnums => {
-        // let maxOld = Math.max(urlnums);
+      // .where('void', null)
+      .orderBy('urlnum', 'desc')
+      .then(output => {
+        let urlnumsFromTable = output.map(el => el.urlnum);
+        let maxUrlnumFromTable = Math.max(urlnumsFromTable);
 
-        urlnums.map(urlnum => {
-          // if (urlnum.urlnum)
-          if (searchResults[urlnum.urlnum] !== undefined) {
-            delete searchResults[urlnum.urlnum];
-          }
-        });
+        if (maxUrlnumFromTable < minUrlnumFromSearch) {
+          urlnumsToVoidInTable = urlnumsFromTable;
+        } else {
+          urlnumsFromTable.map(numFromTable => {
+            if (partialListings[numFromTable] !== undefined) {
+              delete partialListings[numFromTable];
+            } else {
+              urlnumsToVoidInTable.push(numFromTable);
+            }
+          });
+        }
 
-        resolve(searchResults);
+        resolve([partialListingsToAdd, urlnumsToVoidInTable]);
       })
       .catch(err => reject(err));
   });
 
-  return filterSearchResults.then(filteredListings => {
-    return filteredListings;
+  return filterSearchResults.then(dataToAddOrVoid => {
+    const partialListingsToAdd = dataToAddOrVoid[0];
+    const urlnumsToVoidInTable = dataToAddOrVoid[1];
+
+    let voidingListings = new Promise((resolve, reject) => {
+      knex('listings')
+        .whereIn('urlnum', urlnumsToVoidInTable)
+        .update('void', true)
+        .returning('*')
+        .then(voided => {
+          resolve(voided);
+        });
+    });
+
+    return voidingListings.then(voided => {
+      console.log(voided);
+      return partialListingsToAdd;
+    });
   });
 }
 
@@ -241,8 +274,8 @@ router.get('/results/:city', authorize, (req, res, next) => {
 
     return scrapeResults(searchResultsPromises);
   })
-  .then(searchResults => {
-    return checkForDuplicates(next, searchResults);
+  .then(partialListingsAndUrlnums => {
+    return checkForDuplicates(next, partialListingsAndUrlnums);
   })
   .then(filteredResults => {
     if (Object.keys(filteredResults).length === 0) {

@@ -69,22 +69,7 @@ function scrapeResults(searchResults) {
       values.map(eachPage => {
         let $ = cheerio.load(eachPage)
         $('.result-row').map((i, el) => {
-          let bedrooms = null
-          const bedroomNum = $('.housing', el).text().replace(/(\dbr)|[^]/g, '$1').replace(/br/, '');
-
-          if (bedroomNum !== '') {
-            bedrooms = Number(bedroomNum)
-          }
-
           const urlnum = $(el).data('pid');
-          // If the urlnum isn't already present in the database...
-
-          let price = $('a span.result-price', el).text().replace(/\$/, '');
-
-          if (price === '') {
-            price = null;
-          }
-
           let photos = $('a', el).data('ids');
 
           if (!photos || photos.length === 0) {
@@ -94,68 +79,33 @@ function scrapeResults(searchResults) {
             photos = photos.map(partialPath => partialPath.slice(2))
           }
 
-          let neighborhood = $('.result-hood', el).text().trim().replace(/^\(|\)$/g, '');
-
-          if (neighborhood.length === 0) {
-            neighborhood = null;
-          }
-
-          const url = $('.result-row a', el).attr('href');
-
           listings[urlnum] = {
-            bedrooms,
+            bedrooms: $('.housing', el).text().replace(/(\dbr)|[^]/g, '$1').replace(/br/, ''),
             urlnum,
-            url,
+            url: $('.result-row a', el).attr('href'),
             photos,
-            price,
+            price: $('a span.result-price', el).text().replace(/\$/, ''),
             postDate: $('p time', el).attr('datetime'),
-            neighborhood,
+            neighborhood: $('.result-hood', el).text().trim().replace(/^\(|\)$/g, ''),
           };
         });
       });
-
-      // let void404 = new Promise((resolve, reject) => {
-      //   knex('listings')
-      //     .select('urlnum')
-      //     .where('void', null)
-      //     .then(activeUrlnums => {
-      //       // console.log(activeUrlnums);
-      //       let activeUrlnums2 = activeUrlnums.reduce((acc, urlnum) => {
-      //         acc[urlnum.urlnum] = true;
-      //         return acc;
-      //       }, {});
-      //
-      //       console.log(Object.keys(activeUrlnums2).length);
-      //       console.log(Object.keys(listings).length);
-      //
-      //       Object.keys(activeUrlnums2).map(urlnum => {
-      //         console.log(urlnum);
-      //         console.log(listings[urlnum]);
-      //
-      //         // if (!searchResults[urlnum.urlnum]) {
-      //         //   knex('listings')
-      //         //     .where('urlnum', urlnum.urlnum)
-      //         //     .update('void', true)
-      //         //     .returning('*')
-      //         //     .then(voidedRow => {
-      //         //       console.log(voidedRow);
-      //         //     })
-      //         // }
-      //       })
-      //     })
-      //     .catch(err => next(err));
-      // })
 
       return listings;
     })
 }
 
 function checkForDuplicates(next, searchResults) {
+  // let minNew = Math.min(Object.keys(searchResults));
   let filterSearchResults = new Promise((resolve, reject) => {
     knex('listings')
       .select('urlnum')
+      // .orderBy('urlnum', 'desc')
       .then(urlnums => {
+        // let maxOld = Math.max(urlnums);
+
         urlnums.map(urlnum => {
+          // if (urlnum.urlnum)
           if (searchResults[urlnum.urlnum] !== undefined) {
             delete searchResults[urlnum.urlnum];
           }
@@ -201,53 +151,16 @@ function createCompleteListings(scrapedResults, scrapedListings) {
     const $ = cheerio.load(el);
     const currentUrlnum = $('.postinginfos p:nth-child(1)').text().replace(/\D+/g, '');
     const dataCategories = {
-      housing: [
-        'apartment',
-        'condo',
-        'house',
-        'townhouse',
-        'duplex',
-        'land',
-        'in-law',
-        'cottage/cabin'
-      ],
-      laundry: [
-        'laundry on site',
-        'w/d in unit',
-        'laundry in bldg'
-      ],
-      parking: [
-        'off-street parking',
-        'detached garage',
-        'attached garage',
-        'valet parking',
-        'street parking',
-        'carport',
-        'no parking'
-      ],
-      bath: [
-        'private bath',
-        'no private bath'
-      ],
-      privateRoom: [
-        'private room',
-        'room not private'
-      ],
-      cat: [
-        'cats are OK - purrr'
-      ],
-      dog: [
-        'dogs are OK - wooof'
-      ],
-      furnished: [
-        'furnished'
-      ],
-      smoking: [
-        'no smoking'
-      ],
-      wheelchair: [
-        'wheelchair accessible'
-      ]
+      housing: ['apartment', 'condo', 'house', 'townhouse', 'duplex', 'land', 'in-law', 'cottage/cabin'],
+      laundry: ['laundry on site', 'w/d in unit', 'laundry in bldg'],
+      parking: ['off-street parking', 'detached garage', 'attached garage', 'valet parking', 'street parking', 'carport', 'no parking'],
+      bath: ['private bath', 'no private bath'],
+      privateRoom: ['private room', 'room not private'],
+      cat: ['cats are OK - purrr'],
+      dog: ['dogs are OK - wooof'],
+      furnished: ['furnished'],
+      smoking: ['no smoking'],
+      wheelchair: ['wheelchair accessible']
     };
 
     let detailsCheerio = $('.mapAndAttrs .attrgroup:last-of-type span').map((i, el) => {
@@ -265,64 +178,32 @@ function createCompleteListings(scrapedResults, scrapedListings) {
       });
     }
 
-    let sqft = null;
-    const sqftRegex = $('.postingtitletext .housing').text().replace(/[\d]br|\s|\-|\/|ft2/g, "");
-
-    if (sqftRegex !== '') {
-      sqft = Number(sqftRegex);
-    }
-
-    let streetAddress = $('.mapbox div.mapaddress').first().text();
-
-    if (streetAddress === '') {
-      streetAddress = null;
-    }
-
-    let lat = $('.mapbox .viewposting').data('latitude');
-
-    if (lat === undefined) {
-      lat = null;
-    } else {
-      lat = Number(lat);
-    }
-
-    let lon = $('.mapbox .viewposting').data('longitude');
-
-    if (lon === undefined) {
-      lon = null;
-    } else {
-      long = Number(lon);
-    }
-
-    let price = $('.postingtitletext .price').text().replace(/\$/, '');
-
-    if (price === '') {
-      price = null;
-    } else {
-      price = Number(price);
-    }
-
     const newListingData = {
       urlnum: Number(currentUrlnum),
       descr: $('#postingbody').text().trim(),
       title: $('#titletextonly').text(),
-      // bedrooms: $('.attrgroup span b').first().text(),
-      price,
-      sqft,
-      lat,
-      lon,
-      streetAddress
+      price: $('.postingtitletext .price').text().replace(/\$/, ''),
+      sqft: $('.postingtitletext .housing').text().replace(/[\d]br|\s|\-|\/|ft2/g, ""),
+      lat: $('.mapbox .viewposting').data('latitude'),
+      lon: $('.mapbox .viewposting').data('longitude'),
+      streetAddress: $('.mapbox div.mapaddress').first().text()
     };
 
-    // console.log(scrapedResults[$('.postinginfos p:nth-child(1)').text().replace(/\D+/g, '')]);
+    const newListing = Object.assign({}, scrapedResults[currentUrlnum], newListingData, detailsHash);
 
-    acc[currentUrlnum] = Object.assign(
-      {},
-      scrapedResults[$('.postinginfos p:nth-child(1)').text().replace(/\D+/g, '')],
-      newListingData,
-      detailsHash
-    );
+    newListingFormatted = Object.keys(newListing).reduce((nL, el, i) => {
+      nL[el] = newListing[el];
 
+      if (nL[el] === undefined || nL[el] === '' || nL[el].length === 0) {
+        nL[el] = null;
+      } else if (Number(nL[el])) {
+        nL[el] = Number(nL[el]);
+      }
+
+      return nL;
+    }, {})
+
+    acc[currentUrlnum] = newListingFormatted;
     return acc
   }, {})
 }
@@ -374,11 +255,12 @@ router.get('/results/:city', authorize, (req, res, next) => {
       res.send('No new listings');
     } else {
       const toInsert = createCompleteListings(allData[0], allData[1]);
-      const inserted = insertNewListings(req, res, next, toInsert)
+      // const inserted = insertNewListings(req, res, next, toInsert)
 
-      inserted.then(insertedListings => {
-        res.send(insertedListings)
-      })
+      res.send(toInsert);
+      // inserted.then(insertedListings => {
+        // res.send(insertedListings)
+      // })
     }
   })
   .catch(err => next(err));
@@ -390,5 +272,19 @@ router.get('/results/:city', authorize, (req, res, next) => {
 // apartments
 // zumper
 // 206-650-2204, Rob
+
+
+// Tasks:
+// 1: Loop through the urls and check whether each is present in the database.
+// 2: If it's present, delete it from the list of those to be inserted.
+// 3: Insert the rest.
+
+// 1: Check whether it's present in the database AND not present in the list of results.
+// 2: If both are true, change its listing in the database to "void"
+
+// So, to rewrite:
+//  1: Get all non-void urls
+//  2: If an entry is present in the list of results urls, delete it from the list of results urls
+//  3: If it isn't present, update it; make it void in the table
 
 module.exports = router;

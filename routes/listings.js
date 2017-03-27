@@ -18,17 +18,10 @@ const formatListing = function (listing) {
   fL.title = titleize(fL.title);
   fL.descr = humanize(fL.descr);
 
-  if (fL.price && fL.price[0] !== '$') {
-    fL.price = `$${fL.price}`;
+  if (fL.neighborhood) {
+    fL.neighborhood.toLowerCase();
+    fL.neighborhood = titleize(fL.neighborhood);
   }
-
-  if (fL.neighborhood[0] === '(' && fL.neighborhood[fL.neighborhood.length - 1] === ')') {
-    fL.neighborhood = fL.neighborhood.slice(1);
-    fL.neighborhood = fL.neighborhood.slice(0, -1);
-  }
-
-  fL.neighborhood = fL.neighborhood.toLowerCase();
-  fL.neighborhood = titleize(fL.neighborhood);
 
   return fL;
 };
@@ -54,7 +47,7 @@ const authorize = function (req, res, next) {
 };
 
 // Unused
-router.get('/listings/:id', authorize, (req, res, next) => {
+router.get('/listings_individual/:id', authorize, (req, res, next) => {
   const { id } = req.params;
 
   knex('listings')

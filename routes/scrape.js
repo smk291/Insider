@@ -2,8 +2,6 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const knex = require('../knex');
 const { camelizeKeys, decamelizeKeys } = require('humps');
-const fetchUrl = require('fetch').fetchUrl;
-const Promise = require('bluebird');
 const https = require('https');
 const cheerio = require('cheerio');
 const request = require('request');
@@ -104,28 +102,20 @@ function checkForDuplicates(next, searchData) {
   let filterSearchResults = new Promise((resolve, reject) => {
     knex('listings')
       .select('urlnum')
-      .whereNot('void', true)
+      .where('void', null)
       .orderBy('urlnum', 'desc')
       .then(output => {
         let urlnumsFromTable = output.map(el => el.urlnum);
         let maxUrlnumFromTable = Math.max(urlnumsFromTable);
-        let i = 0;
 
-        if (maxUrlnumFromTable < minUrlnumFromSearch) {
-          urlnumsToVoidInTable = urlnumsFromTable;
-        } else {
-          urlnumsFromTable.map(numFromTable => {
-            if (partialListingsToAdd[numFromTable] !== undefined) {
-              i++;
-              delete partialListingsToAdd[numFromTable];
-            } else {
-              i++;
-              urlnumsToVoidInTable.push(numFromTable);
-            }
-          });
-        }
+        urlnumsFromTable.map(numFromTable => {
+          if (partialListingsToAdd[numFromTable] !== undefined) {
+            delete partialListingsToAdd[numFromTable];
+          } else {
+            urlnumsToVoidInTable.push(numFromTable);
+          }
+        });
 
-        console.log(`i: ${i}`);
         resolve([partialListingsToAdd, urlnumsToVoidInTable]);
       })
       .catch(err => reject(err));
@@ -152,6 +142,10 @@ function checkForDuplicates(next, searchData) {
 }
 
 function scrapeListings(results){
+  if (!Object.keys(results)) {
+    return 0
+  }
+
   const requestListings = Object.keys(results).reduce((acc, listing, i) => {
     const promise = new Promise((resolve, reject) => {
       request.get(`http://seattle.craigslist.org${results[listing].url}`, (err, response, body) => {
@@ -174,9 +168,6 @@ function scrapeListings(results){
 }
 
 function createCompleteListings(scrapedResults, scrapedListings) {
-  let keys = Object.keys(scrapedResults);
-  let listingskeys = Object.keys(scrapedListings);
-
   return scrapedListings.reduce((acc, el, i) => {
     const $ = cheerio.load(el);
     const currentUrlnum = $('.postinginfos p:nth-child(1)').text().replace(/\D+/g, '');
@@ -267,12 +258,12 @@ router.get('/results/:city', authorize, (req, res, next) => {
   })
   .then(filteredResults => {
     if (Object.keys(filteredResults).length === 0) {
-      return
+      return 0
     } else {
       return scrapeListings(filteredResults);
     }
   }).then(allData => {
-    if (allData === undefined) {
+    if (allData === 0) {
       res.send('No new listings');
     } else {
       const toInsert = createCompleteListings(allData[0], allData[1]);

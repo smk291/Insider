@@ -2,7 +2,6 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const knex = require('../knex');
 const { camelizeKeys, decamelizeKeys } = require('humps');
-const https = require('https');
 const cheerio = require('cheerio');
 const request = require('request');
 
@@ -35,7 +34,7 @@ function getNumberOfPages(city) {
   })
 }
 
-function getPromisesForResultsPages(next, city, numOfPages){
+function getPromisesForResultsPages(city, numOfPages){
   let searchResultsPromises = [];
 
   for (var i = 0; i <= numOfPages; i++) {
@@ -95,18 +94,14 @@ function scrapeResults(searchResults) {
 function checkForDuplicates(next, searchData) {
   const partialListingsToAdd = searchData[0];
   const urlnumsFromSearch = searchData[1];
-
-  let minUrlnumFromSearch = Math.min(urlnumsFromSearch);
   let urlnumsToVoidInTable = [];
 
   let filterSearchResults = new Promise((resolve, reject) => {
     knex('listings')
       .select('urlnum')
-      .where('void', null)
       .orderBy('urlnum', 'desc')
       .then(output => {
         let urlnumsFromTable = output.map(el => el.urlnum);
-        let maxUrlnumFromTable = Math.max(urlnumsFromTable);
 
         urlnumsFromTable.map(numFromTable => {
           if (partialListingsToAdd[numFromTable] !== undefined) {
@@ -249,7 +244,7 @@ router.get('/results/:city', authorize, (req, res, next) => {
   const getNumOfResultsPages = getNumberOfPages(city);
 
   getNumOfResultsPages.then((pagesOfResults) => {
-    const searchResultsPromises = getPromisesForResultsPages(next, city, pagesOfResults);
+    const searchResultsPromises = getPromisesForResultsPages(city, pagesOfResults);
 
     return scrapeResults(searchResultsPromises);
   })

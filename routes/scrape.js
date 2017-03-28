@@ -1,7 +1,7 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const knex = require('../knex');
-const { camelizeKeys, decamelizeKeys } = require('humps');
+const { camelizeKeys, decamelizeKeys } = require('humps'); 
 const cheerio = require('cheerio');
 const request = require('request');
 

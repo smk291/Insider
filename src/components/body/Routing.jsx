@@ -1,3 +1,10 @@
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  Redirect,
+  withRouter
+} from 'react-router-dom'
 import { Match, Miss } from 'react-router'
 import NotFound from './NotFound'
 import React, { Component } from 'react'
@@ -13,25 +20,25 @@ export default class Main extends Component {
   }
 
   render() {
+    const routes = [
+      {path: '/login',
+      exact: true,
+
+
+      }
+    ]
+
     return (
-      <main className="page-wrap">
-        {/* <Match pattern="/login" render={() => <Login
-          {...this.props}
-                                              />} /> */}
-        <Match pattern="/home" exactly render={() => <Home
-          {...this.props}
-        />} />
-        <Match pattern="/" exactly render={() => <ViewAndFilter
-          {...this.props}
-        />} />
-        <Match pattern="/map" render={() => <MapPage
-          {...this.props}
-        />} />
-        <Match pattern="/compare" render={() => <Compare
-          {...this.props}
-        />} />
-        <Miss component={NotFound} />
-      </main>
+      <Router className="page-wrap">
+        <div>
+          {/* <Match pattern="/login" render={() => <Login {...this.props}/>} /> */}
+          <Route pattern="/home" exact render={() => <Home {...this.props}/>} />
+          <Route pattern="/viewandfilter" exact render={() => <ViewAndFilter {...this.props}/>} />
+          <Route pattern="/map" render={() => <MapPage {...this.props} />} />
+          <Route pattern="/compare" render={() => <Compare {...this.props} />} />
+          {/*<Miss component={NotFound} />*/}
+        </div>
+      </Router>
     )
   }
 };

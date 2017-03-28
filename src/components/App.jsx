@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-  import {BrowserRouter} from 'react-router-dom';
+import {BrowserRouter} from 'react-router-dom';
 import {Route, browserHistory} from 'react-router';
 import {Button, Grid, Jumbotron, Row, Col, Popover, Tooltip, Modal} from 'react-bootstrap';
 import Routing from './body/Routing'
@@ -597,12 +597,8 @@ export default class App extends Component {
     return (
       <BrowserRouter>
         <div>
-          <Grid fluid style={{
-            minWidth: '1000px'
-          }}>
-            <Row style={{
-              minWidth: '1000px'
-            }}>
+          <Grid fluid style={{minWidth: '1000px'}}>
+            <Row style={{minWidth: '1000px'}}>
               <Col>
                 <Header style={{height: '50px'}} loggedIn={this.state.loggedIn} processAuth={this.processAuth}/>
               </Col>
@@ -623,11 +619,7 @@ export default class App extends Component {
                     firstName={this.state.firstName}
                     lastName={this.state.lastName}
                   />:
-                  <Routing
-                    {...this.props}
-                    {...this.state}
-                    {...this}
-                  />}
+                  <Routing {...this.props} {...this.state} {...this}/>}
               </Col>
             </Row>
           </Grid>

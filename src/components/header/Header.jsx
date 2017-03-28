@@ -1,5 +1,5 @@
 // <editor-fold> import
-import {Link} from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import React from 'react'
 import {Nav, Navbar, Tooltip, OverlayTrigger} from 'react-bootstrap'
 import Login from '../body/auth/Login'
@@ -35,32 +35,17 @@ export default class Header extends React.Component {
           {this.props.loggedIn
             ? (
               <Nav pullLeft>
-                {< Link className = {
-                  header.navButton
-                }
-                activeClassName = {
-                  header.active
-                }
-                to = '/home' > <MdHome/> < /Link>}
-                <Link activeOnlyWhenExact className={header.navButton} activeClassName={header.active} to='/'><MdSearch/>
-                  View and filter housing data</Link>
-                <Link className={header.navButton} activeClassName={header.active} to='/map'><MdMap/>
-                  Use map</Link>
-                <Link className={header.navButton} activeClassName={header.active} to='/compare'><MdCompare/>
-                  compare saved listings</Link>
+                <NavLink exact className={header.navButton} activeClassName={header.active} to='/home'> <MdHome/> </NavLink>
+                <NavLink exact className={header.navButton} activeClassName={header.active} to='/viewandfilter'><MdSearch/> View and filter housing data</NavLink>
+                <NavLink exact className={header.navButton} activeClassName={header.active} to='/map'><MdMap/> Use map</NavLink>
+                <NavLink exact className={header.navButton} activeClassName={header.active} to='/compare'><MdCompare/> Compare saved listings</NavLink>
               </Nav>
             )
             : ''}
           <Nav pullRight>
             {!this.props.loggedIn
-              ? (
-                <Link className={header.navButton} activeClassName={header.active} to='/login'>Sign Up / Log in</Link>
-              )
-              : (
-                <Link className={header.navButton} to='/main' onClick={this.processAuth}>Log out</Link>
-              )}
-            {/* <Link className={header.navButton} onClick={this.showTips} to='/main'>Show helpful tips? </Link> */}
-            {/* Show help tooltips */}
+              ? (<NavLink className={header.navButton} activeClassName={header.active} to='/login'>Sign Up / Log in</NavLink>)
+              : (<NavLink className={header.navButton} to='/main' onClick={this.processAuth}>Log out</NavLink>)}
           </Nav>
         </Navbar>
       </header>

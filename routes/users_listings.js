@@ -15,17 +15,9 @@ function formatListing(listing) {
   fL.title = titleize(fL.title);
   fL.descr = humanize(fL.descr);
 
-  if (fL.price && fL.price[0] !== '$') {
-    fL.price = `$${fL.price}`;
+  if (fL.neighborhood) {
+    fL.neighborhood = titleize(fL.neighborhood.toLowerCase());
   }
-
-  if (fL.neighborhood[0] === '(' && fL.neighborhood[fL.neighborhood.length - 1] === ')') {
-    fL.neighborhood = fL.neighborhood.slice(1);
-    fL.neighborhood = fL.neighborhood.slice(0, -1);
-  }
-
-  fL.neighborhood = fL.neighborhood.toLowerCase();
-  fL.neighborhood = titleize(fL.neighborhood);
 
   return fL;
 }
@@ -107,7 +99,6 @@ router.get('/users_listings', authorize, (req, res, next) => {
       'dog',
       'furnished',
       'housing',
-      'last_checked',
       'lat',
       'laundry',
       'lon',
@@ -119,15 +110,13 @@ router.get('/users_listings', authorize, (req, res, next) => {
       'private_room',
       'smoking',
       'sqft',
-      'state',
       'street_address',
       'sub_or_apt',
       'title',
       'url',
       'urlnum',
       'void',
-      'wheelchair',
-      'zip')
+      'wheelchair')
     .then(favs => {
       if (!favs) {
         throw boom.create(400, 'No favorites');

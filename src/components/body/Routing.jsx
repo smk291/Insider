@@ -20,14 +20,6 @@ export default class Main extends Component {
   }
 
   render() {
-    const routes = [
-      {path: '/login',
-      exact: true,
-
-
-      }
-    ]
-
     return (
       <Router className="page-wrap">
         <div>

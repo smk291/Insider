@@ -1,6 +1,12 @@
 import React, {Component} from 'react';
-import {BrowserRouter} from 'react-router-dom';
-import {Route, browserHistory} from 'react-router';
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  Redirect,
+  withRouter
+} from 'react-router-dom'
+// import {Route, browserHistory} from 'react-router';
 import {Button, Grid, Jumbotron, Row, Col, Popover, Tooltip, Modal} from 'react-bootstrap';
 import Routing from './body/Routing'
 import Login from './body/auth/Login'
@@ -203,6 +209,7 @@ export default class App extends Component {
     this.changeView = this.changeView.bind(this);
     this.changeViewFiltered = this.changeViewFiltered.bind(this);
   }
+
   //Auth
   changeState(standIn) {
     let change = {};
@@ -214,6 +221,7 @@ export default class App extends Component {
       this.setState(change);
     }
   }
+
   getLoggedIn() {
     axios({
       method: 'get',
@@ -229,9 +237,11 @@ export default class App extends Component {
       // console.log(err);
     })
   }
+
   authSwitch() {
     this.changeState('signingUp');
   }
+
   processAuth(e) {
     e.preventDefault();
 
@@ -247,7 +257,7 @@ export default class App extends Component {
           password: this.state.password,
         },
       }).then((res) => {
-        this.setState({email: '', password: ''});
+        // this.setState({email: '', password: ''});
         this.changeState('loggedIn');
         this.getListings()
         // this.convertListings();
@@ -304,6 +314,7 @@ export default class App extends Component {
       // this.createFavoritesForDisplay();
     }
   }
+
   //Scraping
   scrape() {
     axios({
@@ -317,6 +328,7 @@ export default class App extends Component {
       // console.log(err);
     })
   }
+
   checkFor404() {
     let checkedListings = [];
 
@@ -329,27 +341,32 @@ export default class App extends Component {
       console.log(err);
     })
   }
+
   //Handle changes
   handleChange(e) {
     var change = {};
     change[e.target.name] = e.target.value;
     this.setState(change);
   }
+
   handleCheckbox(e) {
     let change = {}
     change[e.target.name] = e.target.checked;
     this.setState({change})
   }
+
   handleChbox(field, e) {
     var nextState = {}
     nextState[field] = e.target.checked
     this.setState(nextState)
   }
+
   handleSlider(field, e) {
     var nextState = {}
     nextState[field] = e.value
     this.setState(nextState)
   }
+
   //Listings
   getListings() {
     axios({
@@ -411,6 +428,7 @@ export default class App extends Component {
       console.log(err);
     });
   }
+
   filterListings() {
     let maxScore = 0;
     let filteredOptions = [];
@@ -497,6 +515,7 @@ export default class App extends Component {
 
     this.setState({filteredListingsToDisplay});
   }
+
   //Favorites
   getFavorites() {
     axios({
@@ -514,12 +533,14 @@ export default class App extends Component {
       console.log(err);
     });
   }
+
   checkForAddedFavorite() {
     if (this.state.addedFavorite) {
       this.getFavorites();
       this.setState({addedFavorite: false});
     }
   }
+
   saveToFavorites() {
     axios({
       method: 'post',
@@ -534,6 +555,7 @@ export default class App extends Component {
       console.log(err);
     })
   }
+
   saveToFavoritesFiltered() {
     axios({
       method: 'post',
@@ -547,6 +569,7 @@ export default class App extends Component {
       console.log(err);
     })
   }
+
   isInFavorites(row) {
     axios({method: 'get', url: `/users_listings/${row.id}`}).then((res) => {
       if (res.data.length > 0) {
@@ -558,10 +581,12 @@ export default class App extends Component {
       console.log(err);
     })
   }
+
   //Change view
   changeComparisonView(element) {
     this.setState(element);
   }
+
   pageChange(activePageName, activePageNumber, comparisonPageName) {
     let change = {}
     let change1 = {}
@@ -572,6 +597,7 @@ export default class App extends Component {
     this.setState(change);
     this.setState(change1);
   }
+
   changeView(row) {
     axios({method: 'get', url: `/listings/${row.id}`}).then((res) => {
       this.setState({displayAd: res.data})
@@ -579,6 +605,7 @@ export default class App extends Component {
       //
     });
   }
+
   changeViewFiltered(row) {
     axios({method: 'get', url: `/listings/${row.id}`}).then((res) => {
       let displayAdFromFiltered = res.data;
@@ -595,7 +622,7 @@ export default class App extends Component {
 
   render() {
     return (
-      <BrowserRouter>
+      <Router>
         <div>
           <Grid fluid style={{minWidth: '1000px'}}>
             <Row style={{minWidth: '1000px'}}>
@@ -624,7 +651,7 @@ export default class App extends Component {
             </Row>
           </Grid>
         </div>
-      </BrowserRouter>
+      </Router>
     )
   }
 };

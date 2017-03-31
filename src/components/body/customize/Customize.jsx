@@ -3,7 +3,6 @@ import React from 'react'
 import ReactDOM from 'react-dom';
 import {render} from 'react-dom'
 import {Button, HelpBlock, ButtonGroup, FormGroup, ControlLabel, FormControl, Grid, Tooltip, Row, Col, Tab, Checkbox, Panel, ListGroup, ListGroupItem, Accordion, PanelGroup, Tabs} from 'react-bootstrap'
-import primary from '../primary.css'
 import humanize from 'underscore.string/humanize'
 import dataviews from '../dataviews'
 import InlineSVG from 'svg-inline-react'
@@ -47,7 +46,7 @@ export default class Customize extends React.Component {
             <p> Tasks </p>
             <p> Get data for each </p>
           </div> */}
-          <div className={dataviews.scratch}>
+          <div>
             <p>Graph</p>
             <p>Bedrooms</p>
             <p>bedroomsRange</p>
@@ -55,7 +54,7 @@ export default class Customize extends React.Component {
             <p>maxBedrooms</p>
             <p>importance</p>
             <p>required</p>
-            <div className={dataviews.scratch}>
+            <div>
               <p>Min bedrooms: {bedrooms.options.minBedrooms}</p>
               <p>Max bedrooms: {bedrooms.options.maxBedrooms}</p>
               <p>Importance: {bedrooms.prefs.importance}</p>
@@ -160,7 +159,7 @@ export default class Customize extends React.Component {
             <p>importance</p>
             <p>required</p>
           </div> */}
-          <div className={dataviews.scratch}>
+          <div>
             {/*<p>{JSON.stringify(this.props.searchParams)}</p>*/}
           </div>
         </div>

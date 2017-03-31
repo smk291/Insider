@@ -38,7 +38,7 @@ export default class ListingsView extends React.Component {
 
     const ClickHere = () => {
       return(
-        <div className = 'panel panel-default' style={{height: '722px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+        <div className='panel panel-default' style={{height: '722px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
           <div>
             <h1>Click on a row to view the listing's details</h1>
           </div>

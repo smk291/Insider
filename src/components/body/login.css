@@ -1,0 +1,19 @@
+.verticalCenter {
+	display: absolute;
+	vertical-align: middle;
+	height: 90vh;
+	float: none;
+}
+
+.formButton {
+  display:block;
+  margin: 20px auto;
+  width: 25%;
+  border-radius: 0px;
+}
+
+.fuckingCenterGodFuckingDamnIt {
+	position: relative;
+	display: block;
+	top: 30%;
+}

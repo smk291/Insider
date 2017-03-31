@@ -157,7 +157,7 @@ class TableRewritten extends React.Component {
           </thead>
           <tbody>
             {fields.map((field, idx) =>
-              <tr>
+              <tr key={idx}>
                 <td>{labels[idx]}</td>
                 <td>{listing1[field]
                   ? humanize(listing1[field])
@@ -289,14 +289,14 @@ export default class Compare extends React.Component {
 
     return (
       <div>
-        <Grid fluid style={{
+         <Grid fluid style={{
           minWidth: '1000px'
         }}>
           <Row>
             <Col>
               <TableRewritten
                 userFavorites={this.props.userFavorites}
-                fetchAndFormatFavorites={this.props.fetchAndFormatFavorites}
+                // fetchAndFormatFavorites={this.props.fetchAndFormatFavorites}
                 pageChange={this.props.pageChange}
 
                 listing1={this.props.comparison1}
@@ -319,6 +319,8 @@ export default class Compare extends React.Component {
             </Col>
           </Row>
         </Grid>
+        <p>Compare</p>
+        <p>{JSON.stringify(this.props)}</p>
       </div>
     );
   }

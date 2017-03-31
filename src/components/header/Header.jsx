@@ -2,7 +2,7 @@
 import { Link, NavLink } from 'react-router-dom'
 import React from 'react'
 import {Nav, Navbar, Tooltip, OverlayTrigger} from 'react-bootstrap'
-import Login from '../body/auth/Login'
+import Login from '../body/Login'
 import header from './header.css'
 import InlineSVG from 'svg-inline-react'
 import MdHome from 'react-icons/lib/md/home'

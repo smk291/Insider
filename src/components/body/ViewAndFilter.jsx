@@ -62,8 +62,8 @@ export default class ViewAndFilter extends React.Component {
           </Tab>
         </Tabs>
 
-        <p>Hiya! VandF</p>
-        <p>{JSON.stringify(this.props)}</p>
+        {/*<p>Hiya! VandF</p>
+        <p>{JSON.stringify(this.props)}</p>*/}
       </div>
     );
   }

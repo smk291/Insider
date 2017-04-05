@@ -319,8 +319,8 @@ export default class Compare extends React.Component {
             </Col>
           </Row>
         </Grid>
-        <p>Compare</p>
-        <p>{JSON.stringify(this.props)}</p>
+        {/*<p>Compare</p>
+        <p>{JSON.stringify(this.props)}</p>*/}
       </div>
     );
   }

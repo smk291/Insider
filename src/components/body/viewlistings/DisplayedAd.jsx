@@ -128,8 +128,8 @@ export default class DisplayAd extends React.Component {
             <tbody>
               <tr>
                 <td>How many photos?</td>
-                <td>{el.photos && Object.keys(el.photos).length > 0
-                    ? Object.keys(el.photos.photos).length
+                <td>{el.photos && el.photos.length > 0
+                    ? el.photos.length
                     : <span className={dataviews.blank}>None</span>}</td>
               </tr>
             </tbody>
@@ -163,9 +163,9 @@ export default class DisplayAd extends React.Component {
 
     let title = titleize(el.title);
 
-    if (el.title.length > 55){
-      title = titleize(el.title.slice(0,55) + `…`)
-    };
+    // if (el.title.length > 55){
+    //   title = titleize(el.title.slice(0,55) + `…`)
+    // };
 
     return(
       <div>

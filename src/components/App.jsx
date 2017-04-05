@@ -6,10 +6,7 @@ import {
   Redirect,
   withRouter
 } from 'react-router-dom'
-// import {Route, browserHistory} from 'react-router';
 import {Button, Grid, Jumbotron, Row, Col, Popover, Tooltip, Modal} from 'react-bootstrap';
-import Routing from './body/Routing'
-import Login from './body/auth/Login'
 import 'bootstrap/less/bootstrap.less'
 import axios from 'axios';
 import Header from './header/Header';
@@ -18,7 +15,13 @@ import request from 'request'
 import titleize from 'underscore.string/titleize'
 import humanize from 'underscore.string/humanize'
 
-export default class App extends Component {
+import Login from './body/Login'
+import Home from './body/Home'
+import ViewAndFilter from './body/ViewAndFilter'
+import Compare from './body/Compare'
+import MapPage from './body/MapPage'
+
+export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -188,7 +191,6 @@ export default class App extends Component {
     this.processAuth = this.processAuth.bind(this);
     //Scraping
     this.scrape = this.scrape.bind(this);
-    this.checkFor404 = this.checkFor404.bind(this);
     //Handle changes
     this.handleChange = this.handleChange.bind(this);
     this.handleCheckbox = this.handleCheckbox.bind(this);
@@ -265,6 +267,7 @@ export default class App extends Component {
         // notify.show(err.response.data, 'error', 3000);
       });
     }
+
     const signUp = () => {
       axios({
         method: 'post',
@@ -284,6 +287,7 @@ export default class App extends Component {
         // Well..?
       });
     }
+
     const logOut = () => {
       axios({
         method: 'delete',
@@ -305,11 +309,11 @@ export default class App extends Component {
     } else if (this.state.signingUp) {
       signUp();
       logIn();
-      this.getListings();
+      // this.getListings();
       // this.createFavoritesForDisplay();
     } else {
       logIn();
-      this.getListings();
+      // this.getListings();
       // this.convertListings();
       // this.createFavoritesForDisplay();
     }
@@ -328,7 +332,6 @@ export default class App extends Component {
       // console.log(err);
     })
   }
-
   checkFor404() {
     let checkedListings = [];
 
@@ -408,7 +411,7 @@ export default class App extends Component {
         } else if (userFavorites.length === 1) {
           comparison1 = userFavorites[0];
           comparison2 = userFavorites[0];
-          acivePage1 = 0;
+          activePage1 = 0;
           activePage2 = 0;
         }
 
@@ -421,6 +424,9 @@ export default class App extends Component {
           activePage1,
           activePage2
         });
+      }).then(() => {
+        this.setState({displayAd: this.state.listings[0]});
+        this.setState({displayAdFromFiltered: this.state.listings[0]});
       }).catch((err) => {
         console.log(err);
       });
@@ -454,7 +460,6 @@ export default class App extends Component {
       if (el.bedrooms) {
         let minBed = Number(this.state.minBedrooms);
         let maxBed = Number(this.state.maxBedrooms);
-        let brs = Number(el.bedrooms.slice(0, el.bedrooms.indexOf('BR')));
 
         if (brs >= minBed && brs <= maxBed) {
           el.score += Number(this.state.bedroomsImport);
@@ -468,7 +473,6 @@ export default class App extends Component {
       if (el.price) {
         let minRent = Number(this.state.minRent);
         let maxRent = Number(this.state.maxRent);
-        let rent = el.price.slice(1);
 
         if (rent >= minRent && rent <= maxRent) {
           el.score += Number(this.state.rentImport);
@@ -624,34 +628,54 @@ export default class App extends Component {
     return (
       <Router>
         <div>
-          <Grid fluid style={{minWidth: '1000px'}}>
-            <Row style={{minWidth: '1000px'}}>
-              <Col>
-                <Header style={{height: '50px'}} loggedIn={this.state.loggedIn} processAuth={this.processAuth}/>
-              </Col>
-            </Row>
-            <Row style={{
-              minWidth: '1000px'
-            }}>
-              <Col>
-                {!this.state.loggedIn ?
-                  <Login
-                    handleChange={this.handleChange}
-                    processAuth={this.processAuth}
-                    authSwitch={this.authSwitch}
-                    loggedIn={this.state.loggedIn}
-                    signingUp={this.state.signingUp}
-                    email={this.state.email}
-                    password={this.state.password}
-                    firstName={this.state.firstName}
-                    lastName={this.state.lastName}
-                  />:
-                  <Routing {...this.props} {...this.state} {...this}/>}
-              </Col>
-            </Row>
-          </Grid>
+          <ul>
+            <li><Link to="/home">Home</Link></li>
+            <li><Link to="/ViewAndFilter">ViewAndFilter</Link></li>
+            <li><Link to="/compare">Compare</Link></li>
+            <li><Link to="/login">Login</Link></li>
+          </ul>
+
+          <hr/>
+
+          <Route exact path="/home" render={()=> <Home {...this.state}/>}/>
+          <Route path="/ViewAndFilter" render={()=> <ViewAndFilter  
+            searchParams={this.state.searchParams}
+            changeView={this.changeView}
+            displayAd={this.state.displayAd}
+            listings={this.state.listings}
+            saveToFavorites={this.saveToFavorites}
+            filterListings={this.filterListings}
+            loggedin={this.state.loggedIn}
+            changeViewFiltered={this.changeViewFiltered}
+            displayAdFromFiltered={this.displayAdFromFiltered}
+            filteredListingsToDisplay={this.filteredListingsToDisplay}
+            saveToFavoritesFiltered={this.saveToFavoritesFiltered}
+            pageChange={this.pageChange}
+            />}
+          />
+          <Route path="/compare" render={()=> <Compare 
+            checkForAddedFavorite={this.checkForAddedFavorite}
+            userFavorites={this.state.userFavorites}
+            pageChange={this.pageChange}
+            comparison1={this.state.comparison1}
+            comparison2={this.state.comparison2}
+            activePage1={this.state.activePage1}
+            activePage2={this.state.activePage2 }
+            />}
+          />
+          <Route path="/login" render={()=> <Login 
+            handleChange={this.handleChange} 
+            processAuth={this.processAuth} 
+            authSwitch={this.authSwitch} 
+            loggedIn={this.state.loggedIn} 
+            signingUp={this.state.signingUp} 
+            email={this.state.email} 
+            password={this.state.password} 
+            firstName={this.state.firstName} 
+            lastName={this.state.lastName}/>}
+          />
         </div>
       </Router>
     )
   }
-};
+}

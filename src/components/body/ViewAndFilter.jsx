@@ -2,17 +2,13 @@
 import React                                from 'react'
 import {Tooltip, Tab, Tabs, Grid, Col, Row} from 'react-bootstrap'
 import dataviews                            from './dataviews'
-import Customize from './customize/Customize'
+import Customize                            from './customize/Customize'
 import ListingsView                         from './viewlistings/ListingsView'
-import ListingsViewFiltered                 from './viewlistings/ListingsViewFiltered'
-import FilterData                           from './filterdata/FilterData.jsx'
 import DataSummary                          from './viewdata/DataSummary'
 import InlineSVG                            from 'svg-inline-react'
 import MdRemoveRedEye                       from 'react-icons/lib/md/remove-red-eye'
-//</editor-fold>
+import FilterData                           from './filterdata/FilterData'
 
-// From Routing
-// To DataSummary, FilterData, ListingsView, ListingsViewFiltered
 export default class ViewAndFilter extends React.Component {
   constructor(props){
     super(props)
@@ -30,17 +26,11 @@ export default class ViewAndFilter extends React.Component {
 
   render() {
     return (
-      <div className       = {dataviews.tabs}>
+      <div>
         <Tabs animation defaultActiveKey={3} id="placeholder1">
-          {/* <Tab className={dataviews.subheadertab} animation eventKey={1} title='Housing data at a glance'>
-            <DataSummary {...this.props}/>
-          </Tab> */}
-          {/* <Tab className={dataviews.subheadertab} animation eventKey={2} title='Filter data'>
-
-          </Tab> */}
           <Tab animation eventKey={2} title='Customize your search'>
             <Customize
-              {...this.props}
+              listings={this.props.listings}
               bedrooms={this.props.searchParams.bedrooms}
               rent={this.props.searchParams.rent}
               housing={this.props.searchParams.housing}
@@ -55,12 +45,9 @@ export default class ViewAndFilter extends React.Component {
               wheelchair={this.props.searchParams.wheelchair}
             />
           </Tab>
-          <Tab className={dataviews.subheadertab} animation eventKey={3} title='Browse all listings'>
+          <Tab animation eventKey={3} title='Browse all listings'>
             <Grid fluid>
               <Row>
-                {/*<Col md={2}>
-                  <FilterData {...this.props}/>
-                </Col>*/}
                 <Col md={10}>
                   <ListingsView
                     changeView        = {this.props.changeView}
@@ -73,32 +60,10 @@ export default class ViewAndFilter extends React.Component {
               </Row>
             </Grid>
           </Tab>
-          <Tab
-            className = {dataviews.subheadertab}
-            animation
-            eventKey  = {4}
-            disabled  = {!this.props.loggedIn}
-            title     = 'Browse filtered / sorted listings'
-          >
-            <Grid fluid>
-              <Row>
-                <Col md={2}>
-                  <FilterData {...this.props}/>
-                </Col>
-                <Col md={10}>
-                  <ListingsViewFiltered
-                    changeViewFiltered        = {this.props.changeViewFiltered}
-                    displayAdFromFiltered     = {this.props.displayAdFromFiltered}
-                    filteredListingsToDisplay = {this.props.filteredListingsToDisplay}
-                    saveToFavoritesFiltered   = {this.saveToFavoritesFiltered}
-                    pageChange                = {this.props.pageChange}
-                    filterListings            = {this.props.filterListings}
-                  />
-                </Col>
-              </Row>
-            </Grid>
-          </Tab>
         </Tabs>
+
+        <p>Hiya! VandF</p>
+        <p>{JSON.stringify(this.props)}</p>
       </div>
     );
   }

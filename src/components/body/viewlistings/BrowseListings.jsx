@@ -16,36 +16,17 @@ import MdSave from 'react-icons/lib/md/save'
 import MdStar from 'react-icons/lib/md/star'
 import browseListingsStyles from './browseListingsStyles'
 
-// </editor-fold>
-
-
-// const whetherInFavorites = {
-//   true: <MdStar fill="hsl(53, 100%, 50%)" />,
-//   false: <MdStar />
-// }
-
 export default class BrowseListings extends React.Component {
   constructor(props){
     super(props)
     this.changeView = this.changeView.bind(this)
-    // this.isInFavorites = this.isInFavorites.bind(this)
   }
 
   changeView(row) {
     this.props.changeView(row);
   }
-  //
-  // isInFavorites(row){
-  //   this.props.isInFavorites(row);
-  // }
 
   render(){
-
-    // const enumFormatter = function (cell, row, enumObject) {
-    //   console.log(isInFavorites(row));
-    //   return enumObject[isInFavorites(row)];
-    // }
-
     const options = {
       paginationShowsTotal: true,
       onRowClick: (row) => {
@@ -57,9 +38,9 @@ export default class BrowseListings extends React.Component {
       <div className='panel panel-default'>
         <div className='panel-body'>
       <BootstrapTable
-        maxHeight='550'
+        maxHeight='550px'
         bodyContainerClass={dataviews.tableBodyCustomTable}
-        height='620'
+        height='620px'
         scrollTop={ 'Bottom' }
         search options={options}
         hover

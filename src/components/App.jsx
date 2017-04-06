@@ -35,7 +35,7 @@ class AbstractedRouting extends React.Component {
   render(){
     return (
       <ul>
-        <div><li><Link exact to="/">Home</Link></li>
+        <div><li><Link to="/">Home</Link></li>
         <li><Link to="/ViewAndFilter">ViewAndFilter</Link></li>
         <li><Link to="/compare">Compare</Link></li>
         <li><a href="#" onClick={this.logOut}>Log Out</a></li></div>
@@ -631,7 +631,7 @@ export default class App extends React.Component {
   }
 
   changeView(row) {
-    axios({method: 'get', url: `/listings/${row.id}`}).then((res) => {
+    axios({method: 'get', url: `/listings_individual/${row.id}`}).then((res) => {
       this.setState({displayAd: res.data})
     }).catch((err) => {
       //
@@ -666,7 +666,7 @@ export default class App extends React.Component {
             email={this.state.email} 
             password={this.state.password} 
             firstName={this.state.firstName} 
-            lastName={this.state.lastName}/>}
+            lastName={this.state.lastName}
           />
         </div>
       )
@@ -709,8 +709,4 @@ export default class App extends React.Component {
       </Router>
     )
   }
-}
-
-const ProtectedHome = () => {
-
 }

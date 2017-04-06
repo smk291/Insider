@@ -31,16 +31,53 @@ export default class BrowseListings extends React.Component {
       paginationShowsTotal: true,
       onRowClick: (row) => {
         this.changeView(row);
+      },
+      sizePerPage: 12
+    }
+
+    function priceFormatter(cell, row) {
+      if (cell === null) {
+        return cell
       }
+
+      return "$" + cell
+    }
+
+    function bedrooms(cell, row) {
+      if (cell === null) {
+        return cell
+      }
+
+      return cell + "br"
+    }
+
+    function shorten(cell, row) {
+      if (cell && cell.length > 15) {
+        return cell.substring(0, 15);
+      }
+
+      return cell
+    }
+
+    function titleFixer(cell, row) {
+      console.log(cell.toLowerCase());
+      console.log(cell.toLowerCase().indexOf('felon') !== -1);
+      if (cell.indexOf(' ') === -1 || cell.toLowerCase().indexOf('felon') !== -1) {
+        cell = <span className={dataviews.blank}>Poor title or bad formatting</span>
+        return cell
+      } else if (cell.length > 25) {
+        cell = <span>{cell.substring(0, 25)}&hellip;</span>
+        return cell
+      }
+
+      return cell
     }
 
     return (
-      <div className='panel panel-default'>
-        <div className='panel-body'>
+      <div>
+        <div>
       <BootstrapTable
-        maxHeight='550px'
         bodyContainerClass={dataviews.tableBodyCustomTable}
-        height='620px'
         scrollTop={ 'Bottom' }
         search options={options}
         hover
@@ -49,46 +86,40 @@ export default class BrowseListings extends React.Component {
         striped
         data={this.props.displayThese}>
           <TableHeaderColumn
-            width='64'
+            width='72'
             headerAlign='center'
             dataField='post_date'
             isKey={ true }
+            dataAlign='right'
           >
-            <MdDateRange
-              width="26"
-              fill="hsl(200, 50%, 50%)"
-              height="26"/>
+            <MdDateRange/>
             </TableHeaderColumn>
           <TableHeaderColumn
             width='180'
             maxheight='20'
             headerAlign='center'
             dataField='title'
+            dataFormat={ titleFixer }
           >
             Title
           </TableHeaderColumn>
           <TableHeaderColumn
             width='64'
             dataField='price'
+            dataFormat={ priceFormatter }
             headerAlign='center'
-            dataAlign='left'
+            dataAlign='right'
           >
-            <MdAttachMoney
-              width="26"
-              fill="hsl(200, 50%, 50%)"
-              height="26"
-            />
+            <MdAttachMoney/>
           </TableHeaderColumn>
           <TableHeaderColumn
             width='48'
             headerAlign='center'
+            dataFormat={ bedrooms }
             dataField='bedrooms'
+            dataAlign='right'
           >
-            <FaBed
-              width="26"
-              fill="hsl(200, 50%, 50%)"
-              height="26"
-            />
+            <FaBed/>
           </TableHeaderColumn>
           <TableHeaderColumn
             dataField='id'
@@ -101,12 +132,9 @@ export default class BrowseListings extends React.Component {
             width='150'
             headerAlign='center'
             dataField='neighborhood'
+            dataFormat={ shorten }
           >
-            <MdLocationCity
-              width="26"
-              fill="hsl(200, 50%, 50%)"
-              height="26"
-            />
+            <MdLocationCity/>
           </TableHeaderColumn>
       </BootstrapTable>
       </div>

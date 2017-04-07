@@ -3,7 +3,7 @@ import React                                from 'react'
 import {Tooltip, Tab, Tabs, Grid, Col, Row} from 'react-bootstrap'
 import dataviews                            from './dataviews'
 import Customize                            from './customize/Customize'
-import ListingsView                         from './viewlistings/ListingsView'
+import ListingsBrowser                         from './viewlistings/ListingsBrowser'
 import DataSummary                          from './viewdata/DataSummary'
 import InlineSVG                            from 'svg-inline-react'
 import MdRemoveRedEye                       from 'react-icons/lib/md/remove-red-eye'
@@ -49,7 +49,7 @@ export default class ViewAndFilter extends React.Component {
             <Grid fluid>
               <Row>
                 <Col md={12}>
-                  <ListingsView
+                  <ListingsBrowser
                     changeView        = {this.props.changeView}
                     displayAd         = {this.props.displayAd}
                     listings          = {this.props.listings}

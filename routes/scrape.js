@@ -196,7 +196,7 @@ function createCompleteListings(scrapedResults, scrapedListings) {
 
     const newListingData = {
       urlnum: Number(currentUrlnum),
-      descr: $('#postingbody').text().trim(),
+      descr: $('#postingbody').text().trim().replace('QR Code Link to This Post\n            \n        \n', ''),
       title: $('#titletextonly').text(),
       price: $('.postingtitletext .price').text().replace(/\$/, ''),
       sqft: $('.postingtitletext .housing').text().replace(/[\d]br|\s|\-|\/|ft2/g, ""),

@@ -466,7 +466,6 @@ export default class App extends React.Component {
         });
       }).then(() => {
         this.setState({displayAd: this.state.listings[0]});
-        this.setState({displayAdFromFiltered: this.state.listings[0]});
       }).catch((err) => {
         console.log(err);
       });

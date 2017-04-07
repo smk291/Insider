@@ -48,7 +48,7 @@ export default class ViewAndFilter extends React.Component {
           <Tab animation eventKey={3} title='Browse all listings'>
             <Grid fluid>
               <Row>
-                <Col md={10}>
+                <Col md={12}>
                   <ListingsView
                     changeView        = {this.props.changeView}
                     displayAd         = {this.props.displayAd}
@@ -62,8 +62,8 @@ export default class ViewAndFilter extends React.Component {
           </Tab>
         </Tabs>
 
-        <p>Hiya! VandF</p>
-        <p>{JSON.stringify(this.props)}</p>
+        {/*<p>Hiya! VandF</p>
+        <p>{JSON.stringify(this.props)}</p>*/}
       </div>
     );
   }

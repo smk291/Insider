@@ -21,6 +21,28 @@ import MdStar from 'react-icons/lib/md/star'
 import FaBed from 'react-icons/lib/fa/bed'
 import comp from './compare/comparison'
 
+const monthsShort = {
+  0: "Jan.",
+  1: "Feb.",
+  2: "Mar.",
+  3: "Apr.",
+  4: "May",
+  5: "June",
+  6: "July",
+  7: "Aug.",
+  8: "Sept.",
+  9: "Oct.",
+  10: "Nov.",
+  11: "Dec."
+}
+
+function formatDate(date) {
+  let fD = new Date (date);
+  return <span>fd.getMonth() fd.getDay()</span>
+
+
+}
+
 class Blank extends React.Component {
   render() {
     return (
@@ -159,13 +181,21 @@ class TableRewritten extends React.Component {
             {fields.map((field, idx) =>
               <tr key={idx}>
                 <td>{labels[idx]}</td>
-                <td>{listing1[field]
-                  ? humanize(listing1[field])
-                  : <Blank/>}
+                <td>{field === 'price' 
+                  ? "$" + listing1[field]
+                  : field === "sqft" && listing1[field]
+                  ? <span>{listing1[field]} ft<sup>2</sup></span>
+                  : listing1[field]
+                    ? humanize(listing1[field])
+                    : <Blank/>}
                 </td>
-                <td>{listing2[field]
-                  ? humanize(listing2[field])
-                  : <Blank/>}
+                <td>{field === 'price' 
+                  ? "$" + listing2[field]
+                  : field === "sqft" && listing2[field]
+                  ? <span>{listing2[field]} ft<sup>2</sup></span>
+                  : listing2[field]
+                    ? humanize(listing2[field])
+                    : <Blank/>}
                 </td>
               </tr>
             )}
@@ -212,7 +242,7 @@ class Favorites extends React.Component {
             {this.props.userFavorites.map((favorite) => {
               <tr>
                 <td>
-                  {favorite.postDate}
+                  {formatDate(favorite.postDate)}
                   {favorite.housing} -
                   {favorite.bedrooms} -
                   ${favorite.price} -
@@ -243,7 +273,7 @@ class Favorites extends React.Component {
                   : <Blank/>} -
                   &nbsp;
                 {favorite.price
-                  ? humanize(favorite.price)
+                  ? <span>${humanize(favorite.price)}</span>
                   : <Blank/>} -
                 &nbsp;
                 {favorite.title
@@ -319,8 +349,8 @@ export default class Compare extends React.Component {
             </Col>
           </Row>
         </Grid>
-        <p>Compare</p>
-        <p>{JSON.stringify(this.props)}</p>
+        {/*<p>Compare</p>
+        <p>{JSON.stringify(this.props)}</p>*/}
       </div>
     );
   }

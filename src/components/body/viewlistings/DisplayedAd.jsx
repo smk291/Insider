@@ -167,11 +167,25 @@ export default class DisplayAd extends React.Component {
     //   title = titleize(el.title.slice(0,55) + `…`)
     // };
 
+    let price = <span>${el.price}</span>
+    let bedrooms = <span>{el.bedrooms}BR</span>
+
+    let postfix = <span></span>
+    if (el.price && el.bedrooms) {
+      postfix = <span>(price, bedrooms)</span>
+    } else if (el.price && !el.bedrooms) {
+      postfix = <span>({<span>${el.price}</span>})</span>
+    } else if (!el.price && el.bedrooms) {
+      postfix = <span>({el.bedrooms}BR)</span>
+    } else {
+      postfix = '';
+    }
+
     return(
       <div>
-        <div style={{height: '722px'}} className = 'panel panel-default'>
+        <div style={{height: '722px'}} className='panel panel-default'>
           <div style={{margin: '0px 20px', padding: '20px 20px', height: '640px', overflowY: 'auto'}} className='panel-body'>
-            <h2 style={{margin: '20px', height: '2em'}}>{title} (${el.price}, {el.bedrooms})</h2>
+            <h4 style={{margin: '20px', height: '2em'}}>{title} {postfix}</h4>
             <Grid fluid>
               <Row>
                 <Col md={5} sm={5}>

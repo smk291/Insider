@@ -21,6 +21,28 @@ import ViewAndFilter from './body/ViewAndFilter'
 import Compare from './body/Compare'
 import MapPage from './body/MapPage'
 
+class AbstractedRouting extends React.Component {
+  constructor(props) {
+    super(props);
+    this.logOut = this.logOut.bind(this);
+  }
+
+  logOut(){
+    this.props.logOut();
+  }
+
+  render(){
+    return (
+      <ul>
+        <div><li><Link to="/">Home</Link></li>
+        <li><Link to="/ViewAndFilter">ViewAndFilter</Link></li>
+        <li><Link to="/compare">Compare</Link></li>
+        <li><a href="#" onClick={this.logOut}>Log Out</a></li></div>
+      </ul>
+    )
+  }
+}
+
 export default class App extends React.Component {
   constructor(props) {
     super(props);
@@ -189,6 +211,7 @@ export default class App extends React.Component {
     this.getLoggedIn = this.getLoggedIn.bind(this)
     this.authSwitch = this.authSwitch.bind(this);
     this.processAuth = this.processAuth.bind(this);
+    this.logOut = this.logOut.bind(this);
     //Scraping
     this.scrape = this.scrape.bind(this);
     //Handle changes
@@ -213,6 +236,22 @@ export default class App extends React.Component {
   }
 
   //Auth
+  logOut() {
+    axios({
+      method: 'delete',
+      url: '/token',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then((res) => {
+      this.changeState('loggedIn');
+      this.setState({listings: {}});
+      // notify.show('Logged Out!', 'success', 3000);
+    }).catch(err => {
+      // notify.show(err.response.data, 'error', 3000);
+    });
+  }
+
   changeState(standIn) {
     let change = {};
     change[standIn] = !this.state[standIn];
@@ -232,6 +271,7 @@ export default class App extends React.Component {
         'Content-Type': 'application/json'
       }
     }).then((res) => {
+      console.log(res);
       let loggedIn = res.data;
       this.setState({loggedIn});
       this.getListings();
@@ -603,7 +643,7 @@ export default class App extends React.Component {
   }
 
   changeView(row) {
-    axios({method: 'get', url: `/listings/${row.id}`}).then((res) => {
+    axios({method: 'get', url: `/listings_individual/${row.id}`}).then((res) => {
       this.setState({displayAd: res.data})
     }).catch((err) => {
       //
@@ -625,19 +665,33 @@ export default class App extends React.Component {
   }
 
   render() {
+
+    if (!this.state.loggedIn) {
+      return (
+        <div>
+          <Login 
+            handleChange={this.handleChange} 
+            processAuth={this.processAuth} 
+            authSwitch={this.authSwitch} 
+            loggedIn={this.state.loggedIn} 
+            signingUp={this.state.signingUp} 
+            email={this.state.email} 
+            password={this.state.password} 
+            firstName={this.state.firstName} 
+            lastName={this.state.lastName}
+          />
+        </div>
+      )
+    }
+
     return (
       <Router>
         <div>
-          <ul>
-            <li><Link to="/home">Home</Link></li>
-            <li><Link to="/ViewAndFilter">ViewAndFilter</Link></li>
-            <li><Link to="/compare">Compare</Link></li>
-            <li><Link to="/login">Login</Link></li>
-          </ul>
+          <AbstractedRouting {...this.state} logOut={this.logOut}/>
 
           <hr/>
 
-          <Route exact path="/home" render={()=> <Home {...this.state}/>}/>
+          <Route exact path="/" render={()=> <Home {...this.state}/>}/>
           <Route path="/ViewAndFilter" render={()=> <ViewAndFilter  
             searchParams={this.state.searchParams}
             changeView={this.changeView}
@@ -662,17 +716,6 @@ export default class App extends React.Component {
             activePage1={this.state.activePage1}
             activePage2={this.state.activePage2 }
             />}
-          />
-          <Route path="/login" render={()=> <Login 
-            handleChange={this.handleChange} 
-            processAuth={this.processAuth} 
-            authSwitch={this.authSwitch} 
-            loggedIn={this.state.loggedIn} 
-            signingUp={this.state.signingUp} 
-            email={this.state.email} 
-            password={this.state.password} 
-            firstName={this.state.firstName} 
-            lastName={this.state.lastName}/>}
           />
         </div>
       </Router>

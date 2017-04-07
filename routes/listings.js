@@ -11,11 +11,30 @@ const humanize = require('underscore.string/humanize');
 // eslint-disable-next-line babel/new-cap
 const router = express.Router();
 
+const monthsShort = {
+  0: "Jan.",
+  1: "Feb.",
+  2: "Mar.",
+  3: "Apr.",
+  4: "May",
+  5: "June",
+  6: "July",
+  7: "Aug.",
+  8: "Sept.",
+  9: "Oct.",
+  10: "Nov.",
+  11: "Dec."
+}
+
 // eslint-disable-next-line func-names
 const formatListing = function (listing) {
   const fL = listing;
 
-  fL.title = titleize(fL.title);
+  if (fL.title.indexOf(' ') === -1) {
+    fL.title = 'Censored';
+  } else{
+    fL.title = titleize(fL.title);
+  }
   fL.descr = humanize(fL.descr);
 
   if (fL.neighborhood) {
@@ -23,6 +42,8 @@ const formatListing = function (listing) {
     fL.neighborhood = titleize(fL.neighborhood);
   }
 
+  let date = new Date(fL.post_date);
+  fL.post_date = `${monthsShort[date.getMonth()]} ${date.getDate()}`;
   return fL;
 };
 
@@ -58,7 +79,7 @@ router.get('/listings_individual/:id', authorize, (req, res, next) => {
         throw boom.create(400, 'No listings exist for user');
       }
 
-      res.send(listing);
+      res.send(camelizeKeys(formatListing(listing)));
     })
     .catch(err => next(err));
 });

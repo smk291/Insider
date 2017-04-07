@@ -43,7 +43,7 @@ export default class Home extends React.Component {
     return (
       <div>
         <p>hi - Home</p>
-        <p>{JSON.stringify(this.props)}</p>
+        {/*<p>{JSON.stringify(this.props)}</p>*/}
       </div>
     );
   }

@@ -1,9 +1,10 @@
 // <editor-fold
 import React from 'react'
-import {Button, Grid, Row, Col, Tooltip, Accordion, Panel, ListGroup, ListGroupItem, Table, Pager} from 'react-bootstrap'
+import {Button, Grid, Row, Col, Tooltip, Accordion, Panel, ListGroup, ListGroupItem, Pager} from 'react-bootstrap'
 import primary from '../primary.css'
 import ListingHeader from './ListingHeader'
 import humanize from 'underscore.string/humanize'
+import titleize from 'underscore.string/titleize'
 import { BootstrapTable, TableHeaderColumn, TableBody, TableHeader, PaginationList } from 'react-bootstrap-table'
 import dataviews from '../dataviews.css'
 import InlineSVG from 'svg-inline-react'
@@ -15,8 +16,9 @@ import MdLocationCity from 'react-icons/lib/md/location-city'
 import MdSave from 'react-icons/lib/md/save'
 import MdStar from 'react-icons/lib/md/star'
 import browseListingsStyles from './browseListingsStyles'
+import {Table, Column, Cell} from 'fixed-data-table';
 
-export default class BrowseListings extends React.Component {
+export default class ListingsBrowserLeft extends React.Component {
   constructor(props){
     super(props)
     this.changeView = this.changeView.bind(this)
@@ -48,6 +50,10 @@ export default class BrowseListings extends React.Component {
         return cell
       }
 
+      if (cell > 9 || Number(cell) === NaN) {
+        return (<span  className={dataviews.blank}> ? </span>)
+      }
+
       return cell + "br"
     }
 
@@ -59,14 +65,22 @@ export default class BrowseListings extends React.Component {
       return cell
     }
 
+    function shortenNeighborhood(cell, row) {
+      if (cell && cell.length > 15) {
+        return cell.substring(0, 15).replace(/\.|\!|\@|\#|\%|\^|\*|\=|\[|\]|\{|\}|\;|\:|\|\<|\>/gi, '');
+      }
+
+      return cell
+    }
+
     function titleFixer(cell, row) {
       console.log(cell.toLowerCase());
       console.log(cell.toLowerCase().indexOf('felon') !== -1);
-      if (cell.indexOf(' ') === -1 || cell.toLowerCase().indexOf('felon') !== -1) {
+      if (cell.indexOf(' ') === -1 || cell.toLowerCase().indexOf('felon') !== -1 || ( cell.length / cell.match(/\s/g) > 9)) {
         cell = <span className={dataviews.blank}>Poor title or bad formatting</span>
         return cell
       } else if (cell.length > 25) {
-        cell = <span>{cell.substring(0, 25)}&hellip;</span>
+        cell = <span>{titleize(cell.substring(0, 25).replace(/\.|\!|\@|\#|\%|\^|\*|\=|\[|\]|\{|\}|\;|\:|\\|\<|\>/gi, '')).trim()}&hellip;</span>
         return cell
       }
 
@@ -85,55 +99,22 @@ export default class BrowseListings extends React.Component {
         style={{overflowY: 'scroll'}}
         striped
         data={this.props.displayThese}>
-          <TableHeaderColumn
-            width='72'
-            headerAlign='center'
-            dataField='post_date'
-            isKey={ true }
-            dataAlign='right'
-          >
+          <TableHeaderColumn width='72' headerAlign='center' dataField='post_date' dataAlign='right'isKey={ true } >
             <MdDateRange/>
             </TableHeaderColumn>
-          <TableHeaderColumn
-            width='180'
-            maxheight='20'
-            headerAlign='center'
-            dataField='title'
-            dataFormat={ titleFixer }
-          >
+          <TableHeaderColumn width='190' headerAlign='center' dataField='title' dataAlign='left' dataFormat={ titleFixer }>
             Title
           </TableHeaderColumn>
-          <TableHeaderColumn
-            width='64'
-            dataField='price'
-            dataFormat={ priceFormatter }
-            headerAlign='center'
-            dataAlign='right'
-          >
+          <TableHeaderColumn width='32' headerAlign='center'  dataField='price' dataAlign='right' dataFormat={ priceFormatter }>
             <MdAttachMoney/>
           </TableHeaderColumn>
-          <TableHeaderColumn
-            width='48'
-            headerAlign='center'
-            dataFormat={ bedrooms }
-            dataField='bedrooms'
-            dataAlign='right'
-          >
+          <TableHeaderColumn width='32' headerAlign='center' dataFormat={ bedrooms } dataAlign='right' dataField='bedrooms'>
             <FaBed/>
           </TableHeaderColumn>
-          <TableHeaderColumn
-            dataField='id'
-            headerAlign='center'
-            hidden
-          >
+          <TableHeaderColumn dataField='id' headerAlign='center' hidden>
             id
           </TableHeaderColumn>
-          <TableHeaderColumn
-            width='150'
-            headerAlign='center'
-            dataField='neighborhood'
-            dataFormat={ shorten }
-          >
+          <TableHeaderColumn width='90' headerAlign='center' dataFormat={ shortenNeighborhood } dataField='neighborhood'>
             <MdLocationCity/>
           </TableHeaderColumn>
       </BootstrapTable>

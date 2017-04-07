@@ -14,7 +14,6 @@ import MdInsertLink from 'react-icons/lib/md/insert-link'
 import MdAttachMoney from 'react-icons/lib/md/attach-money'
 import MdLocationCity from 'react-icons/lib/md/location-city'
 import axios from 'axios'
-import DisplayedAd from './DisplayedAd'
 import MdSave from 'react-icons/lib/md/save'
 // </editor-fold>
 
@@ -161,11 +160,7 @@ export default class DisplayAd extends React.Component {
       }
     }
 
-    let title = titleize(el.title);
-
-    // if (el.title.length > 55){
-    //   title = titleize(el.title.slice(0,55) + `…`)
-    // };
+    let title = titleize(el.title).replace(/\!|\@|\#|\%|\^|\*|\=|\[|\]|\{|\}|\;|\:|\\|\<|\>/g, '');
 
     let price = <span>${el.price}</span>
     let bedrooms = <span>{el.bedrooms}BR</span>

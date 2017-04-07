@@ -14,14 +14,14 @@ import MdInsertLink from 'react-icons/lib/md/insert-link'
 import MdAttachMoney from 'react-icons/lib/md/attach-money'
 import MdLocationCity from 'react-icons/lib/md/location-city'
 import axios from 'axios'
-import DisplayedAd from './DisplayedAd'
-import BrowseListings from './BrowseListings'
+import ListingsBrowserLeft from './ListingsBrowserLeft'
+import ListingsBrowserRight from './ListingsBrowserRight'
 
 // </editor-fold>
 
 // From ViewAndFilter
 // To CustomSortTable and DisplayedAd
-export default class ListingsView extends React.Component {
+export default class ListingsBrowser extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -51,7 +51,7 @@ export default class ListingsView extends React.Component {
         <Grid style={{width: '100%'}} fluid>
           <Row>
             <Col sm={12} md={6}>
-              <BrowseListings
+              <ListingsBrowserLeft
                 displayThese={this.props.listings}
                 changeView={this.props.changeView}
               />
@@ -59,7 +59,7 @@ export default class ListingsView extends React.Component {
             <Col sm={12} md={6}>
               <div>
                 <div>
-                  {this.props.displayAd.id ? <DisplayedAd
+                  {this.props.displayAd.id ? <ListingsBrowserRight
                     displayAd={this.props.displayAd}
                     saveToFavorites={this.props.saveToFavorites}
                   /> :

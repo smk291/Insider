@@ -1,7 +1,6 @@
 import React from 'react';
 import { withGoogleMap, GoogleMap, Marker, InfoWindow } from 'react-google-maps';
 import MarkerClusterer from 'react-google-maps/lib/addons/MarkerClusterer';
-import DisplayedAd from '../viewlistings/DisplayedAd'
 import InlineSVG from 'svg-inline-react'
 import MdLocationCity from 'react-icons/lib/md/location-city'
 import MdHome from 'react-icons/lib/md/home'

@@ -43,7 +43,7 @@ export default class Login extends React.Component {
     return (
       <div id={login.bodyContainer}>
         <div className={login.container}>
-          <Grid className={login.verticalCenter} style={{backgroundImage: `url(${Seattlejpg})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}} fluid>
+          <Grid className={login.verticalCenter} style={{backgroundImage: `url(${Seattlejpg})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', minWidth: '800px'}} fluid>
             <Row id={login.loginFlexC} className="show-grid">
               <Col>
                 <div id={login.login}>

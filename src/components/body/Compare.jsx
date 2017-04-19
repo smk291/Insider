@@ -2,6 +2,7 @@ import React from 'react'
 import {Table, Button, Grid, Jumbotron, Row, Col, Popover, Tooltip, Modal} from 'react-bootstrap'
 import { Panel, Pager } from 'react-bootstrap'
 import { BootstrapTable, TableHeaderColumn, TableBody, TableHeader, PaginationList, Pagination } from 'react-bootstrap-table'
+import {Table as FBTAble, Column, Cell} from 'fixed-data-table';
 import primary from './primary.css'
 import InlineSVG from 'svg-inline-react'
 import MdSearch from 'react-icons/lib/md/search'

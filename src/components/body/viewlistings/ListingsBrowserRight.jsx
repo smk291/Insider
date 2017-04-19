@@ -160,7 +160,7 @@ export default class DisplayAd extends React.Component {
       }
     }
 
-    let title = titleize(el.title).replace(/\!|\@|\#|\%|\^|\*|\=|\[|\]|\{|\}|\;|\:|\\|\<|\>/g, '');
+    let title = titleize(el.title).replace(/\.|\!|\@|\#|\%|\^|\*|\=|\[|\]|\{|\}|\;|\:|\\|\<|\>|\_/g, '');
 
     let price = <span>${el.price}</span>
     let bedrooms = <span>{el.bedrooms}BR</span>

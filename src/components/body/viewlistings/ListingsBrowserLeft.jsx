@@ -67,7 +67,7 @@ export default class ListingsBrowserLeft extends React.Component {
 
     function shortenNeighborhood(cell, row) {
       if (cell && cell.length > 15) {
-        return cell.substring(0, 15).replace(/\.|\!|\@|\#|\%|\^|\*|\=|\[|\]|\{|\}|\;|\:|\|\<|\>/gi, '');
+        return cell.substring(0, 15).replace(/\.|\!|\@|\#|\%|\^|\*|\=|\[|\]|\{|\}|\;|\:|\|\<|\>|\_/g, '');
       }
 
       return cell
@@ -80,7 +80,7 @@ export default class ListingsBrowserLeft extends React.Component {
         cell = <span className={dataviews.blank}>Poor title or bad formatting</span>
         return cell
       } else if (cell.length > 25) {
-        cell = <span>{titleize(cell.substring(0, 25).replace(/\.|\!|\@|\#|\%|\^|\*|\=|\[|\]|\{|\}|\;|\:|\\|\<|\>/gi, '')).trim()}&hellip;</span>
+        cell = <span>{titleize(cell.substring(0, 25).replace(/\.|\!|\@|\#|\%|\^|\*|\=|\[|\]|\{|\}|\;|\:|\\|\<|\>|\_/g, '')).trim()}&hellip;</span>
         return cell
       }
 

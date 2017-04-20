@@ -1,6 +1,5 @@
 import React from 'react'
 import { Button, Grid, Row, Col, Tooltip, Accordion, Panel, ListGroup, ListGroupItem, Table, Pager } from 'react-bootstrap'
-import primary from '../primary.css'
 import humanize from 'underscore.string/humanize'
 import titleize from 'underscore.string/titleize'
 import capitalize from 'underscore.string/capitalize'

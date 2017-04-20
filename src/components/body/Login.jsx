@@ -2,7 +2,6 @@ import React, {Component} from 'react'
 import {Link} from 'react-router'
 import { FormGroup, FormControl, controlId, ControlLabel, FieldGroup, Button, Row, Col, Grid, Jumbotron, Popover, Tooltip, Modal } from 'react-bootstrap';
 import login from './login.css'
-import primary from './primary.css'
 import InlineSVG from 'svg-inline-react'
 import MdSearch from 'react-icons/lib/md/search'
 import MdCompare from 'react-icons/lib/md/compare'

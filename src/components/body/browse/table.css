@@ -1,0 +1,22 @@
+.browseContainer {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+}
+
+.browseItemDate {
+  display: inline-block;
+  width: 100px;
+  float: left;
+  margin-right: 15px;
+  background-color: hsla(0,0,20%,1.0);
+}
+
+.browseItemNeighborhood {
+  display: block;
+  float: left;
+}
+
+.blank {
+  color: #bbb
+}

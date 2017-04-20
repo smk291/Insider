@@ -1,12 +1,9 @@
 // <editor-fold
 import React from 'react'
 import {Button, Grid, Row, Col, Tooltip, Accordion, Panel, ListGroup, ListGroupItem, Table, Pager} from 'react-bootstrap'
-import primary from '../primary.css'
-import ListingHeader from './ListingHeader'
 import humanize from 'underscore.string/humanize'
 import titleize from 'underscore.string/titleize'
 import { BootstrapTable, TableHeaderColumn, TableBody, TableHeader } from 'react-bootstrap-table'
-import dataviews from '../dataviews.css'
 import InlineSVG from 'svg-inline-react'
 import MdDateRange from 'react-icons/lib/md/date-range'
 import FaBed from 'react-icons/lib/fa/bed'
@@ -14,14 +11,14 @@ import MdInsertLink from 'react-icons/lib/md/insert-link'
 import MdAttachMoney from 'react-icons/lib/md/attach-money'
 import MdLocationCity from 'react-icons/lib/md/location-city'
 import axios from 'axios'
-import ListingsBrowserLeft from './ListingsBrowserLeft'
-import ListingsBrowserRight from './ListingsBrowserRight'
+import BrowseLeft from './BrowseLeft'
+import BrowseRight from './BrowseRight'
 
 // </editor-fold>
 
 // From ViewAndFilter
 // To CustomSortTable and DisplayedAd
-export default class ListingsBrowser extends React.Component {
+export default class BrowseMain extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -51,7 +48,7 @@ export default class ListingsBrowser extends React.Component {
         <Grid style={{width: '100%'}} fluid>
           <Row>
             <Col sm={12} md={6}>
-              <ListingsBrowserLeft
+              <BrowseLeft
                 displayThese={this.props.listings}
                 changeView={this.props.changeView}
               />
@@ -59,7 +56,7 @@ export default class ListingsBrowser extends React.Component {
             <Col sm={12} md={6}>
               <div>
                 <div>
-                  {this.props.displayAd.id ? <ListingsBrowserRight
+                  {this.props.displayAd.id ? <BrowseRight
                     displayAd={this.props.displayAd}
                     saveToFavorites={this.props.saveToFavorites}
                   /> :

@@ -1,7 +1,4 @@
-body {
-  font-family: "Helvetica Neue", Arial;
-  font-weight: 200;
-}
+
 
 nav {
   margin-bottom: 0px !important;
@@ -10,28 +7,32 @@ nav {
   border-right: 1px solid rgb(60, 81, 90) !important;
 }
 
+
 .breadcrumbs a {
   text-decoration: none;
 }
 
 .navbar {
-  padding: 8px 20px;
+  /*padding: 8px 20px;*/
   margin: 0px !important;
   overflow: hidden;
+  float
   background-color: rgb(40, 54, 61);
   color: rgb(255, 255, 255);
 }
 
 .navButton {
-  font-size: 18px;
-  padding: 14px 10px;
+  display: inline-block;
+  font-size: 16px;
+  padding: 5px 10px;
   color: hsl(0,0,10);
   position: relative;
+  border-bottom: 5px solid rgb(255, 255, 255);
+
 }
 
 .navButton:hover {
-  background-color: rgb(60, 81, 90);
-  border-bottom: 10px solid #49A078;
+  border-bottom: 5px solid #49A078;
 }
 
 .active, p.active {
@@ -43,5 +44,9 @@ nav {
 a, a:hover, a:visited, a:focus {
   color: hsla(0, 0%, 64%, 1);
   text-decoration: none;
+
+}
+
+#logout {
 
 }

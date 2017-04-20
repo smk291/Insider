@@ -3,9 +3,7 @@ import React from 'react'
 import ReactDOM from 'react-dom';
 import {render} from 'react-dom'
 import {Button, HelpBlock, ButtonGroup, FormGroup, ControlLabel, FormControl, Grid, Tooltip, Row, Col, Tab, Checkbox, Panel, ListGroup, ListGroupItem, Accordion, PanelGroup, Tabs} from 'react-bootstrap'
-import primary from '../primary.css'
 import humanize from 'underscore.string/humanize'
-import dataviews from '../dataviews'
 import InlineSVG from 'svg-inline-react'
 import MdBackup from 'react-icons/lib/md/backup'
 

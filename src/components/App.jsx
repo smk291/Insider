@@ -6,22 +6,21 @@ import {
   Redirect,
   withRouter
 } from 'react-router-dom'
-import {Button, Grid, Jumbotron, Row, Col, Popover, Tooltip, Modal} from 'react-bootstrap';
+import {Button, Grid, Jumbotron, Row, Col, Popover, Tooltip, Modal} from 'react-bootstrap'
 import 'bootstrap/less/bootstrap.less'
-import axios from 'axios';
-import Header from './header/Header';
+import axios from 'axios'
 import globalCSS from '../../globalCSS.css'
 import request from 'request'
 import titleize from 'underscore.string/titleize'
 import humanize from 'underscore.string/humanize'
-
 import Login from './body/Login'
 import Home from './body/Home'
-import ViewAndFilter from './body/ViewAndFilter'
+import Browse from './body/Browse'
 import Compare from './body/Compare'
 import MapPage from './body/MapPage'
+import nav from './header/nav'
 
-class AbstractedRouting extends React.Component {
+class Nav extends React.Component {
   constructor(props) {
     super(props);
     this.logOut = this.logOut.bind(this);
@@ -33,12 +32,12 @@ class AbstractedRouting extends React.Component {
 
   render(){
     return (
-      <ul>
-        <div><li><Link to="/">Home</Link></li>
-        <li><Link to="/ViewAndFilter">ViewAndFilter</Link></li>
-        <li><Link to="/compare">Compare</Link></li>
-        <li><a href="#" onClick={this.logOut}>Log Out</a></li></div>
-      </ul>
+      <nav>
+        <Link className={nav.navButton} to="/">Home</Link>
+        <Link className={nav.navButton} to="/Browse">Browse</Link>
+        <Link className={nav.navButton} to="/compare">Compare</Link>
+        <a className={nav.navButton} href="#" onClick={this.logOut}>Log Out</a>
+      </nav>
     )
   }
 }
@@ -271,7 +270,7 @@ export default class App extends React.Component {
         'Content-Type': 'application/json'
       }
     }).then((res) => {
-      console.log(res);
+      // console.log(res);
       let loggedIn = res.data;
       this.setState({loggedIn});
       this.getListings();
@@ -379,7 +378,7 @@ export default class App extends React.Component {
       method: 'get',
       url: '/scrape/check_for_404',
     }).then((result) => {
-      console.log(result);;
+      // console.log(result);;
     }).catch((err) => {
       console.log(err);
     })
@@ -593,7 +592,7 @@ export default class App extends React.Component {
       }
     }).then((res) => {
       this.setState({addedFavorite: true})
-      console.log(res);
+      // console.log(res);
     }).catch((err) => {
       console.log(err);
     })
@@ -607,7 +606,7 @@ export default class App extends React.Component {
         listingsId: this.state.displayAdFromFiltered.id
       }
     }).then((res) => {
-      console.log(res);
+      // console.log(res);
     }).catch((err) => {
       console.log(err);
     })
@@ -686,12 +685,12 @@ export default class App extends React.Component {
     return (
       <Router>
         <div>
-          <AbstractedRouting {...this.state} logOut={this.logOut}/>
+          <Nav {...this.state} logOut={this.logOut}/>
 
           <hr/>
 
           <Route exact path="/" render={()=> <Home {...this.state}/>}/>
-          <Route path="/ViewAndFilter" render={()=> <ViewAndFilter  
+          <Route path="/Browse" render={()=> <Browse  
             searchParams={this.state.searchParams}
             changeView={this.changeView}
             displayAd={this.state.displayAd}

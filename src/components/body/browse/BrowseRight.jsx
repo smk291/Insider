@@ -1,12 +1,9 @@
 // <editor-fold
 import React from 'react'
 import {Button, Grid, Row, Col, Tooltip, Accordion, Panel, ListGroup, ListGroupItem, Table, Pager} from 'react-bootstrap'
-import primary from '../primary.css'
-import ListingHeader from './ListingHeader'
 import humanize from 'underscore.string/humanize'
 import titleize from 'underscore.string/titleize'
 import { BootstrapTable, TableHeaderColumn, TableBody, TableHeader } from 'react-bootstrap-table'
-import dataviews from '../dataviews.css'
 import InlineSVG from 'svg-inline-react'
 import MdDateRange from 'react-icons/lib/md/date-range'
 import FaBed from 'react-icons/lib/fa/bed'
@@ -46,11 +43,15 @@ export default class DisplayAd extends React.Component {
                 </tr>
                 <tr>
                   <td>Street address?</td>
-                  <td>{el.street_address? humanize(el.street_address): <span className={dataviews.blank}>Blank</span>}</td>
+                  <td>{el.street_address
+                    ? humanize(el.street_address)
+                    : <span>Blank</span>}</td>
                 </tr>
                 <tr>
                   <td>Wheelchair accessible?</td>
-                  <td>{el.wheelchair_accessible ? humanize(el.wheelchair_accessible): <span className={dataviews.blank}>Blank</span>}</td>
+                  <td>{el.wheelchair_accessible 
+                    ? humanize(el.wheelchair_accessible)
+                    : <span>Blank</span>}</td>
                 </tr>
               </tbody>
             </Table>
@@ -72,43 +73,43 @@ export default class DisplayAd extends React.Component {
                 <td>Type of housing:</td>
                 <td>{el.housing
                     ? humanize(el.housing)
-                    : <span className={dataviews.blank}>Blank</span>}</td>
+                    : <span>Blank</span>}</td>
               </tr>
               <tr>
                 <td>Square feet:</td>
                 <td>{el.sqft
                     ? <span>{humanize(el.sqft)}ft<sup>2</sup></span>
-                    : <span className={dataviews.blank}>Blank</span>}</td>
+                    : <span>Blank</span>}</td>
               </tr>
               <tr>
                 <td>Private room?</td>
                 <td>{el.private_room
                     ? humanize(el.private_room)
-                    : <span className={dataviews.blank}>Blank</span>}</td>
+                    : <span>Blank</span>}</td>
               </tr>
               <tr>
                 <td>Private bath?</td>
                 <td>{el.bath
                     ? humanize(el.bath)
-                    : <span className={dataviews.blank}>Blank</span>}</td>
+                    : <span>Blank</span>}</td>
               </tr>
               <tr>
                 <td>Furnished?</td>
                 <td>{el.furnished
                     ? humanize(el.furnished)
-                    : <span className={dataviews.blank}>Blank</span>}</td>
+                    : <span>Blank</span>}</td>
               </tr>
               <tr>
                 <td>Laundry?</td>
                 <td>{el.laundry
                     ? humanize(el.laundry)
-                    : <span className={dataviews.blank}>Blank</span>}</td>
+                    : <span>Blank</span>}</td>
               </tr>
               <tr>
                 <td>Parking?</td>
                 <td>{el.parking
                     ? humanize(el.parking)
-                    : <span className={dataviews.blank}>Blank</span>}</td>
+                    : <span>Blank</span>}</td>
               </tr>
             </tbody>
           </Table>
@@ -129,7 +130,7 @@ export default class DisplayAd extends React.Component {
                 <td>How many photos?</td>
                 <td>{el.photos && el.photos.length > 0
                     ? el.photos.length
-                    : <span className={dataviews.blank}>None</span>}</td>
+                    : <span>None</span>}</td>
               </tr>
             </tbody>
           </Table>
@@ -154,7 +155,9 @@ export default class DisplayAd extends React.Component {
             <p>{el.smoking
                 ? humanize(el.smoking)
                 : ''}</p>
-            <p>{!el.cat && !el.dog ? 'No information about whether cats or dogs are allowed' : ''}</p>
+            <p>{!el.cat && !el.dog 
+              ? 'No information about whether cats or dogs are allowed' 
+              : ''}</p>
           </div>
         )
       }
@@ -167,7 +170,7 @@ export default class DisplayAd extends React.Component {
 
     let postfix = <span></span>
     if (el.price && el.bedrooms) {
-      postfix = <span>(price, bedrooms)</span>
+      postfix = <span>({price}, {bedrooms})</span>
     } else if (el.price && !el.bedrooms) {
       postfix = <span>({<span>${el.price}</span>})</span>
     } else if (!el.price && el.bedrooms) {

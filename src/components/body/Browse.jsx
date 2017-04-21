@@ -26,7 +26,7 @@ export default class Browse extends React.Component {
 
   render() {
     return (
-      <div>
+      <div style={{height: '800px'}}>
         <Tabs animation defaultActiveKey={3} id="placeholder1">
           <Tab animation eventKey={2} title='Virt Table'>
             <VirtTable {...this.props}/>

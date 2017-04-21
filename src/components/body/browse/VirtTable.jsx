@@ -28,7 +28,7 @@ export default class VirtTable extends React.Component {
 
   _noRowsRenderer () {
     return (
-      <div>
+      <div className={table.row}>
         No rows
       </div>
     )
@@ -65,6 +65,7 @@ export default class VirtTable extends React.Component {
           <div
             key={key}
             style={style}
+            className={table.row}
           >
             Scrolling...
           </div>
@@ -113,40 +114,24 @@ export default class VirtTable extends React.Component {
   render() {
     const list = this.props.listings;
 
-    // function rowRenderer ({
-    //   key,         // Unique key within array of rows
-    //   index,       // Index of row within collection
-    //   isScrolling, // The List is currently being scrolled
-    //   isVisible,   // This row is visible within the List (eg it is not an overscanned row)
-    //   style        // Style object to be applied to row (to position it)
-    // }) {
-    //   return (
-    //     <div key={key} style={style}>
-    //       {list[index].post_date}
-    //       <br/>
-    //       {list[index].title.substring(0, 80)}
-    //       }
-    //     </div>
-    //   )
-    // }
-
     return (
       <div>
         <div style={{margin: '20px'}}>
           <p>Currently Active Listings ({list.length})</p>
         </div>
-        <AutoSizer style={{border: '1px solid black'}}>
-          {({ height, width }) => (
-            <List style={{margin: '0px 20px'}}
-              width={700}
-              height={height}
-              rowCount={list.length}
-              height={700}
-              rowHeight={60}
-              rowRenderer={this.rowRenderer}
-            />
-          )}
-        </AutoSizer>
+        <div style={{height: '75h', width: '40%', flex: '1 1 auto'}}>
+          <AutoSizer>
+            {({ height, width }) => (
+              <List style={{margin: '0px 20px', border: '1px solid black'}}
+                width={width}
+                height={height}
+                rowCount={list.length}
+                rowHeight={80}
+                rowRenderer={this.rowRenderer}
+              />
+            )}
+          </AutoSizer>
+        </div>
       </div>
     )
   }

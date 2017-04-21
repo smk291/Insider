@@ -44,7 +44,7 @@ function formatDate(date) {
 class Blank extends React.Component {
   render() {
     return (
-        <span className={dataviews.blank}>Blank</span>
+        <span>Blank</span>
     );
   }
 }

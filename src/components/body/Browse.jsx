@@ -7,7 +7,6 @@ import DataSummary                          from './viewdata/DataSummary'
 import InlineSVG                            from 'svg-inline-react'
 import MdRemoveRedEye                       from 'react-icons/lib/md/remove-red-eye'
 import FilterData                           from './filterdata/FilterData'
-import VirtTable                            from './browse/VirtTable'
 
 export default class Browse extends React.Component {
   constructor(props){
@@ -28,9 +27,6 @@ export default class Browse extends React.Component {
     return (
       <div style={{height: '800px'}}>
         <Tabs animation defaultActiveKey={3} id="placeholder1">
-          <Tab animation eventKey={2} title='Virt Table'>
-            <VirtTable {...this.props}/>
-          </Tab>
           <Tab animation eventKey={3} title='Browse all listings'>
             <Grid fluid>
               <Row>

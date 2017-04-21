@@ -1,0 +1,18 @@
+Average rent overall
+Average rent per number of bedrooms
+Average rent in vicinity
+Age of post
+
+
+Visual representation of details
+
+
+Calculate averages within user defined area
+
+
+Click row to favorite and unfavorite
+Color row according to favorite 
+
+Location on map
+
+Create functions to recheck a listing

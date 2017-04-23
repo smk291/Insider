@@ -7,6 +7,7 @@ import DataSummary                          from './viewdata/DataSummary'
 import InlineSVG                            from 'svg-inline-react'
 import MdRemoveRedEye                       from 'react-icons/lib/md/remove-red-eye'
 import FilterData                           from './filterdata/FilterData'
+import Charts from './Charts'
 
 export default class Browse extends React.Component {
   constructor(props){
@@ -41,6 +42,15 @@ export default class Browse extends React.Component {
                 </Col>
               </Row>
             </Grid>
+          </Tab>
+          <Tab animation eventKey={4} title='Chart'>
+            <Charts 
+              changeView        = {this.props.changeView}
+              displayAd         = {this.props.displayAd}
+              listings          = {this.props.listings}
+              saveToFavorites   = {this.saveToFavorites}
+              filterListings    = {this.props.filterListings}
+            />
           </Tab>
         </Tabs>
 

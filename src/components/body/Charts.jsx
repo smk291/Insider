@@ -2,6 +2,7 @@
 import React                                from 'react'
 import chartscss from './chartscss'
 import ReactDOM from 'react-dom'
+import PropTypes from 'prop-types';
 
 export default class Charts extends React.Component {
   constructor(props) {
@@ -11,53 +12,128 @@ export default class Charts extends React.Component {
     this.drawD3Bar = this.drawD3Bar.bind(this);
     // this.drawChart = this.drawChart.bind(this);
     this.drawD3BarSvg = this.drawD3BarSvg.bind(this);
+    this.state = {
+      d3prevRect: <p></p>
+    }
   }
 
   drawD3Bar(el, props, state) {
-    var x = d3.scaleLinear()
-        .domain([0, Math.max.apply(Math, this.props.listings.map(function(el) {return el.price}))])
-        .range([0, 420]);
+    const now1 = Date.now();
 
-        d3.select(el)
-          .selectAll("div")
-            .data(this.props.listings)
-          .enter().append("div")
-            .style("background-color", "steelblue")
-            .style("height", "1px")
-            .style("width", function(d) { return x(d.price) + "px"; })  
+    var x = d3.scaleLinear()
+      .domain([0, Math.max.apply(Math, this.props.listings.map(function(el) {return el.price}))])
+      .range([0, 420]);
+
+      d3.select(el)
+        .selectAll("div")
+          .data(this.props.listings)
+        .enter().append("div")
+          .style("background-color", "steelblue")
+          .style("height", "1px")
+          .style("margin", "10px")
+          .style("width", function(d) { return x(d.price) + "px"; })  
+
+    let d3Color = d3.transition()
+      .duration(1000)
+      .ease(d3.easeExpOut);
+
+    d3.select(el)
+      .selectAll("div")
+      .on("mouseover", function () {
+         return d3.select(this)
+          .transition(d3Color)
+          .style("background-color", "red")
+          .style("height", "20px");
+      })
+      .on("mouseout", function() {
+        return d3.select(this)
+          .transition(d3Color)
+          .style("background-color", "steelblue")
+          .style("height", "1px");
+      })
+
 
     console.log("Say hello!");
+    const now2 = Date.now();
+    console.log(`div: ${now2 - now1}`);
   }
 
 
   drawD3BarSvg(el, props, state) {
-    var data = [4, 8, 15, 16, 23, 42];
+    const now1 = Date.now();
 
     var width = 420,
-        barHeight = 20;
+        barHeight = 10;
 
     var x = d3.scaleLinear()
-        .domain([0, d3.max(data)])
+        .domain([0, Math.max.apply(Math, this.props.listings.map(function(el) {return el.price}))])
         .range([0, width]);
 
     var chart = d3.select(el)
         .attr("width", width + "px")
-        .attr("height", barHeight * data.length + "px");
+        .attr("height", barHeight * this.props.listings.length + "px");
 
     var bar = chart.selectAll("g")
-        .data(data)
+        .data(this.props.listings)
       .enter().append("g")
         .attr("transform", function(d, i) { return "translate(0," + i * barHeight + ")"; });
 
     bar.append("rect")
-        .attr("width", x)
-        .attr("height", barHeight - 1 + "px");
+        .attr("width", function(d, i) { return x(d.price) + "px"})
+        .attr("id", function(d, i) {return i})
+        .attr("height", barHeight + "px");
 
-    bar.append("text")
-        .attr("x", function(d) { return x(d) - 3; })
-        .attr("y", barHeight / 2)
-        .attr("dy", ".35em")
-        .text(function(d) { return d; });
+    let d3Color = d3.transition()
+      .duration(1000)
+      .ease(d3.easeExpOut);
+
+    d3.select(el)
+      .selectAll("rect")
+    //   .on("mouseover", function () {
+    //     d3.select(this)
+    //       .transition(d3Color)
+    //       .style("fill", "red")
+    //       .style("height", "20px");
+    //   })
+      .on("mouseout", function() {
+        try {
+          d3.select(this)
+            .transition(d3Color)
+            .style("fill", "steelblue")
+            .style("height", "10px");
+        } catch (e) {
+          error: e;
+        }
+      })
+                                // .transition()
+                                // .duration(500)
+                                // .on("mouseover", function() {
+                                //   d3.active(this).style("fill", "red");
+                                // })
+
+                              // bar.append("text")
+                                  // .attr("x", function(d) { return x(d) - 3; })
+                                  // .attr("y", barHeight)
+                                  // .attr("dy", ".35em")
+                                  // .text(function(d) { return d; });
+
+    const now2 = Date.now();
+
+    document.getElementsByClassName("chartSvg")[0].addEventListener("mouseover", (e) => {
+      if (e.target && e.target.nodeName === "rect") {
+        d3.select(e.target)
+          .style("fill", "black");
+
+        // this.setState({d3prevRect: e.target});
+      }
+    });
+
+    // document.getElementsByClassName("chartSvg")[0].addEventListener("click", (e) => {
+    //   console.log(e.target);
+    //   console.log(this.state.d3prevRect);
+    // })
+
+    console.log(`svg: ${now2 - now1}`);
   }
 
   // drawChart() {
@@ -123,12 +199,16 @@ export default class Charts extends React.Component {
 
         <div ref="d3PriceBar" className="chart"></div>
         <p>Hiya!</p>
-        <svg className="chartSvg"></svg>
+        <svg className="chartSvg">{this.props.children}</svg>
       </div>
     );
   }
 }
 
+
+Charts.propTypes = {
+  d3prevRect: PropTypes.node
+}
 
 
 

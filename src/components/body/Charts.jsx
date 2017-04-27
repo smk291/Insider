@@ -18,44 +18,67 @@ export default class Charts extends React.Component {
       .domain([0, Math.max.apply(Math, this.props.listings.map(function(el) {return el.price}))])
       .range([0, 420]);
 
-    d3.select(el)
-      .selectAll("div")
-        .data(this.props.listings)
-        .classed("chartBar", true)
+    d3.select(el).selectAll("div")
+      .data(this.props.listings)
       .enter().append("div")
-        .style("background-color", "steelblue")
-        .style("height", "10px")
-        .style("width", function(d) { return x(d.price) + "px";});
+      .each(function(d) {
+        d3.select(this).append("div")
+      });
+
+    d3.select(el).selectAll("div.chart > div")
+      .classed("barContainer", true)
+      .style("height", "100px")
+      .style("position", "relative");
+
+    d3.select(el).selectAll("div.chart > div > div")
+      .classed("bar", true)
+      .style("background-color", "steelblue")
+      .style("height", "40px")
+      .style("position", "relative")
+      .style("z-index", 2)
+      .style("box-shadow", "0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19)")
+      .style("width", function(d) { return x(d.price) + "px";});
 
     let circleIn = d3.transition()
-      .delay(100)
-      .duration(600)
-      .ease(d3.easeExpOut);
+      .ease(d3.easeCircleIn);
+
+    let circleOut = d3.transition()
+      .ease(d3.easeCircleOut);
 
     document.getElementsByClassName("chart")[0].addEventListener("mouseover", (e) => {
-      if (e.target && e.target.className === "chartBar"){
+      if (e.target && e.target.className === "bar"){
         d3.select(e.target)
+          .style("z-index", 3)
+          // .transition()
           .transition(circleIn)
-          // .transition(circleIn)
-          .delay(100)
-          .duration(600)
+          .duration(300)
+          .style("top", "-15px")
+          .style("right", "15px")
           .style("background-color", "#2a4e6c")
-          .style("height", "50px")
+          .style("height", "70px")
+          .style("box-shadow", "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)")
+          .style("width", function(d) { return (x(d.price) + 30) + "px";});
 
       }
     });
 
     document.getElementsByClassName("chart")[0].addEventListener("mouseout", (e) => {
-      if (e.target && e.target.className === "chartBar"){
+      if (e.target && e.target.className === "bar"){
         d3.select(e.target)
-          .transition()
-          .duration(100)
+          .style("z-index", 2)
+          .transition(circleOut)
+          .duration(300)
           .style("background-color", "steelblue")
-          .transition()
+          .transition(circleOut)
+          .style("top", "0px")
+          .style("right", "0px")
           .duration(1000)
-          .style("height", "10px")
+          .style("box-shadow", "0 2px 4px 0 rgba(0, 0, 0, 0.0), 0 3px 10px 0 rgba(0, 0, 0, 0.0)")
+          .style("width", function(d) { return x(d.price) + "px";})
+          .style("height", "40px")
       }
     });
+
     // const now2 = Date.now();
     // console.log(`div: ${now2 - now1}`);
   }
@@ -157,7 +180,7 @@ export default class Charts extends React.Component {
           <div id='chart_div'></div>
         </div>
 
-        <div style={{margin: "20px"}} ref="d3PriceBar" className="chart"></div>
+        <div style={{margin: "50px"}} ref="d3PriceBar" className="chart"></div>
         <p>Hiya!</p>
         <div>
           <svg className="chartSvg">{this.props.children}</svg>

@@ -27,7 +27,10 @@ export default class Browse extends React.Component {
   render() {
     return (
       <div style={{height: '800px'}}>
-        <Tabs animation defaultActiveKey={3} id="placeholder1">
+        <Tabs
+        animation 
+        defaultActiveKey={3} 
+        id="placeholder1">
           <Tab animation eventKey={3} title='Browse all listings'>
             <Grid fluid>
               <Row>

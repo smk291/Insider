@@ -17,3 +17,11 @@ text {
   font: 10px sans-serif;
   text-anchor: end;
 }
+
+.barSvgBlue {
+  fill: steelblue;
+}
+
+.barSvgRed {
+  fill: red;
+}

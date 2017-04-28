@@ -43,89 +43,34 @@ export default class Charts extends React.Component {
       .style("box-shadow", "0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.19)")
       .style("width", function(d) { return x(d.price) + "px";});
 
-    // let circleIn = d3.transition()
-    //   .ease(d3.easeCircleIn);
-
-    // let circleOut = d3.transition()
-    //   .ease(d3.easeCircleOut);
-
     d3.select(el)
       .selectAll(".bar")
       .on("mouseover", function () {
         d3.select(this)
           .transition()
           .duration(100)
-          // .style("background-color", "red")
-          // .style("height", "20px");
           .style("background-color", "#2a4e6c")
           .style("height", "70px")
-          .style("right", "15px")
           .styleTween("box-shadow", function() {
-              var i = d3.interpolate("0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.19)", "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)");
+              var i = d3.interpolate("0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.19)", "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19)");
               return function(t) {
                   return i(t);
               }
           })
-          .style("width", function(d) { return (x(d.price) + 30) + "px";});
       })
       .on("mouseout", function() {
           d3.select(this)
             .transition()
             .duration(100)
-            // .style("background-color", "steelblue")
-            // .style("height", "10px");
             .style("background-color", "steelblue")
             .styleTween("box-shadow", function() {
-                var i = d3.interpolate("0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)", "0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.19)");
+                var i = d3.interpolate("0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19)", "0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.19)");
                 return function(t) {
                     return i(t);
                 }
             })
-            .style("width", function(d) { return x(d.price) + "px";})
             .style("height", "40px")
-            .style("right", "0px")
       })
-
-    // document.getElementsByClassName("chart")[0].addEventListener("mouseover", (e) => {
-    //     if (e.target && e.target.className === "bar"){
-    //       d3.select(e.target)
-    //         .style("z-index", 1)
-    //         // .transition(circleIn)
-    //         .transition()
-    //         .duration(100)
-    //         .style("background-color", "#2a4e6c")
-    //         .style("height", "70px")
-    //         .style("right", "15px")
-    //         .styleTween("box-shadow", function() {
-    //             var i = d3.interpolate("0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.19)", "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)");
-    //             return function(t) {
-    //                 return i(t);
-    //             }
-    //         })
-    //         .style("width", function(d) { return (x(d.price) + 30) + "px";});
-
-    //   }
-    // });
-
-    // document.getElementsByClassName("chart")[0].addEventListener("mouseout", (e) => {
-    //   if (e.target && e.target.className === "bar"){
-    //       d3.select(e.target)
-    //         .style("z-index", 2)
-    //         // .transition(circleOut)
-    //         .transition()
-    //         .duration(100)
-    //         .style("background-color", "steelblue")
-    //         .styleTween("box-shadow", function() {
-    //             var i = d3.interpolate("0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)", "0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.19)");
-    //             return function(t) {
-    //                 return i(t);
-    //             }
-    //         })
-    //         .style("width", function(d) { return x(d.price) + "px";})
-    //         .style("height", "40px")
-    //         .style("right", "0px")
-    //   }
-    // });
 
     const now2 = Date.now();
     console.log(`div: ${now2 - now1}`);

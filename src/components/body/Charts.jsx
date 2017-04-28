@@ -6,13 +6,15 @@ import ReactDOM from 'react-dom'
 export default class Charts extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+    }
     this.drawD3Bar = this.drawD3Bar.bind(this);
     // this.drawChart = this.drawChart.bind(this);
     this.drawD3BarSvg = this.drawD3BarSvg.bind(this);
   }
 
   drawD3Bar(el, props, state) {
-    // const now1 = Date.now();
+    const now1 = Date.now();
 
     var x = d3.scaleLinear()
       .domain([0, Math.max.apply(Math, this.props.listings.map(function(el) {return el.price}))])
@@ -27,7 +29,10 @@ export default class Charts extends React.Component {
 
     d3.select(el).selectAll("div.chart > div")
       .classed("barContainer", true)
-      .style("height", "100px")
+      .style("height", "60px")
+      .style("width", "420px")
+      .style("display", "flex")
+      .style("align-items", "center")
       .style("position", "relative");
 
     d3.select(el).selectAll("div.chart > div > div")
@@ -35,52 +40,95 @@ export default class Charts extends React.Component {
       .style("background-color", "steelblue")
       .style("height", "40px")
       .style("position", "relative")
-      .style("z-index", 2)
-      .style("box-shadow", "0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19)")
+      .style("box-shadow", "0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.19)")
       .style("width", function(d) { return x(d.price) + "px";});
 
-    let circleIn = d3.transition()
-      .ease(d3.easeCircleIn);
+    // let circleIn = d3.transition()
+    //   .ease(d3.easeCircleIn);
 
-    let circleOut = d3.transition()
-      .ease(d3.easeCircleOut);
+    // let circleOut = d3.transition()
+    //   .ease(d3.easeCircleOut);
 
-    document.getElementsByClassName("chart")[0].addEventListener("mouseover", (e) => {
-      if (e.target && e.target.className === "bar"){
-        d3.select(e.target)
-          .style("z-index", 3)
-          // .transition()
-          .transition(circleIn)
-          .duration(300)
-          .style("top", "-15px")
-          .style("right", "15px")
+    d3.select(el)
+      .selectAll(".bar")
+      .on("mouseover", function () {
+        d3.select(this)
+          .transition()
+          .duration(100)
+          // .style("background-color", "red")
+          // .style("height", "20px");
           .style("background-color", "#2a4e6c")
           .style("height", "70px")
-          .style("box-shadow", "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)")
+          .style("right", "15px")
+          .styleTween("box-shadow", function() {
+              var i = d3.interpolate("0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.19)", "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)");
+              return function(t) {
+                  return i(t);
+              }
+          })
           .style("width", function(d) { return (x(d.price) + 30) + "px";});
+      })
+      .on("mouseout", function() {
+          d3.select(this)
+            .transition()
+            .duration(100)
+            // .style("background-color", "steelblue")
+            // .style("height", "10px");
+            .style("background-color", "steelblue")
+            .styleTween("box-shadow", function() {
+                var i = d3.interpolate("0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)", "0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.19)");
+                return function(t) {
+                    return i(t);
+                }
+            })
+            .style("width", function(d) { return x(d.price) + "px";})
+            .style("height", "40px")
+            .style("right", "0px")
+      })
 
-      }
-    });
+    // document.getElementsByClassName("chart")[0].addEventListener("mouseover", (e) => {
+    //     if (e.target && e.target.className === "bar"){
+    //       d3.select(e.target)
+    //         .style("z-index", 1)
+    //         // .transition(circleIn)
+    //         .transition()
+    //         .duration(100)
+    //         .style("background-color", "#2a4e6c")
+    //         .style("height", "70px")
+    //         .style("right", "15px")
+    //         .styleTween("box-shadow", function() {
+    //             var i = d3.interpolate("0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.19)", "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)");
+    //             return function(t) {
+    //                 return i(t);
+    //             }
+    //         })
+    //         .style("width", function(d) { return (x(d.price) + 30) + "px";});
 
-    document.getElementsByClassName("chart")[0].addEventListener("mouseout", (e) => {
-      if (e.target && e.target.className === "bar"){
-        d3.select(e.target)
-          .style("z-index", 2)
-          .transition(circleOut)
-          .duration(300)
-          .style("background-color", "steelblue")
-          .transition(circleOut)
-          .style("top", "0px")
-          .style("right", "0px")
-          .duration(1000)
-          .style("box-shadow", "0 2px 4px 0 rgba(0, 0, 0, 0.0), 0 3px 10px 0 rgba(0, 0, 0, 0.0)")
-          .style("width", function(d) { return x(d.price) + "px";})
-          .style("height", "40px")
-      }
-    });
+    //   }
+    // });
 
-    // const now2 = Date.now();
-    // console.log(`div: ${now2 - now1}`);
+    // document.getElementsByClassName("chart")[0].addEventListener("mouseout", (e) => {
+    //   if (e.target && e.target.className === "bar"){
+    //       d3.select(e.target)
+    //         .style("z-index", 2)
+    //         // .transition(circleOut)
+    //         .transition()
+    //         .duration(100)
+    //         .style("background-color", "steelblue")
+    //         .styleTween("box-shadow", function() {
+    //             var i = d3.interpolate("0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)", "0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.19)");
+    //             return function(t) {
+    //                 return i(t);
+    //             }
+    //         })
+    //         .style("width", function(d) { return x(d.price) + "px";})
+    //         .style("height", "40px")
+    //         .style("right", "0px")
+    //   }
+    // });
+
+    const now2 = Date.now();
+    console.log(`div: ${now2 - now1}`);
   }
 
 
@@ -113,45 +161,45 @@ export default class Charts extends React.Component {
       .duration(200)
       .ease(d3.easeExpOut);
 
-    // d3.select(el)
-    //   .selectAll("rect")
-    //   .on("mouseover", function () {
-    //     d3.select(this)
-    //       .transition(d3Color)
-    //       .style("fill", "red")
-    //       .style("height", "20px");
-    //   })
-    //   .on("mouseout", function() {
-    //     try {
-    //       d3.select(this)
-    //         .transition(d3Color)
-    //         .style("fill", "steelblue")
-    //         .style("height", "10px");
-    //     } catch (e) {
-    //       error: e;
-    //     }
-    //   })
-
-    document.getElementsByClassName("chartSvg")[0].addEventListener("mouseover", (e) => {
-      if (e.target && e.target.nodeName === "rect") {
-        d3.select(e.target)
+    d3.select(el)
+      .selectAll("rect")
+      .on("mouseover", function () {
+        d3.select(this)
           .transition()
-          .style("fill", "#2a4e6c")
-          .style("height", "20px")
-          .style("z-index", "-1")
-      }
-    });
+          .style("fill", "red")
+          .style("height", "20px");
+      })
+      .on("mouseout", function() {
+        try {
+          d3.select(this)
+            .transition()
+            .style("fill", "steelblue")
+            .style("height", "10px");
+        } catch (e) {
+          error: e;
+        }
+      })
 
-    document.getElementsByClassName("chartSvg")[0].addEventListener("mouseout", (e) => {
-      if (e.target && e.target.nodeName === "rect") {
-        d3.select(e.target)
-          .transition()
-          .duration(1000)
-          .style("fill", "steelblue")
-          .style("height", "10px")
-          .style("z-index", "2");
-      }
-    });
+    // document.getElementsByClassName("chartSvg")[0].addEventListener("mouseover", (e) => {
+    //   if (e.target && e.target.nodeName === "rect") {
+    //     d3.select(e.target)
+    //       .transition()
+    //       .style("fill", "#2a4e6c")
+    //       .style("height", "20px")
+    //       .style("z-index", "-1")
+    //   }
+    // });
+
+    // document.getElementsByClassName("chartSvg")[0].addEventListener("mouseout", (e) => {
+    //   if (e.target && e.target.nodeName === "rect") {
+    //     d3.select(e.target)
+    //       .transition()
+    //       .duration(1000)
+    //       .style("fill", "steelblue")
+    //       .style("height", "10px")
+    //       .style("z-index", "2");
+    //   }
+    // });
 
     const now2 = Date.now();
 

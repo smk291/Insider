@@ -313,10 +313,11 @@ export default class App extends React.Component {
         }
       })
         .then(res => {
+          console.log(res);
           logIn();
         })
         .catch(err => {
-          // Well..?
+          console.log(JSON.stringify(err));
         });
     };
 
@@ -342,7 +343,6 @@ export default class App extends React.Component {
       logOut();
     } else if (this.state.signingUp) {
       signUp();
-      logIn();
     } else {
       logIn();
     }

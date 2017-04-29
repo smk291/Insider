@@ -21,9 +21,9 @@ function authorize(req, res, next) {
   });
 }
 
-function getNumberOfPages(city) {
+function getNumberOfPages(city, uriFrag) {
   return new Promise((resolve, reject) => {
-    request.get(`https://${city}.craigslist.org/search/sub`, (err, response, body) => {
+    request.get(`https://${city}.craigslist.org/search/${uriFrag}`, (err, response, body) => {
       if (err) {
         return reject(err);
       }
@@ -34,12 +34,11 @@ function getNumberOfPages(city) {
   })
 }
 
-function getPromisesForResultsPages(city, numOfPages){
+function getPromisesForResultsPages(city, numOfPages, uriFrag){
   let searchResultsPromises = [];
-
   for (var i = 0; i <= numOfPages; i++) {
     let newPromise = new Promise((resolve, reject) => {
-      request.get(`https://${city}.craigslist.org/search/sub?s=${i * 120}`, (err, response, body) => {
+      request.get(`https://${city}.craigslist.org/search/${uriFrag}?s=${i * 120}`, (err, response, body) => {
         if (err) {
           reject(err);
         }
@@ -54,7 +53,7 @@ function getPromisesForResultsPages(city, numOfPages){
   return searchResultsPromises;
 }
 
-function scrapeResults(searchResults) {
+function scrapeResults(searchResults, subOrApt) {
   return Promise.all(searchResults)
     .then(values => {
       const partialListings = {};
@@ -83,6 +82,7 @@ function scrapeResults(searchResults) {
             price: $('a span.result-price', el).text().replace(/\$/, ''),
             postDate: $('p time', el).attr('datetime'),
             neighborhood: $('.result-hood', el).text().trim().replace(/^\(|\)$/g, ''),
+            subOrApt
           };
         });
       });
@@ -91,13 +91,14 @@ function scrapeResults(searchResults) {
     })
 }
 
-function checkForDuplicates(next, searchData) {
+function checkForDuplicates(next, searchData, subOrApt) {
   const partialListingsToAdd = searchData[0];
   const urlnumsFromSearch = searchData[1];
   let urlnumsToVoidInTable = [];
 
   let filterSearchResults = new Promise((resolve, reject) => {
-    knex('listings')
+    knex(`listings_${subOrApt}`)
+      .where('sub_or_apt', subOrApt)
       .select('urlnum')
       .orderBy('urlnum', 'desc')
       .then(output => {
@@ -121,7 +122,7 @@ function checkForDuplicates(next, searchData) {
     const urlnumsToVoidInTable = dataToAddOrVoid[1];
 
     let voidingListings = new Promise((resolve, reject) => {
-      knex('listings')
+      knex(`listings_${subOrApt}`)
         .whereIn('urlnum', urlnumsToVoidInTable)
         .update('void', true)
         .returning('*')
@@ -224,13 +225,13 @@ function createCompleteListings(scrapedResults, scrapedListings) {
   }, {})
 }
 
-function insertNewListings(req, res, next, newListings) {
+function insertNewListings(req, res, next, newListings, subOrApt) {
   const listingsForInsertion = Object.keys(newListings).map(listing => {
       return newListings[listing];
   });
 
   return new Promise((resolve, reject) => {
-    knex('listings')
+    knex(`listings_${subOrApt}`)
       .insert(decamelizeKeys(listingsForInsertion), '*')
       .then(newRows => {
         resolve(camelizeKeys(newRows));
@@ -239,17 +240,19 @@ function insertNewListings(req, res, next, newListings) {
   });
 }
 
-router.get('/scrape/:city', authorize, (req, res, next) => {
-  let { city } = req.params;
-  const getNumOfResultsPages = getNumberOfPages(city);
+router.get('/scrape/:city/:subOrApt', authorize, (req, res, next) => {
+  let { city, subOrApt } = req.params;
+  let uriFrag = subOrApt === 'apt'? 'apa': 'sub';
+
+  const getNumOfResultsPages = getNumberOfPages(city, uriFrag);
 
   getNumOfResultsPages.then((pagesOfResults) => {
-    const searchResultsPromises = getPromisesForResultsPages(city, pagesOfResults);
+    const searchResultsPromises = getPromisesForResultsPages(city, pagesOfResults, uriFrag);
 
-    return scrapeResults(searchResultsPromises);
+    return scrapeResults(searchResultsPromises, subOrApt);
   })
   .then(partialListingsAndUrlnums => {
-    return checkForDuplicates(next, partialListingsAndUrlnums);
+    return checkForDuplicates(next, partialListingsAndUrlnums, subOrApt);
   })
   .then(filteredResults => {
     if (Object.keys(filteredResults).length === 0) {
@@ -262,7 +265,7 @@ router.get('/scrape/:city', authorize, (req, res, next) => {
       res.send('No new listings');
     } else {
       const toInsert = createCompleteListings(allData[0], allData[1]);
-      const inserted = insertNewListings(req, res, next, toInsert)
+      const inserted = insertNewListings(req, res, next, toInsert, subOrApt);
 
       inserted.then(insertedListings => {
         res.send([insertedListings, insertedListings.length])

@@ -85,7 +85,7 @@ router.get('/listings_individual/:id', authorize, (req, res, next) => {
 });
 
 router.get('/listings', (req, res, next) => {
-  knex('listings').orderBy('urlnum', 'desc')
+  knex('listings').whereNull('void').orderBy('urlnum', 'desc')
     .then(listings => {
       if (listings === [] || !listings) {
         throw boom.create(400, 'No listings found');
@@ -99,14 +99,17 @@ router.get('/listings', (req, res, next) => {
     .catch(err => next(err));
 });
 
-router.get('/listings_sans_void', (req, res, next) => {
-  knex('listings')
-    .whereNull('void')
-    .orderBy('id', 'asc')
-    .then(activeListings => {
-      res.status(200).send(activeListings.map(listing => {
-        return {url: listing.url, urlnum: listing.urlnum};
-      }));
+router.get('/listings_active', (req, res, next) => {
+  knex('listings').whereNull('void').orderBy('urlnum', 'desc')
+    .then(listings => {
+      if (listings === [] || !listings) {
+        throw boom.create(400, 'No listings found');
+      }
+
+      let formattedListings = [];
+      formattedListings = listings.map(listing => formatListing(listing));
+
+      res.send(formattedListings);
     })
     .catch(err => next(err));
 });

@@ -239,7 +239,7 @@ function insertNewListings(req, res, next, newListings) {
   });
 }
 
-router.get('/results/:city', authorize, (req, res, next) => {
+router.get('/scrape/:city', authorize, (req, res, next) => {
   let { city } = req.params;
   const getNumOfResultsPages = getNumberOfPages(city);
 

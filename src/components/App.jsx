@@ -384,7 +384,7 @@ export default class App extends React.Component {
           return el.listingsId;
         });
 
-        axios({ method: "get", url: `/listings_active` })
+        axios({ method: "get", url: `/listings_active/sub` })
           .then(res => {
             let markers = [];
 
@@ -514,7 +514,7 @@ export default class App extends React.Component {
   getFavorites() {
     axios({
       method: "get",
-      url: "/users_listings"
+      url: "/users_listings/sub"
     })
       .then(res => {
         let userFavorites = res.data;
@@ -571,7 +571,7 @@ export default class App extends React.Component {
   }
 
   changeView(row) {
-    axios({ method: "get", url: `/listings_individual/${row.id}` })
+    axios({ method: "get", url: `/listings_individual/${row.id}/sub` })
       .then(res => {
         this.setState({ displayAd: res.data });
       })

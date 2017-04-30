@@ -54,7 +54,7 @@ router.post('/users_listings', authorize, (req, res, next) => {
         throw boom.create(400, 'Attempting to access nonexistent user account or someone else\'s account');
       }
 
-      knex('listings')
+      knex('listings_sub')
         .where('id', listingsId)
         .first()
         .then(listing => {
@@ -64,7 +64,7 @@ router.post('/users_listings', authorize, (req, res, next) => {
 
           knex('users_listings')
             .where('user_id', userId)
-            .where('listings_id', listingsId)
+            .where('listings_sub_id', listingsId)
             .first()
             .then(userListing => {
               if (userListing) {
@@ -89,8 +89,8 @@ router.get('/users_listings', authorize, (req, res, next) => {
   }
 
   knex('users_listings')
-    .select('users_listings.id', 'listings_id')
-    .innerJoin('listings', 'listings.id', 'users_listings.listings_id')
+    .select('users_listings.id', 'listings_sub_id')
+    .innerJoin('listings_sub', 'listings_sub.id', 'users_listings.listings_sub_id')
     .select(
       'bath',
       'bedrooms',

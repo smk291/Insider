@@ -68,10 +68,10 @@ const authorize = function (req, res, next) {
 };
 
 // Unused
-router.get('/listings_individual/:id', authorize, (req, res, next) => {
-  const { id } = req.params;
+router.get('/listings_individual/:id/:subOrApt', authorize, (req, res, next) => {
+  const { id, subOrApt } = req.params;
 
-  knex('listings')
+  knex(`listings_${subOrApt}`)
     .where('id', id)
     .first()
     .then(listing => {
@@ -84,8 +84,11 @@ router.get('/listings_individual/:id', authorize, (req, res, next) => {
     .catch(err => next(err));
 });
 
-router.get('/listings', (req, res, next) => {
-  knex('listings').whereNull('void').orderBy('urlnum', 'desc')
+router.get('/listings_all/:subOrApt', (req, res, next) => {
+  const { subOrApt } = req.params;
+
+  knex(`listings_${subOrApt}`)
+    .orderBy('urlnum', 'desc')
     .then(listings => {
       if (listings === [] || !listings) {
         throw boom.create(400, 'No listings found');
@@ -99,8 +102,12 @@ router.get('/listings', (req, res, next) => {
     .catch(err => next(err));
 });
 
-router.get('/listings_active', (req, res, next) => {
-  knex('listings').whereNull('void').orderBy('urlnum', 'desc')
+router.get('/listings_active/:subOrApt', (req, res, next) => {
+  const { subOrApt } = req.params;
+
+  knex(`listings_${subOrApt}`)
+    .whereNull('void')
+    .orderBy('urlnum', 'desc')
     .then(listings => {
       if (listings === [] || !listings) {
         throw boom.create(400, 'No listings found');
@@ -114,9 +121,9 @@ router.get('/listings_active', (req, res, next) => {
     .catch(err => next(err));
 });
 
-router.patch('/listings/:id', authorize, /* ev(validations.post),*/ (req, res, next) => {
+router.patch('/listings/:id/:subOrApt', authorize, /* ev(validations.post),*/ (req, res, next) => {
   const patchContents = {};
-  const { id } = req.params;
+  const { id, subOrApt } = req.params;
 
   // eslint-disable-next-line array-callback-return
   Object.keys(req.body).map(key => {
@@ -125,7 +132,7 @@ router.patch('/listings/:id', authorize, /* ev(validations.post),*/ (req, res, n
     }
   });
 
-  knex('listings')
+  knex(`listings_${subOrApt}`)
     .where('id', id)
     .first()
     .then(row => {
@@ -133,7 +140,7 @@ router.patch('/listings/:id', authorize, /* ev(validations.post),*/ (req, res, n
         throw boom.create(400, `No listing found at listings.id ${id}`);
       }
 
-      return knex('listings')
+      return knex(`listings_${subOrApt}`)
         .where('id', id)
         .update(decamelizeKeys(patchContents), '*')
         .then(patchedRow => {

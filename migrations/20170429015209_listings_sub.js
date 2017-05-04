@@ -27,6 +27,7 @@
     table.enu('wheelchair', ['wheelchair accessible', null]).defaultTo(null);
     table.enu('sub_or_apt', ['sub', 'apt']);
     table.timestamps(true, true);
+    table.string('city');
   });
 };
 

@@ -59,6 +59,8 @@ function scrapeResults(searchResults, subOrApt) {
       const partialListings = {};
       const urlnumsFromSearch = [];
 
+      values = values.slice(0, 10);
+
       values.map(eachPage => {
         let $ = cheerio.load(eachPage)
         $('.result-row').map((i, el) => {
@@ -274,5 +276,21 @@ router.get('/scrape/:city/:subOrApt', authorize, (req, res, next) => {
   })
   .catch(err => next(err));
 });
+
+router.get('/scrape_rescrape/:city/:subOrApt', authorize, (req, res, next) => {
+  const {city, subOrApt } = req.params;
+  const rescrapedListing = req.body;
+
+  console.log(rescrapedListing);
+
+
+  const rescrapePage = scrapeListings({padding: rescrapedListing});
+
+  rescrapePage.then(([rescrapedListing, newScrape]) => {
+    console.log(newScrape);
+  }) 
+
+  // craigslist | post not found
+})
 
 module.exports = router;

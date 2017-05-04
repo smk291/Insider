@@ -68,7 +68,7 @@ const authorize = function (req, res, next) {
 };
 
 // Unused
-router.get('/listings_individual/:id/:subOrApt', authorize, (req, res, next) => {
+router.get('/listings_single/:id/:subOrApt', authorize, (req, res, next) => {
   const { id, subOrApt } = req.params;
 
   knex(`listings_${subOrApt}`)

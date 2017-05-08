@@ -69,8 +69,8 @@ function scrapeActiveListings(searchResults, subOrApt) {
         let $ = cheerio.load(eachPage)
         // scrape the active listings
         $('.result-row').map((i, el) => {
-          // 'urlnum' is craigslist's unique identifier for each listing
-          // Sometimes the same urlnum appears
+          // 'urlnum' is craigslist's unique(?) identifier for each listing
+          // Sometimes the same urlnum/ad appears 
           // in both sublets search and main housing search
           const urlnum = $(el).data('pid');
           let photos = $('a', el).data('ids');
@@ -98,8 +98,8 @@ function scrapeActiveListings(searchResults, subOrApt) {
         });
       });
 
-      // return have of partial rows for possible insertion 
-      // and array of urlnums to simplify duplicate-checking
+      // return hash containing partial rows for all active listings 
+      // and an array of urlnums to simplify duplicate-checking
       return [activeListingsFromSearch, urlnumsFromSearch];
     })
 }

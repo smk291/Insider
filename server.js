@@ -96,7 +96,7 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-setInterval(() => {
+function scrapeHousing() {
   const scrapeSeattleHousing = new Promise((resolve, reject) => {
     request.get(`http://localhost:3000/scrape/seattle/apt`, (err, response, body) => {
       if (err) {
@@ -108,21 +108,20 @@ setInterval(() => {
   });
 
   scrapeSeattleHousing.then((results) => {
-    fs.appendFile('server.log', "apt was scraped at " + Date(Date.now()), (err) => {
+    fs.appendFile('server.log', "\n\nAll housing scraped at " + Date(Date.now()), (err) => {
       if (err) throw err;
-      console.log('The results_sub data was appended to server.log');
+      console.log("\n\nall housing scraped at " + Date(Date.now()));
     });
 
-    fs.appendFile('server.log', results, (err) => {
+    fs.appendFile('server.log', "\n\n\n" + results, (err) => {
       if (err) throw err;
-      console.log('The results_apt data was appended to server.log');
+      console.log('\nHousing data was appended to server.log');
     });
   })
   .catch(err => console.log(err));
+}
 
-}, 3600000);
-
-setInterval(() => {
+function scrapeSublets() {
   const scrapeSeattleHousing = new Promise((resolve, reject) => {
     request.get(`http://localhost:3000/scrape/seattle/sub`, (err, response, body) => {
       if (err) {
@@ -134,18 +133,29 @@ setInterval(() => {
   });
 
   scrapeSeattleHousing.then((results) => {
-    fs.appendFile('server.log', "sub was scraped at " + Date(Date.now()), (err) => {
+    fs.appendFile('server.log', "\n\nSublets scraped at " + Date(Date.now()), (err) => {
       if (err) throw err;
-      console.log('The results_sub data was appended to server.log');
+      console.log("\n\nSublets scraped at " + Date(Date.now()));
     });
-    fs.appendFile('server.log', results, (err) => {
+    fs.appendFile('server.log', "\n\n\n" + results, (err) => {
       if (err) throw err;
-      console.log('The results_sub data was appended to server.log');
+      console.log('\nSublet data data was appended to server.log');
     });
   })
   .catch(err => console.log(err));
+}
 
-}, 7200000);
+setInterval(() => {
+  scrapeHousing();
+}, 3600000);
+
+setInterval(() => {
+  scrapeSublets();
+}, 3650000);
+
+scrapeHousing();
+
+scrapeSublets();
 
 app.listen(port, err => {
   if (err) {
@@ -155,7 +165,8 @@ app.listen(port, err => {
   }
 
   // eslint-disable-next-line no-console
-  console.log(`Listening on port: ${port}`);
+  console.log(`\nPlease hold while the webpack does its thing and the database is populated with current active listings`)
+  console.log(`\nListening on port: ${port}`);
 });
 
 module.exports = app;

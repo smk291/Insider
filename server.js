@@ -4,6 +4,8 @@ const path = require('path');
 const webpack = require('webpack');
 const config = require('./webpack.config.dev');
 const http = require('http')
+const request = require('request')
+const fs = require('fs');
 
 const compiler = webpack(config);
 
@@ -93,6 +95,57 @@ const port = process.env.PORT || 3000;
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
+
+setInterval(() => {
+  const scrapeSeattleHousing = new Promise((resolve, reject) => {
+    request.get(`http://localhost:3000/scrape/seattle/apt`, (err, response, body) => {
+      if (err) {
+        reject(err);
+      }
+
+      resolve(body);
+    })
+  });
+
+  scrapeSeattleHousing.then((results) => {
+    fs.appendFile('server.log', "apt was scraped at " + Date(Date.now()), (err) => {
+      if (err) throw err;
+      console.log('The results_sub data was appended to server.log');
+    });
+
+    fs.appendFile('server.log', results, (err) => {
+      if (err) throw err;
+      console.log('The results_apt data was appended to server.log');
+    });
+  })
+  .catch(err => console.log(err));
+
+}, 3600000);
+
+setInterval(() => {
+  const scrapeSeattleHousing = new Promise((resolve, reject) => {
+    request.get(`http://localhost:3000/scrape/seattle/sub`, (err, response, body) => {
+      if (err) {
+        reject(err);
+      }
+
+      resolve(body);
+    })
+  });
+
+  scrapeSeattleHousing.then((results) => {
+    fs.appendFile('server.log', "sub was scraped at " + Date(Date.now()), (err) => {
+      if (err) throw err;
+      console.log('The results_sub data was appended to server.log');
+    });
+    fs.appendFile('server.log', results, (err) => {
+      if (err) throw err;
+      console.log('The results_sub data was appended to server.log');
+    });
+  })
+  .catch(err => console.log(err));
+
+}, 7200000);
 
 app.listen(port, err => {
   if (err) {

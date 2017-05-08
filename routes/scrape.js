@@ -21,7 +21,10 @@ function authorize(req, res, next) {
   });
 }
 
-function getNumberOfPages(city, uriFrag) {
+// Active listings come from search results
+// Search results are divided into pages
+// Start by getting number of pages
+function getNumberOfSearchResultsPages(city, uriFrag) {
   return new Promise((resolve, reject) => {
     request.get(`https://${city}.craigslist.org/search/${uriFrag}`, (err, response, body) => {
       if (err) {
@@ -34,8 +37,9 @@ function getNumberOfPages(city, uriFrag) {
   })
 }
 
-function getPromisesForResultsPages(city, numOfPages, uriFrag){
-  let searchResultsPromises = [];
+// Scrape each page of results
+function scrapeSearchResultsPages(city, numOfPages, uriFrag){
+  let promisePerPageOfResults = [];
   for (var i = 0; i <= numOfPages; i++) {
     let newPromise = new Promise((resolve, reject) => {
       request.get(`https://${city}.craigslist.org/search/${uriFrag}?s=${i * 120}`, (err, response, body) => {
@@ -47,23 +51,27 @@ function getPromisesForResultsPages(city, numOfPages, uriFrag){
       });
     });
 
-    searchResultsPromises.push(newPromise);
+    promisePerPageOfResults.push(newPromise);
   }
 
-  return searchResultsPromises;
+  return promisePerPageOfResults;
 }
 
-function scrapeResults(searchResults, subOrApt) {
+function scrapeActiveListings(searchResults, subOrApt) {
   return Promise.all(searchResults)
+    // values == array of scraped search-results pages
     .then(values => {
-      const partialListings = {};
+      const activeListingsFromSearch = {};
       const urlnumsFromSearch = [];
 
-      values = values.slice(0, 10);
-
+      // iterate over the pages, 
       values.map(eachPage => {
         let $ = cheerio.load(eachPage)
+        // scrape the active listings
         $('.result-row').map((i, el) => {
+          // 'urlnum' is craigslist's unique identifier for each listing
+          // Sometimes the same urlnum appears
+          // in both sublets search and main housing search
           const urlnum = $(el).data('pid');
           let photos = $('a', el).data('ids');
 
@@ -76,7 +84,8 @@ function scrapeResults(searchResults, subOrApt) {
             photos = photos.map(partialPath => partialPath.slice(2))
           }
 
-          partialListings[urlnum] = {
+          // make partial row
+          activeListingsFromSearch[urlnum] = {
             bedrooms: $('.housing', el).text().replace(/(\dbr)|[^]/g, '$1').replace(/br/, ''),
             urlnum,
             url: $('.result-row a', el).attr('href'),
@@ -89,11 +98,13 @@ function scrapeResults(searchResults, subOrApt) {
         });
       });
 
-      return [partialListings, urlnumsFromSearch];
+      // return have of partial rows for possible insertion 
+      // and array of urlnums to simplify duplicate-checking
+      return [activeListingsFromSearch, urlnumsFromSearch];
     })
 }
 
-function checkForDuplicates(next, searchData, subOrApt) {
+function filterDuplicates(next, searchData, subOrApt) {
   const partialListingsToAdd = searchData[0];
   const urlnumsFromSearch = searchData[1];
   let urlnumsToVoidInTable = [];
@@ -139,7 +150,7 @@ function checkForDuplicates(next, searchData, subOrApt) {
   });
 }
 
-function scrapeListings(results){
+function scrapeNewListings(results){
   if (!Object.keys(results)) {
     return 0
   }
@@ -165,7 +176,7 @@ function scrapeListings(results){
   });
 }
 
-function createCompleteListings(scrapedResults, scrapedListings) {
+function buildCompleteListings(scrapedResults, scrapedListings) {
   return scrapedListings.reduce((acc, el, i) => {
     const $ = cheerio.load(el);
     const currentUrlnum = $('.postinginfos p:nth-child(1)').text().replace(/\D+/g, '');
@@ -246,27 +257,27 @@ router.get('/scrape/:city/:subOrApt', authorize, (req, res, next) => {
   let { city, subOrApt } = req.params;
   let uriFrag = subOrApt === 'apt'? 'apa': 'sub';
 
-  const getNumOfResultsPages = getNumberOfPages(city, uriFrag);
+  const getNumOfResultsPages = getNumberOfSearchResultsPages(city, uriFrag);
 
   getNumOfResultsPages.then((pagesOfResults) => {
-    const searchResultsPromises = getPromisesForResultsPages(city, pagesOfResults, uriFrag);
+    const searchResultsPromises = scrapeSearchResultsPages(city, pagesOfResults, uriFrag);
 
-    return scrapeResults(searchResultsPromises, subOrApt);
+    return scrapeActiveListings(searchResultsPromises, subOrApt);
   })
   .then(partialListingsAndUrlnums => {
-    return checkForDuplicates(next, partialListingsAndUrlnums, subOrApt);
+    return filterDuplicates(next, partialListingsAndUrlnums, subOrApt);
   })
   .then(filteredResults => {
     if (Object.keys(filteredResults).length === 0) {
       return 0
     } else {
-      return scrapeListings(filteredResults);
+      return scrapeNewListings(filteredResults);
     }
   }).then(allData => {
     if (allData === 0) {
       res.send('No new listings');
     } else {
-      const toInsert = createCompleteListings(allData[0], allData[1]);
+      const toInsert = buildCompleteListings(allData[0], allData[1]);
       const inserted = insertNewListings(req, res, next, toInsert, subOrApt);
 
       inserted.then(insertedListings => {

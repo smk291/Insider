@@ -98,7 +98,7 @@ app.get('*', (req, res) => {
 
 function scrapeHousing() {
   const scrapeSeattleHousing = new Promise((resolve, reject) => {
-    request.get(`http://localhost:3000/scrape/seattle/apt`, (err, response, body) => {
+    request.get(`http://localhost:3000/scrape/seattle/apt`, {timeout: 120000}, (err, response, body) => {
       if (err) {
         reject(err);
       }
@@ -123,7 +123,7 @@ function scrapeHousing() {
 
 function scrapeSublets() {
   const scrapeSeattleHousing = new Promise((resolve, reject) => {
-    request.get(`http://localhost:3000/scrape/seattle/sub`, (err, response, body) => {
+    request.get(`http://localhost:3000/scrape/seattle/sub`, {timeout: 120000}, (err, response, body) => {
       if (err) {
         reject(err);
       }
